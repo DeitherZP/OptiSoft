@@ -1,0 +1,83 @@
+﻿@rendermode InteractiveServer
+
+@using OptiSoftBlazor.Shared.Data
+@using OptiSoftBlazor.Shared.Pages.Shared.DTO
+@using OptiSoftBlazor.Shared.Services
+
+@inject ArticuloService ArticuloService;
+
+<FluentDialog Modal="true" @bind-Hidden="Hidden">
+    <FluentHeader>Seleccione un artículo</FluentHeader>
+
+    <FluentDialogBody>
+        <div style="padding: 1em;">
+            <div class="columna-flex" style="padding: 0 1em;">
+                <FluentNumberField @bind-Value="Cantidad"
+                                   Label="Cantidad"
+                                   Placeholder="Ingrese la cantidad"/>
+            </div>
+            <div class="columna-flex" style="padding: 0 1em;">
+                <FluentAutocomplete Label="Artículo"
+                                    Items="@Articulos"
+                                    TOption="Articulo"
+                                    @bind-SelectedOption="ArticuloSelect"
+                                    OptionText="@(a => a.Nombre)"
+                                    Virtualize="true"
+                                    Multiple="false"
+                                    MaximumOptionsSearch="int.MaxValue"
+                                    Position="SelectPosition.Below" />
+            </div>
+        </div>
+    </FluentDialogBody>
+
+    <FluentFooter Style="gap: 1em;">
+        <FluentButton Appearance="Appearance.Stealth"
+                      OnClick="Cerrar"
+                      IconStart="@(new Icons.Filled.Size20.DismissCircle())">
+            Cerrar
+        </FluentButton>
+
+        <FluentButton Appearance="Appearance.Accent"
+                      OnClick="Agregar"
+                      IconStart="@(new Icons.Filled.Size20.AddCircle())">
+            Agregar
+        </FluentButton>
+    </FluentFooter>
+</FluentDialog>
+
+@code{
+    [Parameter] public bool Hidden { get; set; }
+    [Parameter] public EventCallback<bool> HiddenChanged { get; set; }
+    [Parameter] public List<Articulo> Articulos { get; set; } = new();
+    [Parameter] public EventCallback<Articulo> OnGuardar { get; set; }
+    [Parameter] public Articulo? ArticuloSelect { get; set; }
+    [Parameter] public EventCallback<ArticuloAgregadoEvent> OnArticuloAgregado { get; set; }
+
+    int Cantidad { get; set; } = 1;
+
+    private async Task Cerrar()
+    {
+        Hidden = true;
+        ArticuloSelect = null;
+        Cantidad = 1;
+        await HiddenChanged.InvokeAsync(Hidden);
+    }
+
+    private async Task Agregar()
+    {
+        if (ArticuloSelect == null)
+        {
+            ToastService.ShowWarning("Debe seleccionar un artículo", 5000);
+            return;
+        }
+
+        var articulo = new ArticuloAgregadoEvent
+        {
+            Articulo = ArticuloSelect,
+            Cantidad = Cantidad
+        };
+
+        await OnArticuloAgregado.InvokeAsync(articulo);
+        await Cerrar();
+    }
+}

@@ -1,0 +1,17 @@
+﻿@page "/Account/Logout"
+
+@using Microsoft.AspNetCore.Http
+@using OptiSoftBlazor.Shared.Services
+
+@inject IAuthService AuthService
+@inject IHttpContextAccessor Http
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await AuthService.LogoutAsync();
+
+        Http.HttpContext!.Response.Redirect("/Account/Login");
+        return;
+    }
+}

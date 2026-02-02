@@ -1,0 +1,11 @@
+D:\Projects\OptiSoftBlazor\OptiSoftBlazor\OptiSoftBlazor.Shared\obj\Debug\net10.0\staticwebassets.build.json
+D:\Projects\OptiSoftBlazor\OptiSoftBlazor\OptiSoftBlazor.Shared\obj\Debug\net10.0\staticwebassets.build.json
+D:\Projects\OptiSoftBlazor\OptiSoftBlazor\OptiSoftBlazor.Shared\obj\Debug\net10.0\staticwebassets.build.json
+D:\Projects\OptiSoftBlazor\OptiSoftBlazor\OptiSoftBlazor.Shared\obj\Debug\net10.0\staticwebassets.build.json
+D:\Projects\OptiSoftBlazor\OptiSoftBlazor\OptiSoftBlazor.Shared\obj\Debug\net10.0\staticwebassets.build.json
+D:\Projects\OptiSoftBlazor\OptiSoftBlazor\OptiSoftBlazor.Shared\obj\Debug\net10.0\staticwebassets.build.json
+D:\Projects\OptiSoftBlazor\OptiSoftBlazor\OptiSoftBlazor.Shared\obj\Debug\net10.0\staticwebassets.build.json
+D:\Projects\OptiSoftBlazor\OptiSoftBlazor\OptiSoftBlazor.Shared\obj\Debug\net10.0\staticwebassets.build.json
+D:\Projects\OptiSoftBlazor\OptiSoftBlazor\OptiSoftBlazor.Shared\obj\Debug\net10.0\staticwebassets.build.json
+D:\Projects\OptiSoftBlazor\OptiSoftBlazor\OptiSoftBlazor.Shared\obj\Debug\net10.0\staticwebassets.build.json
+D:\Projects\OptiSoftBlazor\OptiSoftBlazor\OptiSoftBlazor.Shared\obj\Debug\net10.0\staticwebassets.build.json

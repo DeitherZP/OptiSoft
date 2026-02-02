@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="OptiSoftBlazor/OptiSoftBlazor.Shared/OptiSoftBlazor.Shared.csproj" />
+  <Project Path="OptiSoftBlazor/OptiSoftBlazor.Web/OptiSoftBlazor.Web.csproj" />
+  <Project Path="OptiSoftBlazor/OptiSoftBlazor/OptiSoftBlazor.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+</Solution>

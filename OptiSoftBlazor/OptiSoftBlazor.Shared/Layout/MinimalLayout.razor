@@ -1,0 +1,23 @@
+﻿@inherits LayoutComponentBase
+
+<style>
+    .page {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .minimal-layout {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<div class="page">
+    <div class="minimal-layout">
+        @Body
+    </div>
+</div>

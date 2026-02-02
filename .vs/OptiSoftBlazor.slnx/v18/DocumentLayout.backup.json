@@ -1,0 +1,587 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Projects\\OptiSoftBlazor\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\pages\\shared\\consultadiag.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\pages\\shared\\consultadiag.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\pages\\optica\\opticonsulta.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\pages\\optica\\opticonsulta.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\data\\consulta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\data\\consulta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\pages\\shared\\pedidodiag.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\pages\\shared\\pedidodiag.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\pages\\optica\\pedido.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\pages\\optica\\pedido.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\routes.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\routes.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\layout\\mainlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\layout\\mainlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\pages\\shared\\loadingspinner.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\pages\\shared\\loadingspinner.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\pages\\shared\\articulodiag.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\pages\\shared\\articulodiag.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\services\\compraservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\services\\compraservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0C6799FF-9045-6567-FB77-20CFB938CF9A}|OptiSoftBlazor\\OptiSoftBlazor.Web\\OptiSoftBlazor.Web.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0C6799FF-9045-6567-FB77-20CFB938CF9A}|OptiSoftBlazor\\OptiSoftBlazor.Web\\OptiSoftBlazor.Web.csproj|solutionrelative:optisoftblazor\\optisoftblazor.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\layout\\navmenu.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\layout\\navmenu.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0C6799FF-9045-6567-FB77-20CFB938CF9A}|OptiSoftBlazor\\OptiSoftBlazor.Web\\OptiSoftBlazor.Web.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.web\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{0C6799FF-9045-6567-FB77-20CFB938CF9A}|OptiSoftBlazor\\OptiSoftBlazor.Web\\OptiSoftBlazor.Web.csproj|solutionrelative:optisoftblazor\\optisoftblazor.web\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\services\\consultaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\services\\consultaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\layout\\minimallayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\layout\\minimallayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\pages\\shared\\logoutbutton.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\pages\\shared\\logoutbutton.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\pages\\auth\\login.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\pages\\auth\\login.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0C6799FF-9045-6567-FB77-20CFB938CF9A}|OptiSoftBlazor\\OptiSoftBlazor.Web\\OptiSoftBlazor.Web.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.web\\services\\identityauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0C6799FF-9045-6567-FB77-20CFB938CF9A}|OptiSoftBlazor\\OptiSoftBlazor.Web\\OptiSoftBlazor.Web.csproj|solutionrelative:optisoftblazor\\optisoftblazor.web\\services\\identityauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\services\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\services\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\pages\\weather.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\pages\\weather.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\pages\\counter.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\pages\\counter.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\_imports.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\_imports.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0C6799FF-9045-6567-FB77-20CFB938CF9A}|OptiSoftBlazor\\OptiSoftBlazor.Web\\OptiSoftBlazor.Web.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.web\\components\\app.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{0C6799FF-9045-6567-FB77-20CFB938CF9A}|OptiSoftBlazor\\OptiSoftBlazor.Web\\OptiSoftBlazor.Web.csproj|solutionrelative:optisoftblazor\\optisoftblazor.web\\components\\app.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\data\\optisoftdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\data\\optisoftdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0C6799FF-9045-6567-FB77-20CFB938CF9A}|OptiSoftBlazor\\OptiSoftBlazor.Web\\OptiSoftBlazor.Web.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.web\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0C6799FF-9045-6567-FB77-20CFB938CF9A}|OptiSoftBlazor\\OptiSoftBlazor.Web\\OptiSoftBlazor.Web.csproj|solutionrelative:optisoftblazor\\optisoftblazor.web\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\pages\\auth\\redirecttologin.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\pages\\auth\\redirecttologin.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\services\\iformfactor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\services\\iformfactor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\data\\optiusers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\data\\optiusers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\services\\detcompraservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\services\\detcompraservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\wwwroot\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\wwwroot\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|d:\\projects\\optisoftblazor\\optisoftblazor\\optisoftblazor.shared\\wwwroot\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A0654AC2-9DD0-1E6C-126B-8D567181FE8E}|OptiSoftBlazor\\OptiSoftBlazor.Shared\\OptiSoftBlazor.Shared.csproj|solutionrelative:optisoftblazor\\optisoftblazor.shared\\wwwroot\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{e8b06f52-6d01-11d2-aa7d-00c04f990343}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 387,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{5e929736-0e81-4d52-a78e-546a1649faca}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d562c6a0-d2fe-4c19-a8b3-e5cbc09bf375}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Routes.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Routes.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Routes.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Routes.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Routes.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-20T21:38:27.327Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Pedido.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Optica\\Pedido.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Optica\\Pedido.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Optica\\Pedido.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Optica\\Pedido.razor",
+              "ViewState": "AgIAAHoAAAAAAAAAAAAiwJAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-19T07:31:57.72Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "OptiConsulta.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Optica\\OptiConsulta.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Optica\\OptiConsulta.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Optica\\OptiConsulta.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Optica\\OptiConsulta.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-16T19:19:46.588Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "PedidoDiag.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\PedidoDiag.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\PedidoDiag.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\PedidoDiag.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\PedidoDiag.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-19T07:32:04.396Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ConsultaDiag.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\ConsultaDiag.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\ConsultaDiag.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\ConsultaDiag.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\ConsultaDiag.razor",
+              "ViewState": "AgIAAO8BAAAAAAAAAAAAAPwBAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-16T19:50:59.517Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Consulta.cs",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Data\\Consulta.cs",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Data\\Consulta.cs",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Data\\Consulta.cs",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Data\\Consulta.cs",
+              "ViewState": "AgIAAPYAAAAAAAAAAAAywAUBAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-16T19:20:45.593Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "MainLayout.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Layout\\MainLayout.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Layout\\MainLayout.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Layout\\MainLayout.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Layout\\MainLayout.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-20T21:54:21.627Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ArticuloDiag.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\ArticuloDiag.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\ArticuloDiag.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\ArticuloDiag.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\ArticuloDiag.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-19T07:02:39.15Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "LoadingSpinner.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\LoadingSpinner.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\LoadingSpinner.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\LoadingSpinner.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\LoadingSpinner.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-19T08:45:46.172Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Web\\Program.cs",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Web\\Program.cs",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Web\\Program.cs",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Web\\Program.cs",
+              "ViewState": "AgIAACcAAAAALjMzMzMbwEUAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-16T19:25:50.56Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "CompraService.cs",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\CompraService.cs",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\CompraService.cs",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\CompraService.cs",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\CompraService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T21:03:16.298Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "NavMenu.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Layout\\NavMenu.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Layout\\NavMenu.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Layout\\NavMenu.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Layout\\NavMenu.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-20T21:54:25.233Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Web\\appsettings.json",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Web\\appsettings.json",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Web\\appsettings.json",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Web\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-01-21T03:14:57.089Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "MinimalLayout.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Layout\\MinimalLayout.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Layout\\MinimalLayout.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Layout\\MinimalLayout.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Layout\\MinimalLayout.razor",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-20T21:54:55.122Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "ConsultaService.cs",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\ConsultaService.cs",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\ConsultaService.cs",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\ConsultaService.cs",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\ConsultaService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T19:14:02.042Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Login.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Auth\\Login.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Auth\\Login.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Auth\\Login.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Auth\\Login.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-20T21:37:27.783Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "IdentityAuthService.cs",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Web\\Services\\IdentityAuthService.cs",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Web\\Services\\IdentityAuthService.cs",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Web\\Services\\IdentityAuthService.cs",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Web\\Services\\IdentityAuthService.cs",
+              "ViewState": "AgIAAA8AAACAmJmZmZkNwBgAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T04:29:57.174Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "LogoutButton.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\LogoutButton.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\LogoutButton.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\LogoutButton.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Shared\\LogoutButton.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-22T06:03:59.769Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "IAuthService.cs",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\IAuthService.cs",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\IAuthService.cs",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\IAuthService.cs",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\IAuthService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T04:29:36.505Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Weather.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Weather.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Weather.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Weather.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Weather.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-21T04:07:27.186Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "Counter.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Counter.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Counter.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Counter.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Counter.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-21T04:06:47.969Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Home.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Home.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Home.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Home.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Home.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-20T21:40:09.01Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "_Imports.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\_Imports.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\_Imports.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\_Imports.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\_Imports.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-21T04:08:00.103Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "App.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Web\\Components\\App.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Web\\Components\\App.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Web\\Components\\App.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Web\\Components\\App.razor",
+              "ViewState": "AgIAAAoAAACgZWZmZmYkwBIAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-20T21:39:45.5Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "OptiSoftDbContext.cs",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Data\\OptiSoftDbContext.cs",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Data\\OptiSoftDbContext.cs",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Data\\OptiSoftDbContext.cs",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Data\\OptiSoftDbContext.cs",
+              "ViewState": "AgIAAE0AAAAg1szMzMwYwFgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-19T06:31:35.897Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "IFormFactor.cs",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\IFormFactor.cs",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\IFormFactor.cs",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\IFormFactor.cs",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\IFormFactor.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-16T19:20:02.756Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "RedirectToLogin.razor",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Auth\\RedirectToLogin.razor",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Auth\\RedirectToLogin.razor",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Auth\\RedirectToLogin.razor",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Pages\\Auth\\RedirectToLogin.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-20T21:38:06.684Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Web\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Web\\Controllers\\AuthController.cs",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Web\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Web\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T04:07:24.847Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "OptiUsers.cs",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Data\\OptiUsers.cs",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Data\\OptiUsers.cs",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Data\\OptiUsers.cs",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Data\\OptiUsers.cs",
+              "ViewState": "AgIAAAcAAACAZWZmZmYKwBQAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-21T05:02:47.76Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "UserService.cs",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\UserService.cs",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\UserService.cs",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\UserService.cs",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\UserService.cs",
+              "ViewState": "AgIAAEQAAACgbGZmZmYqwEsAAABUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-21T06:16:04.716Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "DetCompraService.cs",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\DetCompraService.cs",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\DetCompraService.cs",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\DetCompraService.cs",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\Services\\DetCompraService.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAADwvxYAAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-19T09:08:45.248Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "style.css",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\wwwroot\\style.css",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\wwwroot\\style.css",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\wwwroot\\style.css",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\wwwroot\\style.css",
+              "ViewState": "AgIAACECAAAAAAAAAAAAACgCAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-01-19T06:58:13.629Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "app.css",
+              "DocumentMoniker": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\wwwroot\\app.css",
+              "RelativeDocumentMoniker": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\wwwroot\\app.css",
+              "ToolTip": "D:\\Projects\\OptiSoftBlazor\\OptiSoftBlazor\\OptiSoftBlazor.Shared\\wwwroot\\app.css",
+              "RelativeToolTip": "OptiSoftBlazor\\OptiSoftBlazor.Shared\\wwwroot\\app.css",
+              "ViewState": "AgIAALgAAAAAAAAAAAAkwL4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-01-19T08:41:21.022Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+﻿@page "/Account/Login"
+@attribute [AllowAnonymous]
+
+@using Microsoft.AspNetCore.Http
+@using OptiSoftBlazor.Shared.Services
+
+@layout MinimalLayout
+@inject NavigationManager Nav
+@inject IAuthService IAuthService
+@inject IHttpContextAccessor Http
+
+<FluentCard Style="width:400px;padding:2em;">
+    <form method="get" action="/Account/Login">
+
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="16">
+
+            <h2 style="text-align:center">OptiSoft</h2>
+            <p style="text-align:center;">Use sus credenciales para ingresar al sistema</p>
+
+            <FluentTextField Name="username"
+                             Label="Usuario"
+                             Required
+                             Style="width: 100%"/>
+
+            <FluentTextField Name="password"
+                             Label="Contraseña"
+                             TextFieldType="TextFieldType.Password"
+                             Required
+                             Style="width: 100%" />
+
+            <FluentButton Type="ButtonType.Submit"
+                          Appearance="Appearance.Accent"
+                          Style="width:100%;">
+                Iniciar sesión
+            </FluentButton>
+
+        </FluentStack>
+    </form>
+</FluentCard>
+
+@code {
+    [SupplyParameterFromQuery] public string? username { get; set; }
+    [SupplyParameterFromQuery] public string? password { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
+        {
+            var ok = await IAuthService.LoginAsync(username, password);
+
+            if (ok)
+            {
+                Http.HttpContext!.Response.Redirect("/");
+                return;
+            }
+        }
+    }
+}

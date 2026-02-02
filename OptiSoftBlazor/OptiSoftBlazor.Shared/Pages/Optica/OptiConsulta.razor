@@ -1,0 +1,86 @@
+﻿@page "/consulta"
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+@using OptiSoftBlazor.Shared.Data;
+@using OptiSoftBlazor.Shared.Pages.Shared
+@using OptiSoftBlazor.Shared.Services
+
+@inject ConsultaService ConsultaService
+
+<PageTitle>Consulta</PageTitle>
+
+<LoadingSpinner @bind-Visible="IsLoading" />
+
+@if (!IsFirstRender)
+{
+    <div class="nueva-fila">
+        <FluentButton Appearance="Appearance.Accent" OnClick="@NewConsulta" IconStart="@(new Icons.Filled.Size20.AddCircle())">Nuevo</FluentButton>
+    </div>
+}
+<FluentCard AreaRestricted="false" Style="max-height: 80vh;">
+    @if (ListConsultas == null)
+    {
+        <p>Cargando...</p>
+    }
+    else
+    {
+        <FluentDataGrid Items="ListConsultas"
+                        TGridItem="Consulta"
+                        Pagination="@pagination"
+                        AutoFit=true
+                        ShowHover=true
+                        OnRowClick="@(args => OnRowClicked(args.Item))">
+            <PropertyColumn Property="tbl => tbl.Cliente.Nombre" Title="Cliente" Sortable="true" />
+            <PropertyColumn Property="tbl => tbl.Pedido.Numero" Title="N° Pedido" Sortable="true" />
+            <PropertyColumn Property="tbl => tbl.Profesional.Nombre" Title="Profesional" Sortable="true" />
+            <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy"/>
+        </FluentDataGrid>
+    }
+</FluentCard>
+
+    @code {
+    private bool IsFirstRender = true;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+
+    private List<Consulta>? Consultas = new();
+
+    private IQueryable<Consulta>? ListConsultas;
+
+    private bool IsLoading = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        try
+        {
+            IsLoading = true;
+            StateHasChanged();
+            Consultas = await ConsultaService.ObtenerConsultasAsync();
+            ListConsultas = Consultas.AsQueryable();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError("Error al cargar los datos.", 5000);
+            Console.WriteLine($"Error al cargar los datos: {ex}");
+        }
+        finally
+        {
+            IsFirstRender = false;
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void NewConsulta()
+    {
+        ToastService.ShowInfo("Funcionalidad de nueva consulta", 5000);
+    }
+
+    private void OnRowClicked(Consulta consulta)
+    {
+        ToastService.ShowInfo("Funcionalidad de RowClicked", 5000);
+    }
+}

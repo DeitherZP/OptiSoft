@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\OptiSoftBlazor.Shared.props" />
+</Project>

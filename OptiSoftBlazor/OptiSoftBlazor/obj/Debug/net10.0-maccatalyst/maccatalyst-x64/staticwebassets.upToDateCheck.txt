@@ -1,0 +1,3 @@
+wwwroot\app.css
+wwwroot\index.html
+C:\Users\mmosc\.nuget\packages\microsoft.aspnetcore.components.webview\10.0.0\build\..\staticwebassets\blazor.webview.js

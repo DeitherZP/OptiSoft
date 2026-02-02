@@ -1,0 +1,6 @@
+wwwroot\app.css
+wwwroot\favicon.ico
+wwwroot\style.css
+D:\Projects\OptiSoftBlazor\OptiSoftBlazor\OptiSoftBlazor.Shared\wwwroot\app.css
+D:\Projects\OptiSoftBlazor\OptiSoftBlazor\OptiSoftBlazor.Shared\wwwroot\favicon.ico
+D:\Projects\OptiSoftBlazor\OptiSoftBlazor\OptiSoftBlazor.Shared\wwwroot\style.css

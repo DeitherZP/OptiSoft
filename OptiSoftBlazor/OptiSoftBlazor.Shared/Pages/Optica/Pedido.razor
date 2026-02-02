@@ -1,0 +1,144 @@
+﻿@page "/pedido"
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+@using OptiSoftBlazor.Shared.Data
+@using OptiSoftBlazor.Shared.Pages.Shared
+@using OptiSoftBlazor.Shared.Services
+
+@inject CompraService CompraServicio
+@inject ClienteService ClienteServicio
+@inject ArticuloService ArticuloService
+@inject DetCompraService DetCompraService
+
+<PageTitle>Pedido</PageTitle>
+
+<LoadingSpinner @bind-Visible="IsLoading" />
+
+<style>
+    .fluent-dialog-main {
+        --dialog-width: 850px !important; 
+        --dialog-max-height: 80vh !important;
+    }
+
+    @@media (max-width: 600px) {
+        .fluent-dialog-main {
+            --dialog-width: 90% !important;
+        --dialog-max-height: 80vh !important;
+        }
+    }
+</style>
+
+@if (!IsFirstRender)
+{
+    <div class="nueva-fila">
+        <FluentButton Appearance="Appearance.Accent" OnClick="@AddPedido" IconStart="@(new Icons.Filled.Size20.AddCircle())">Nuevo</FluentButton>
+    </div>
+}
+
+@if (!(ListPedidos == null))
+{
+    <FluentCard AreaRestricted="false" Style="max-height: 80vh;">
+        <FluentDataGrid Items="ListPedidos"
+                        TGridItem="Compra"
+                        Pagination="@pagination"
+                        AutoFit=true
+                        ShowHover=true
+                        OnRowClick="@(args => OnRowClicked(args.Item))">
+            <PropertyColumn Property="tbl => tbl.Numero" Title="Número" Sortable="true" />
+            <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" />
+            <PropertyColumn Property="tbl => tbl.Cliente.Nombre" Title="Cliente" Sortable="true" />
+        </FluentDataGrid>
+    </FluentCard>
+}
+
+<PedidoDiag Hidden="@Hidden"
+            Compra="PedidoSeleccionado"
+            HiddenChanged="@(v => Hidden = v)"
+            Clientes="@Clientes"
+            DetCompras="ListDetCompras"
+            OnGuardar="GuardarPedido"
+            OnEliminar="EliminarPedido"/>
+
+@code {
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    private List<Compra>? pedidos = new();
+    bool Hidden = true;
+    private List<Cliente> Clientes = new();
+    private List<DetCompra>? ListDetCompras;
+    bool IsFirstRender = true;
+    private Compra? PedidoSeleccionado;
+    private IQueryable<Compra>? ListPedidos;
+
+    private bool IsLoading { get; set; } = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        try
+        {
+            IsLoading = true;
+            StateHasChanged();
+            pedidos = await CompraServicio.ObtenerPedidosAsync();
+            ListPedidos = pedidos.AsQueryable();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError("Error al cargar los datos.", 5000);
+            Console.WriteLine($"Error al cargar los datos: {ex}");
+        }
+        finally
+        {
+            IsFirstRender = false;
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task AddPedido()
+    {
+        IsLoading = true;
+        StateHasChanged();
+        Clientes = await ClienteServicio.ObtenerClienteAsync();
+        Hidden = false;
+        IsLoading = false;
+        StateHasChanged();
+    }
+
+    private void cerrarModal()
+    {
+        StateHasChanged();
+    }
+
+    private async Task GuardarPedido(Compra pedido)
+    {
+        ToastService.ShowSuccess("Pedido guardado correctamente");
+
+        pedidos = await CompraServicio.ObtenerPedidosAsync();
+        ListPedidos = pedidos.AsQueryable();
+    }
+
+    private async Task EliminarPedido()
+    {
+        ToastService.ShowSuccess("El pedido ha sido eliminado correctamente");
+
+        pedidos = await CompraServicio.ObtenerPedidosAsync();
+        ListPedidos = pedidos.AsQueryable();
+    }
+
+    private async Task OnRowClicked(Compra compra)
+    {
+        IsLoading = true;
+        StateHasChanged();
+
+        ListDetCompras = await DetCompraService.ObtenerDetComprasAsync(compra.IdCompra);
+        Clientes = await ClienteServicio.ObtenerClienteAsync();
+        PedidoSeleccionado = compra;
+        Hidden = false;
+
+        IsLoading = false;
+        StateHasChanged();
+    }
+}

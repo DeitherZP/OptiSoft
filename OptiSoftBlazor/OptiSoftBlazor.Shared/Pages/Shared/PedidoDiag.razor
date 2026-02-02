@@ -1,0 +1,249 @@
+﻿@using OptiSoftBlazor.Shared.Data
+@using OptiSoftBlazor.Shared.Pages.Shared.DTO
+@using OptiSoftBlazor.Shared.Services
+@using System.Threading.Tasks
+
+@inject CompraService CompraService;
+@inject ArticuloService ArticuloService;
+@inject DetCompraService DetCompraService;
+
+<FluentDialog Modal="true" @bind-Hidden="Hidden">
+    <FluentHeader>
+        <h3>@(Compra == null ? "Nuevo Pedido" : "Editar Pedido")</h3>
+    </FluentHeader>
+
+    <FluentDialogBody Style="overflow-y:auto; max-height: calc(80vh - 120px);">
+        <div style="padding: 0 1em;">
+            <div class="column-flex" style="padding-top: 1em;">
+                <FluentTextField @bind-Value="Numero"
+                                 Label="Número"
+                                 Style="width:100%" />
+            </div>
+            <div class="column-flex" style="padding-top: 1em;">
+                <FluentAutocomplete Label="Cliente"
+                                    Items="@Clientes"
+                                    TOption="Cliente"
+                                    @bind-SelectedOption="ClienteSelect"
+                                    OptionText="@(c => c.Nombre)"
+                                    Virtualize="true"
+                                    Multiple="false"
+                                    MaximumOptionsSearch="int.MaxValue"
+                                    Position="SelectPosition.Below"/>
+            </div>
+            <div class="column-flex" style="padding: 1em 0;">
+                <FluentDatePicker Label="Fecha"
+                                  @bind-Value="Fecha"
+                                  Style="width:100%" />
+            </div>
+            <FluentCard AreaRestricted="false" Style="margin-bottom: 1em;">
+                <div class="column-flex">
+                    <FluentButton Appearance="Appearance.Accent"
+                                  OnClick="AbrirArticulos"
+                                  IconStart="@(new Icons.Filled.Size20.AddCircle())">
+                        Agregar Artículo
+                    </FluentButton>
+                </div>
+                <div class="column-flex">
+                    <FluentDataGrid Items="ListDetCompras"
+                                    TGridItem="DetCompra"
+                                    Pagination="@pagination"
+                                    AutoFit=false
+                                    ShowHover=true>
+                        <PropertyColumn Property="tbl => tbl.Cantidad" Title="Cantidad" Sortable="true" />
+                        <PropertyColumn Property="tbl => tbl.Articulo.Nombre" Title="Articulo" Sortable="true" />
+                        <TemplateColumn Title="" Width="100px">
+                            <ChildContent Context="det">
+                                <div style="display:flex; justify-content:center; align-items:center; height:100%;">
+                                    <FluentButton Appearance="Appearance.Stealth"
+                                                  OnClick="@(() => EliminarDetalle(det))"
+                                                  Style="padding:0; min-width:auto;">
+                                        <FluentIcon Value="@(new Icons.Filled.Size20.Delete())" Color="Color.Error" />
+                                    </FluentButton>
+                                </div>
+                            </ChildContent>
+                        </TemplateColumn>
+                    </FluentDataGrid>
+                </div>
+            </FluentCard>
+        </div>
+    </FluentDialogBody>
+
+    <FluentFooter Style="gap:1em">
+        <FluentButton Appearance="Appearance.Stealth"
+                      OnClick="Cancelar"
+                      IconStart="@(new Icons.Filled.Size20.DismissCircle())">
+            Cancelar
+        </FluentButton>
+        
+        @if (Compra != null || Compra?.IdCompra > 0)
+        {
+            <FluentButton Appearance="Appearance.Neutral"
+                          OnClick="Eliminar"
+                          IconStart="@(new Icons.Filled.Size20.Delete())">
+                Eliminar
+            </FluentButton>
+        }
+
+        <FluentButton Appearance="Appearance.Accent"
+                      OnClick="Guardar"
+                      IconStart="@(new Icons.Filled.Size20.Save())">
+            Guardar
+        </FluentButton>
+    </FluentFooter>
+</FluentDialog>
+
+<ArticuloDiag Hidden="@HiddenArt"
+              HiddenChanged="@(v => HiddenArt = v)"
+              Articulos="Articulos"
+              OnArticuloAgregado="ArticuloAgregado" />
+
+@code {
+    [Parameter] public bool Hidden { get; set; }
+    [Parameter] public EventCallback<bool> HiddenChanged { get; set; }
+    [Parameter] public List<Cliente> Clientes { get; set; } = new();
+    [Parameter] public EventCallback<Compra> OnGuardar { get; set; }
+    [Parameter] public EventCallback OnEliminar { get; set; }
+    [Parameter] public Compra? Compra { get; set; }
+    [Parameter] public List<DetCompra>? DetCompras { get; set; }
+
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+
+    private string? Numero;
+    private DateTime? Fecha = DateTime.Today;
+    private Cliente? ClienteSelect = new();
+    private List<DetCompra> _detalles = new(); 
+    private List<Articulo> Articulos { get; set; } = new();
+    private IQueryable<DetCompra>? ListDetCompras;
+
+    private bool HiddenArt = true;
+
+    protected override void OnParametersSet()
+    {
+        if (Compra != null)
+        {
+            Numero = Compra.Numero;
+            Fecha = Compra.Fecha;
+            ClienteSelect = Clientes.FirstOrDefault(c => c.IdCliente == Compra.IdCliente);
+
+            _detalles = DetCompras != null
+            ? DetCompras.Select(d => new DetCompra
+            {
+                IdDetCompra = d.IdDetCompra,
+                IdArticulo = d.IdArticulo,
+                Articulo = d.Articulo,
+                Cantidad = d.Cantidad
+            }).ToList()
+            : new List<DetCompra>();
+
+            ListDetCompras = DetCompras?.AsQueryable();
+        }
+        else
+        {
+            Numero = null;
+            Fecha = DateTime.Today;
+            ClienteSelect = null;
+            _detalles = new List<DetCompra>();
+            ListDetCompras = _detalles.AsQueryable();
+        }
+    }
+
+    private async Task Guardar()
+    {
+        var pedido = Compra ?? new Compra();
+
+        pedido.Numero = Numero;
+        pedido.Fecha = Fecha;
+        pedido.Cliente = ClienteSelect;
+
+        bool isValido = true;
+
+        try
+        {
+
+            if (string.IsNullOrEmpty(pedido.Numero))
+            {
+                ToastService.ShowError("Debe registrar el número del pedido.", 6000);
+                isValido = false;
+            }
+
+            if (pedido.Cliente == null || pedido.IdCliente == 0)
+            {
+                ToastService.ShowError("Debe seleccionar un cliente.", 6000);
+                isValido = false;
+            }
+
+            if (!isValido)
+                return;
+
+            await CompraService.GuardarCompraAsync(pedido);
+            await DetCompraService.GuardarDetallesAsync(pedido.IdCompra, _detalles);
+            await OnGuardar.InvokeAsync(pedido);
+            await Cancelar();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al guardar el pedido - {ex.Message}");
+        }
+    }
+
+    private async Task Cancelar()
+    {
+        Hidden = true;
+        Numero = "";
+        Fecha = DateTime.Now;
+        ClienteSelect = null;
+        await HiddenChanged.InvokeAsync(Hidden);
+    }
+
+    private async Task Eliminar()
+    {
+        if (Compra == null || Compra.IdCompra <= 0)
+        {
+            ToastService.ShowWarning("No hay un pedido válido para eliminar.", 4000);
+            return;
+        }
+
+        try
+        {
+            await DetCompraService.EliminarDetCompraAsync(Compra.IdCompra);
+            await CompraService.EliminarCompraAsync(Compra.IdCompra);
+
+            await OnEliminar.InvokeAsync();
+            await Cancelar();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al eliminar el pedido: {ex.Message}", 6000);
+        }
+    }
+
+    private async Task AbrirArticulos()
+    {
+        Articulos = await ArticuloService.ObtenerArticulosAsync();
+        HiddenArt = false;
+        StateHasChanged();
+    }
+
+    private void ArticuloAgregado(ArticuloAgregadoEvent articulo)
+    {
+        _detalles.Add(new DetCompra
+        {
+            IdArticulo = articulo.Articulo.IdArticulo,
+            Articulo = articulo.Articulo,
+            Cantidad = articulo.Cantidad <= 0 ? 1 : articulo.Cantidad
+        });
+
+        ListDetCompras = _detalles.AsQueryable();
+
+        StateHasChanged();
+    }
+
+    private void EliminarDetalle(DetCompra detalle)
+    {
+        _detalles.Remove(detalle);
+
+        ListDetCompras = _detalles.AsQueryable();
+
+        StateHasChanged();
+    }
+}
