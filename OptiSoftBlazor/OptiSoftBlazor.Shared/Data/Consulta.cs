@@ -16,6 +16,7 @@ namespace OptiSoftBlazor.Shared.Data
 
         public int IdCliente { get; set; }
 
+        [ForeignKey(nameof(IdCliente))]
         public Cliente? Cliente { get; set; }
 
         public int? IdPedido { get; set; }
@@ -23,7 +24,7 @@ namespace OptiSoftBlazor.Shared.Data
         [ForeignKey(nameof(IdPedido))]
         public Compra? Pedido { get; set; }
 
-        public DateTime Fecha { get; set; } = DateTime.Today;
+        public DateTime? Fecha { get; set; } = DateTime.Today;
 
 
         #region Informacion Global

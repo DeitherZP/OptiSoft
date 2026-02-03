@@ -2,52 +2,79 @@
 @attribute [Authorize]
 @rendermode InteractiveServer
 
-@using OptiSoftBlazor.Shared.Data;
+@using OptiSoftBlazor.Shared.Data
 @using OptiSoftBlazor.Shared.Pages.Shared
 @using OptiSoftBlazor.Shared.Services
 
 @inject ConsultaService ConsultaService
+@inject ClienteService ClienteService
+@inject PersonalService PersonalService
+@inject CompraService CompraService
 
 <PageTitle>Consulta</PageTitle>
 
 <LoadingSpinner @bind-Visible="IsLoading" />
 
+<style>
+    .fluent-dialog-main {
+        --dialog-width: 850px !important;
+        --dialog-max-height: 80vh !important;
+    }
+
+    @@media (max-width: 600px) {
+        .fluent-dialog-main {
+            --dialog-width: 90% !important;
+            --dialog-max-height: 80vh !important;
+        }
+    }
+</style>
+
 @if (!IsFirstRender)
 {
     <div class="nueva-fila">
-        <FluentButton Appearance="Appearance.Accent" OnClick="@NewConsulta" IconStart="@(new Icons.Filled.Size20.AddCircle())">Nuevo</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" OnClick="@AddConsulta" IconStart="@(new Icons.Filled.Size20.AddCircle())">Nuevo</FluentButton>
     </div>
 }
-<FluentCard AreaRestricted="false" Style="max-height: 80vh;">
-    @if (ListConsultas == null)
-    {
-        <p>Cargando...</p>
-    }
-    else
-    {
+
+@if (!(ListConsultas == null))
+{
+    <FluentCard AreaRestricted="false" Style="max-height: 78vh; padding: 0.5em 2em">
         <FluentDataGrid Items="ListConsultas"
                         TGridItem="Consulta"
                         Pagination="@pagination"
                         AutoFit=true
                         ShowHover=true
+                        DisplayMode="DataGridDisplayMode.Table"
                         OnRowClick="@(args => OnRowClicked(args.Item))">
             <PropertyColumn Property="tbl => tbl.Cliente.Nombre" Title="Cliente" Sortable="true" />
             <PropertyColumn Property="tbl => tbl.Pedido.Numero" Title="N° Pedido" Sortable="true" />
             <PropertyColumn Property="tbl => tbl.Profesional.Nombre" Title="Profesional" Sortable="true" />
-            <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy"/>
+            <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" />
         </FluentDataGrid>
-    }
-</FluentCard>
+    </FluentCard>
+}
 
-    @code {
-    private bool IsFirstRender = true;
+<ConsultaDiag Hidden="@Hidden"
+              Consulta="ConsultaSeleccionada"
+              HiddenChanged="@(v => Hidden = v)"
+              Clientes="@Clientes"
+              Personales="@Personales"
+              Pedidos="@Pedidos"
+              OnGuardar="GuardarConsulta"
+              OnEliminar="EliminarConsulta" />
+
+@code {
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
-
-    private List<Consulta>? Consultas = new();
-
+    private List<Consulta>? consultas = new();
+    bool Hidden = true;
+    private List<Cliente> Clientes = new();
+    private List<Personal> Personales = new();
+    private List<Compra> Pedidos = new();
+    bool IsFirstRender = true;
+    private Consulta? ConsultaSeleccionada;
     private IQueryable<Consulta>? ListConsultas;
 
-    private bool IsLoading = false;
+    private bool IsLoading { get; set; } = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -58,8 +85,8 @@
         {
             IsLoading = true;
             StateHasChanged();
-            Consultas = await ConsultaService.ObtenerConsultasAsync();
-            ListConsultas = Consultas.AsQueryable();
+            consultas = await ConsultaService.ObtenerConsultasAsync();
+            ListConsultas = consultas.AsQueryable();
         }
         catch (Exception ex)
         {
@@ -74,13 +101,49 @@
         }
     }
 
-    private void NewConsulta()
+    private async Task AddConsulta()
     {
-        ToastService.ShowInfo("Funcionalidad de nueva consulta", 5000);
+        IsLoading = true;
+        StateHasChanged();
+
+        Clientes = await ClienteService.ObtenerClienteAsync();
+        Personales = await PersonalService.ObtenerPersonalAsync();
+        Pedidos = await CompraService.ObtenerPedidosAsync();
+        ConsultaSeleccionada = null; // Nueva consulta
+        Hidden = false;
+
+        IsLoading = false;
+        StateHasChanged();
     }
 
-    private void OnRowClicked(Consulta consulta)
+    private async Task GuardarConsulta(Consulta consulta)
     {
-        ToastService.ShowInfo("Funcionalidad de RowClicked", 5000);
+        ToastService.ShowSuccess("Consulta guardada correctamente");
+
+        consultas = await ConsultaService.ObtenerConsultasAsync();
+        ListConsultas = consultas.AsQueryable();
+    }
+
+    private async Task EliminarConsulta()
+    {
+        ToastService.ShowSuccess("La consulta ha sido eliminada correctamente");
+
+        consultas = await ConsultaService.ObtenerConsultasAsync();
+        ListConsultas = consultas.AsQueryable();
+    }
+
+    private async Task OnRowClicked(Consulta consulta)
+    {
+        IsLoading = true;
+        StateHasChanged();
+
+        Clientes = await ClienteService.ObtenerClienteAsync();
+        Personales = await PersonalService.ObtenerPersonalAsync();
+        Pedidos = await CompraService.ObtenerPedidosAsync();
+        ConsultaSeleccionada = consulta;
+        Hidden = false;
+
+        IsLoading = false;
+        StateHasChanged();
     }
 }

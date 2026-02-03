@@ -4,508 +4,630 @@
 @inject ClienteService ClienteService
 @inject PersonalService PersonalService
 @inject CompraService CompraService
+@inject ConsultaService ConsultaService
 
-<FluentCard AreaRestricted="false" Style="height: fit-content">
-    
+<FluentDialog Modal="true" @bind-Hidden="Hidden">
     <FluentHeader>
-        Información de la consulta
+        <h3>@(Consulta == null ? "Nueva Consulta" : "Editar Consulta")</h3>
     </FluentHeader>
-    
-    <div class="fila-flex">
-        <div class="columna-flex" style="padding-top: 1em;">
-            <FluentAutocomplete Label="Cliente"
-                                Items="@Clientes"
-                                TOption="Cliente"
-                                @bind-SelectedOption="ClienteSelect"
-                                OptionText="@(c => c.Nombre)"
-                                Virtualize="true"
-                                Multiple="false"
-                                MaximumOptionsSearch="int.MaxValue"
-                                Position="SelectPosition.Below" />
-        </div>
-    </div>
-    <div class="fila-flex">
-        <div class="columna-flex" style="padding-top: 1em;">
-            <FluentAutocomplete Label="Profesional"
-                                Items="@Personales"
-                                TOption="Personal"
-                                @bind-SelectedOption="PersonalSelect"
-                                OptionText="@(c => c.Nombre)"
-                                Virtualize="true"
-                                Multiple="false"
-                                MaximumOptionsSearch="int.MaxValue"
-                                Position="SelectPosition.Below" />
-        </div>
-    </div>
-    <div class="fila-flex">
-        <div class="columna-flex" style="padding-top: 1em;">
-            <FluentDatePicker Label="Fecha"
-                              @bind-Value="Fecha" />
-        </div>
-        <div class="columna-flex" style="padding-top: 1em;">
-            <FluentAutocomplete Label="Pedido"
-                                Items="@Pedidos"
-                                TOption="Compra"
-                                @bind-SelectedOption="PedidoSelect"
-                                OptionText="@(c => c.Numero)"
-                                Virtualize="true"
-                                Multiple="false"
-                                MaximumOptionsSearch="int.MaxValue"
-                                Position="SelectPosition.Below" />
-        </div>
-    </div>
-    <div class="fila-flex">
-        <div class="columna-flex">
-            <FluentTextArea @bind-Value="Motivo" Label="Motivo de la consulta" Rows="4"/>
-        </div>
-    </div>
-    <div class="fila-flex">
-        <div class="columna-flex">
-            <FluentTextArea @bind-Value="Antecedentes" Label="Antecedentes patológicos oculares" Rows="4" />
-        </div>
-    </div>
-    <FluentTabs>
-        <FluentTab Label="Motor Refractivo">
-            <FluentCard AreaRestricted="false" Style="max-height: fit-content;">
+
+    <FluentDialogBody Style="overflow-y:auto; max-height: calc(80vh - 120px);">
+        <div style="padding: 1em;">
+            @if (_consulta?.IdConsulta > 0)
+            {
+                <p>Aquí iran los botones</p>
+            }
+            <FluentCard AreaRestricted="false" Style="height: fit-content">
                 <FluentHeader>
-                    Rx en uso / Agudeza Visual
-                </FluentHeader>
-                <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
-                    <h4 style="margin-top: 0;">Ojo Derecho</h4>
-
-                    <div class="fila-flex">
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Od_Esfera" Label="Esfera" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Od_Cilindro" Label="Cilindro" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Od_Eje" Label="Eje" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Od_Add" Label="Add" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Od_Avl" Label="Avl" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Od_Avc" Label="Avc" />
-                        </div>
-                    </div>
-                </FluentCard>
-                <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
-                    <h4 style="margin-top: 0;">Ojo Izquierdo</h4>
-
-                    <div class="fila-flex">
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Oi_Esfera" Label="Esfera" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Oi_Cilindro" Label="Cilindro" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Oi_Eje" Label="Eje" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Oi_Add" Label="Add" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Oi_Avl" Label="Avl" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Oi_Avc" Label="Avc" />
-                        </div>
-                    </div>
-                </FluentCard>
-            </FluentCard>
-
-            <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em;">
-                <FluentHeader>
-                    Rx Final
-                </FluentHeader>
-                <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
-                    <h4 style="margin-top: 0;">Ojo Derecho</h4>
-
-                    <div class="fila-flex">
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="RF_Od_Esfera" Label="Esfera" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="RF_Od_Cilindro" Label="Cilindro" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="RF_Od_Eje" Label="Eje" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="RF_Od_Add" Label="Add" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="RF_Od_Dnp" Label="Add" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="RF_Od_Alt" Label="Add" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="RF_Od_Avl" Label="Avl" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="RF_Od_Avc" Label="Avc" />
-                        </div>
-                    </div>
-                </FluentCard>
-                <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
-                    <h4 style="margin-top: 0;">Ojo Izquierdo</h4>
-
-                    <div class="fila-flex">
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="RF_Oi_Esfera" Label="Esfera" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="RF_Oi_Cilindro" Label="Cilindro" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="RF_Oi_Eje" Label="Eje" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="RF_Oi_Add" Label="Add" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="RF_Oi_Dnp" Label="Add" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="RF_Oi_Alt" Label="Add" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="RF_Oi_Avl" Label="Avl" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="RF_Oi_Avc" Label="Avc" />
-                        </div>
-                    </div>
-                </FluentCard>
-            </FluentCard>
-            
-            <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em;">
-                <FluentHeader Style="margin-bottom: 1em;">
-                    Recomendaciones
+                    Información de la consulta
                 </FluentHeader>
 
                 <div class="fila-flex">
-                    <div class="columna-flex">
-                        <FluentTextArea @bind-Value="TipoLente"
-                                        Label="Tipo Lente"
-                                        Placeholder="Descripción del tipo de lente"
-                                        Rows="2" />
+                    <div class="columna-flex" style="padding-top: 1em;">
+                        <FluentAutocomplete Label="Cliente"
+                                            Items="@Clientes"
+                                            TOption="Cliente"
+                                            @bind-SelectedOption="ClienteSelect"
+                                            OptionText="@(c => c.Nombre)"
+                                            Virtualize="true"
+                                            Multiple="false"
+                                            MaximumOptionsSearch="int.MaxValue"
+                                            Position="SelectPosition.Below" />
+                    </div>
+                </div>
+                <div class="fila-flex">
+                    <div class="columna-flex" style="padding-top: 1em;">
+                        <FluentAutocomplete Label="Profesional"
+                                            Items="@Personales"
+                                            TOption="Personal"
+                                            @bind-SelectedOption="ProfesionalSelect"
+                                            OptionText="@(c => c.Nombre)"
+                                            Virtualize="true"
+                                            Multiple="false"
+                                            MaximumOptionsSearch="int.MaxValue"
+                                            Position="SelectPosition.Below" />
+                    </div>
+                </div>
+                <div class="fila-flex">
+                    <div class="columna-flex" style="padding-top: 1em;">
+                        <FluentDatePicker Label="Fecha"
+                                          @bind-Value="@_consulta.Fecha" />
+                    </div>
+                    <div class="columna-flex" style="padding-top: 1em;">
+                        <FluentAutocomplete Label="Pedido"
+                                            Items="@Pedidos"
+                                            TOption="Compra"
+                                            @bind-SelectedOption="PedidoSelect"
+                                            OptionText="@(c => c.Numero)"
+                                            Virtualize="true"
+                                            Multiple="false"
+                                            MaximumOptionsSearch="int.MaxValue"
+                                            Position="SelectPosition.Below" />
                     </div>
                 </div>
                 <div class="fila-flex">
                     <div class="columna-flex">
-                        <FluentTextArea @bind-Value="Lubricante"
-                                        Label="Lubricante"
-                                        Placeholder="Descripción del lubricante para lentes"
-                                        Rows="2" />
+                        <FluentTextArea @bind-Value="@_consulta.Motivo" Label="Motivo de la consulta" Rows="4" />
                     </div>
                 </div>
-
-                <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
-                    <h4 style="margin-top: 0;">Altura</h4>
-                    
-                    <div class="fila-flex">
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="AltOd" Label="Ojo Derecho" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="AltOi" Label="Ojo Izquierdo" />
-                        </div>
-                    </div>
-                </FluentCard>
-
-                <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
-                    <h4 style="margin-top: 0;">Diámetro del Armazón</h4>
-
-                    <div class="fila-flex">
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="DiamVertical" Label="D. Vertical" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="DiamHorizontal" Label="D. Horizontal" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="DiamPuente" Label="Puente" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="DiamMayor" Label="Mayor" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="DiamTipo" Label="Tipo" />
-                        </div>
-                    </div>
-                </FluentCard>
-
-                <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
-                    <h4 style="margin-top: 0;">Parámetros de Personalización</h4>
-
-                    <div class="fila-flex">
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Param_Ap" Label="AP" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Param_Cp" Label="CP" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Param_Dv" Label="DV" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Param_Corredor" Label="Corredor" />
-                        </div>
-                    </div>
-                </FluentCard>
-
-                <div class="fila-flex" style="margin-top: 1em;">
+                <div class="fila-flex">
                     <div class="columna-flex">
-                        <FluentTextArea @bind-Value="Observacion"
-                                        Label="Observación"
-                                        Placeholder="Observación adicional"
-                                        Rows="2" />
+                        <FluentTextArea @bind-Value="@_consulta.AntPatoOcular" Label="Antecedentes patológicos oculares" Rows="4" />
                     </div>
                 </div>
             </FluentCard>
-        </FluentTab>
-        <FluentTab Label="Lentes de Contacto">
-            <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em;">
-                <FluentHeader Style="margin-bottom: 1em;">
-                    Queratometría
-                </FluentHeader>
 
-                <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
-                    <h4 style="margin-top: 0;">Ojo Derecho</h4>
-                    
-                    <div class="fila-flex" style="margin-top: 1em;">
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="KUno_Od" Label="K1" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="KDos_Od" Label="K2" />
-                        </div>
-                    </div>
-                </FluentCard>
-                <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
-                    <h4 style="margin-top: 0;">Ojo Izquierdo</h4>
+            <FluentTabs Style="margin-top: 1em;">
+                <FluentTab Label="Motor Refractivo">
+                    <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em;">
+                        <FluentHeader>
+                            Rx en uso / Agudeza Visual
+                        </FluentHeader>
+                        <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
+                            <h4 style="margin-top: 0;">Ojo Derecho</h4>
 
-                    <div class="fila-flex" style="margin-top: 1em;">
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="KUno_Oi" Label="K1" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="KDos_Oi" Label="K2" />
-                        </div>
-                    </div>
-                </FluentCard>
-            </FluentCard>
-            <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em;">
-                <FluentHeader Style="margin-bottom: 1em;">
-                    Prueba
-                </FluentHeader>
+                            <div class="fila-flex">
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoEsferaOD" Label="Esfera" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoCilindroOD" Label="Cilindro" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoEjeOD" Label="Eje" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoAddOD" Label="Add" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoAvlOD" Label="Avl" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoAvcOD" Label="Avc" />
+                                </div>
+                            </div>
+                        </FluentCard>
+                        <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
+                            <h4 style="margin-top: 0;">Ojo Izquierdo</h4>
 
-                <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
-                    <h4 style="margin-top: 0;">Ojo Derecho</h4>
+                            <div class="fila-flex">
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoEsferaOI" Label="Esfera" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoCilindroOI" Label="Cilindro" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoEjeOI" Label="Eje" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoAddOI" Label="Add" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoAvlOI" Label="Avl" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoAvcOI" Label="Avc" />
+                                </div>
+                            </div>
+                        </FluentCard>
+                    </FluentCard>
 
-                    <div class="fila-flex" style="margin-top: 1em;">
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Rx_Od" Label="Rx" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Tipo_Od" Label="Tipo" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Cb_Od" Label="CB" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Diametro_Od" Label="Diámetro" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Espesor_Od" Label="Espesor" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Sagita_Od" Label="Sagita" />
-                        </div>
-                    </div>
-                    <div class="fila-flex" style="margin-top: 1em;">
-                        <div class="columna-flex">
-                            <FluentTextArea @bind-Value="Diseño_Od" Label="Diseño Od" Placeholder="Ingrese el diseño para el ojo derecho" />
-                        </div>
-                    </div>
-                </FluentCard>
+                    <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em;">
+                        <FluentHeader>
+                            Rx Final
+                        </FluentHeader>
+                        <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
+                            <h4 style="margin-top: 0;">Ojo Derecho</h4>
 
-                <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
-                    <h4 style="margin-top: 0;">Ojo Izquierdo</h4>
+                            <div class="fila-flex">
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxEsferaOD" Label="Esfera" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxCilindroOD" Label="Cilindro" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxEjeOD" Label="Eje" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxAddOD" Label="Add" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxDnpOD" Label="Dnp" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxAltOD" Label="Alt" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxAvlOD" Label="Avl" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxAvcOD" Label="Avc" />
+                                </div>
+                            </div>
+                        </FluentCard>
+                        <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
+                            <h4 style="margin-top: 0;">Ojo Izquierdo</h4>
 
-                    <div class="fila-flex" style="margin-top: 1em;">
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Rx_Oi" Label="Rx" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Tipo_Oi" Label="Tipo" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Cb_Oi" Label="CB" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Diametro_Oi" Label="Diámetro" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Espesor_Oi" Label="Espesor" />
-                        </div>
-                        <div class="columna-flex">
-                            <FluentNumberField @bind-Value="Sagita_Oi" Label="Sagita" />
-                        </div>
-                    </div>
-                    <div class="fila-flex" style="margin-top: 1em;">
-                        <div class="columna-flex">
-                            <FluentTextArea @bind-Value="Diseño_Oi" Label="Diseño Oi" Placeholder="Ingrese el diseño para el ojo izquierdo" />
-                        </div>
-                    </div>
-                </FluentCard>
+                            <div class="fila-flex">
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxEsferaOI" Label="Esfera" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxCilindroOI" Label="Cilindro" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxEjeOI" Label="Eje" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxAddOI" Label="Add" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxDnpOI" Label="Dnp" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxAltOI" Label="Alt" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxAvlOI" Label="Avl" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.RxAvcOI" Label="Avc" />
+                                </div>
+                            </div>
+                        </FluentCard>
+                    </FluentCard>
 
-                <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
-                    <h4 style="margin-top: 0;">Recomendaciones</h4>
+                    <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em;">
+                        <FluentHeader Style="margin-bottom: 1em;">
+                            Recomendaciones
+                        </FluentHeader>
 
-                    <div class="fila-flex" style="margin-top: 1em;">
-                        <div class="columna-flex">
-                            <FluentTextArea @bind-Value="Diagnostico" Label="Diagnostico" Placeholder="Ingrese el diagnostico" />
+                        <div class="fila-flex">
+                            <div class="columna-flex">
+                                <FluentTextArea @bind-Value="@_consulta.TipoLente"
+                                                Label="Tipo Lente"
+                                                Placeholder="Descripción del tipo de lente"
+                                                Rows="2" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="fila-flex" style="margin-top: 1em;">
-                        <div class="columna-flex">
-                            <FluentTextArea @bind-Value="Humectante" Label="Humectante" Placeholder="Ingrese el humectante" />
+                        <div class="fila-flex">
+                            <div class="columna-flex">
+                                <FluentTextArea @bind-Value="@_consulta.Lubricante"
+                                                Label="Lubricante"
+                                                Placeholder="Descripción del lubricante para lentes"
+                                                Rows="2" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="fila-flex" style="margin-top: 1em;">
-                        <div class="columna-flex">
-                            <FluentTextArea @bind-Value="SolucionLimpieza" Label="Solución de Limpieza" Placeholder="Ingrese la solución de limpieza" />
+
+                        <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
+                            <h4 style="margin-top: 0;">Altura</h4>
+
+                            <div class="fila-flex">
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.AlturaOD" Label="Ojo Derecho" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.AlturaOI" Label="Ojo Izquierdo" />
+                                </div>
+                            </div>
+                        </FluentCard>
+
+                        <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
+                            <h4 style="margin-top: 0;">Diámetro del Armazón</h4>
+
+                            <div class="fila-flex">
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.DiamArmVertical" Label="D. Vertical" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.DiamArmHorizontal" Label="D. Horizontal" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.DiamArmPuente" Label="Puente" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.DiamArmMayor" Label="Mayor" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.DiamArmTipo" Label="Tipo" />
+                                </div>
+                            </div>
+                        </FluentCard>
+
+                        <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
+                            <h4 style="margin-top: 0;">Parámetros de Personalización</h4>
+
+                            <div class="fila-flex">
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.ParPersAP" Label="AP" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.ParPersCP" Label="CP" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.ParPersDV" Label="DV" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.ParPersCorredor" Label="Corredor" />
+                                </div>
+                            </div>
+                        </FluentCard>
+
+                        <div class="fila-flex" style="margin-top: 1em;">
+                            <div class="columna-flex">
+                                <FluentTextArea @bind-Value="@_consulta.Tratamiento"
+                                                Label="Tratamiento"
+                                                Placeholder="Tratamiento adicional"
+                                                Rows="2" />
+                            </div>
                         </div>
-                    </div>
-                </FluentCard>
-            </FluentCard>
-        </FluentTab>
-    </FluentTabs>
-</FluentCard>
+                    </FluentCard>
+                </FluentTab>
+                <FluentTab Label="Lentes de Contacto">
+                    <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em;">
+                        <FluentHeader Style="margin-bottom: 1em;">
+                            Queratometría
+                        </FluentHeader>
+
+                        <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
+                            <h4 style="margin-top: 0;">Ojo Derecho</h4>
+
+                            <div class="fila-flex" style="margin-top: 1em;">
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.LC_KeraK1OD" Label="K1" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.LC_KeraK2OD" Label="K2" />
+                                </div>
+                            </div>
+                        </FluentCard>
+                        <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
+                            <h4 style="margin-top: 0;">Ojo Izquierdo</h4>
+
+                            <div class="fila-flex" style="margin-top: 1em;">
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.LC_KeraK1OI" Label="K1" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.LC_KeraK2OI" Label="K2" />
+                                </div>
+                            </div>
+                        </FluentCard>
+                    </FluentCard>
+                    <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em;">
+                        <FluentHeader Style="margin-bottom: 1em;">
+                            Prueba
+                        </FluentHeader>
+
+                        <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
+                            <h4 style="margin-top: 0;">Ojo Derecho</h4>
+
+                            <div class="fila-flex" style="margin-top: 1em;">
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinRxOD" Label="Rx" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinTipoOD" Label="Tipo" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinCBOD" Label="CB" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinDiamOD" Label="Diámetro" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinEspesorOD" Label="Espesor" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinSagitaOD" Label="Sagita" />
+                                </div>
+                            </div>
+                            <div class="fila-flex" style="margin-top: 1em;">
+                                <div class="columna-flex">
+                                    <FluentTextArea @bind-Value="@_consulta.LC_LFinDisenoOD" Label="Diseño Od" Placeholder="Ingrese el diseño para el ojo derecho" />
+                                </div>
+                            </div>
+                        </FluentCard>
+
+                        <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
+                            <h4 style="margin-top: 0;">Ojo Izquierdo</h4>
+
+                            <div class="fila-flex" style="margin-top: 1em;">
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinRxOI" Label="Rx" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinTipoOI" Label="Tipo" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinCBOI" Label="CB" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinDiamOI" Label="Diámetro" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinEspesorOI" Label="Espesor" />
+                                </div>
+                                <div class="columna-flex">
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinSagitaOI" Label="Sagita" />
+                                </div>
+                            </div>
+                            <div class="fila-flex" style="margin-top: 1em;">
+                                <div class="columna-flex">
+                                    <FluentTextArea @bind-Value="@_consulta.LC_LFinDisenoOI" Label="Diseño Oi" Placeholder="Ingrese el diseño para el ojo izquierdo" />
+                                </div>
+                            </div>
+                        </FluentCard>
+
+                        <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
+                            <h4 style="margin-top: 0;">Recomendaciones</h4>
+
+                            <div class="fila-flex" style="margin-top: 1em;">
+                                <div class="columna-flex">
+                                    <FluentTextArea @bind-Value="@_consulta.LC_Diagnostico" Label="Diagnóstico" Placeholder="Ingrese el diagnóstico" />
+                                </div>
+                            </div>
+                            <div class="fila-flex" style="margin-top: 1em;">
+                                <div class="columna-flex">
+                                    <FluentTextArea @bind-Value="@_consulta.LC_Humectante" Label="Humectante" Placeholder="Ingrese el humectante" />
+                                </div>
+                            </div>
+                            <div class="fila-flex" style="margin-top: 1em;">
+                                <div class="columna-flex">
+                                    <FluentTextArea @bind-Value="@_consulta.LC_SolucLimpieza" Label="Solución de Limpieza" Placeholder="Ingrese la solución de limpieza" />
+                                </div>
+                            </div>
+                        </FluentCard>
+                    </FluentCard>
+                </FluentTab>
+            </FluentTabs>
+        </div>
+    </FluentDialogBody>
+
+    <FluentFooter Style="gap:1em">
+        <FluentButton Appearance="Appearance.Stealth"
+                      OnClick="Cancelar"
+                      IconStart="@(new Icons.Filled.Size20.DismissCircle())">
+            Cancelar
+        </FluentButton>
+
+        @if (Consulta != null && Consulta?.IdConsulta > 0)
+        {
+            <FluentButton Appearance="Appearance.Neutral"
+                          OnClick="Eliminar"
+                          IconStart="@(new Icons.Filled.Size20.Delete())">
+                Eliminar
+            </FluentButton>
+        }
+
+        <FluentButton Appearance="Appearance.Accent"
+                      OnClick="Guardar"
+                      IconStart="@(new Icons.Filled.Size20.Save())">
+            Guardar
+        </FluentButton>
+    </FluentFooter>
+</FluentDialog>
 
 @code {
-    private List<Cliente> Clientes = new();
-    private List<Personal> Personales = new();
-    private List<Compra> Pedidos = new();
+    [Parameter] public bool Hidden { get; set; }
+    [Parameter] public EventCallback<bool> HiddenChanged { get; set; }
+    [Parameter] public List<Cliente> Clientes { get; set; } = new();
+    [Parameter] public List<Personal> Personales { get; set; } = new();
+    [Parameter] public List<Compra> Pedidos { get; set; } = new();
+    [Parameter] public EventCallback<Consulta> OnGuardar { get; set; }
+    [Parameter] public EventCallback OnEliminar { get; set; }
+    [Parameter] public Consulta? Consulta { get; set; }
 
+    private Consulta _consulta = new();
     private Cliente? ClienteSelect { get; set; }
-    private Personal? PersonalSelect { get; set; }
+    private Personal? ProfesionalSelect { get; set; }
     private Compra? PedidoSelect { get; set; }
-    private DateTime? Fecha { get; set; } = DateTime.Now;
-    private string? Motivo { get; set; }
-    private string? Antecedentes { get; set; }
 
-    #region Variables Motor region
-
-    #region Rx en uso / Agudeza Visual
-    private int Od_Esfera { get; set; }
-    private int Od_Cilindro { get; set; }
-    private int Od_Eje { get; set; }
-    private int Od_Add { get; set; }
-    private int Od_Avl { get; set; }
-    private int Od_Avc { get; set; }
-    private int Oi_Esfera { get; set; }
-    private int Oi_Cilindro { get; set; }
-    private int Oi_Eje { get; set; }
-    private int Oi_Add { get; set; }
-    private int Oi_Avl { get; set; }
-    private int Oi_Avc { get; set; }
-    #endregion Rx en uso / Agudeza Visual
-
-    #region Rx Final
-    private int RF_Od_Esfera { get; set; }
-    private int RF_Od_Cilindro { get; set; }
-    private int RF_Od_Eje { get; set; }
-    private int RF_Od_Add { get; set; }
-    private int RF_Od_Dnp { get; set; }
-    private int RF_Od_Alt { get; set; }
-    private int RF_Od_Avl { get; set; }
-    private int RF_Od_Avc { get; set; }
-    private int RF_Oi_Esfera { get; set; }
-    private int RF_Oi_Cilindro { get; set; }
-    private int RF_Oi_Eje { get; set; }
-    private int RF_Oi_Add { get; set; }
-    private int RF_Oi_Dnp { get; set; }
-    private int RF_Oi_Alt { get; set; }
-    private int RF_Oi_Avl { get; set; }
-    private int RF_Oi_Avc { get; set; }
-    #endregion Rx Final
-
-    #region Recomendaciones
-    private string? TipoLente { get; set; }
-    private string? Lubricante { get; set; }
-    private int AltOd { get; set; }
-    private int AltOi { get; set; }
-    private int DiamVertical { get; set; }
-    private int DiamHorizontal { get; set; }
-    private int DiamPuente { get; set; }
-    private int DiamMayor { get; set; }
-    private int DiamTipo { get; set; }
-    private int Param_Ap { get; set; }
-    private int Param_Cp { get; set; }
-    private int Param_Dv { get; set; }
-    private int Param_Corredor { get; set; }
-    private string? Observacion { get; set; }
-    #endregion Recomendaciones
-
-    #endregion Variables Motor region
-
-    #region Lentes de Contacto
-
-    #region Queratrometría
-    private int KUno_Od { get; set; }
-    private int KDos_Od { get; set; }
-    private int KUno_Oi { get; set; }
-    private int KDos_Oi { get; set; }
-    #endregion Queratrometría
-
-    #region Prueba
-    private int Rx_Od { get; set; }
-    private int Tipo_Od { get; set; }
-    private int Cb_Od { get; set; }
-    private int Diametro_Od { get; set; }
-    private int Espesor_Od { get; set; }
-    private int Sagita_Od { get; set; }
-    private string? Diseño_Od { get; set; }
-    private int Rx_Oi { get; set; }
-    private int Tipo_Oi { get; set; }
-    private int Cb_Oi { get; set; }
-    private int Diametro_Oi { get; set; }
-    private int Espesor_Oi { get; set; }
-    private int Sagita_Oi { get; set; }
-    private string? Diseño_Oi { get; set; }
-    private string? Diagnostico { get; set; }
-    private string? Humectante { get; set; }
-    private string? SolucionLimpieza { get; set; }
-    #endregion Prueba
-
-    #endregion Lentes de Contacto
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnParametersSet()
     {
-        if (!firstRender)
-            return;
+        if (Consulta != null)
+        {
+            // Modo edición: copiar los datos de la consulta existente
+            _consulta = new Consulta
+            {
+                IdConsulta = Consulta.IdConsulta,
+                IdCliente = Consulta.IdCliente,
+                IdProfesional = Consulta.IdProfesional,
+                IdPedido = Consulta.IdPedido,
+                Fecha = Consulta.Fecha,
+                Motivo = Consulta.Motivo,
+                AntPatoOcular = Consulta.AntPatoOcular,
+
+                // Rx en uso
+                RxUsoEsferaOD = Consulta.RxUsoEsferaOD,
+                RxUsoEsferaOI = Consulta.RxUsoEsferaOI,
+                RxUsoCilindroOD = Consulta.RxUsoCilindroOD,
+                RxUsoCilindroOI = Consulta.RxUsoCilindroOI,
+                RxUsoEjeOD = Consulta.RxUsoEjeOD,
+                RxUsoEjeOI = Consulta.RxUsoEjeOI,
+                RxUsoAddOD = Consulta.RxUsoAddOD,
+                RxUsoAddOI = Consulta.RxUsoAddOI,
+                RxUsoAvlOD = Consulta.RxUsoAvlOD,
+                RxUsoAvlOI = Consulta.RxUsoAvlOI,
+                RxUsoAvcOD = Consulta.RxUsoAvcOD,
+                RxUsoAvcOI = Consulta.RxUsoAvcOI,
+
+                // Rx Final
+                RxEsferaOD = Consulta.RxEsferaOD,
+                RxEsferaOI = Consulta.RxEsferaOI,
+                RxCilindroOD = Consulta.RxCilindroOD,
+                RxCilindroOI = Consulta.RxCilindroOI,
+                RxEjeOD = Consulta.RxEjeOD,
+                RxEjeOI = Consulta.RxEjeOI,
+                RxAddOD = Consulta.RxAddOD,
+                RxAddOI = Consulta.RxAddOI,
+                RxDnpOD = Consulta.RxDnpOD,
+                RxDnpOI = Consulta.RxDnpOI,
+                RxAltOD = Consulta.RxAltOD,
+                RxAltOI = Consulta.RxAltOI,
+                RxAvlOD = Consulta.RxAvlOD,
+                RxAvlOI = Consulta.RxAvlOI,
+                RxAvcOD = Consulta.RxAvcOD,
+                RxAvcOI = Consulta.RxAvcOI,
+
+                // Recomendaciones
+                TipoLente = Consulta.TipoLente,
+                Lubricante = Consulta.Lubricante,
+                AlturaOD = Consulta.AlturaOD,
+                AlturaOI = Consulta.AlturaOI,
+                DiamArmVertical = Consulta.DiamArmVertical,
+                DiamArmHorizontal = Consulta.DiamArmHorizontal,
+                DiamArmPuente = Consulta.DiamArmPuente,
+                DiamArmMayor = Consulta.DiamArmMayor,
+                DiamArmTipo = Consulta.DiamArmTipo,
+                ParPersAP = Consulta.ParPersAP,
+                ParPersCP = Consulta.ParPersCP,
+                ParPersDV = Consulta.ParPersDV,
+                ParPersCorredor = Consulta.ParPersCorredor,
+                Tratamiento = Consulta.Tratamiento,
+
+                // Lentes de contacto - Queratometría
+                LC_KeraK1OD = Consulta.LC_KeraK1OD,
+                LC_KeraK1OI = Consulta.LC_KeraK1OI,
+                LC_KeraK2OD = Consulta.LC_KeraK2OD,
+                LC_KeraK2OI = Consulta.LC_KeraK2OI,
+
+                // Lentes de contacto - Prueba
+                LC_LFinRxOD = Consulta.LC_LFinRxOD,
+                LC_LFinRxOI = Consulta.LC_LFinRxOI,
+                LC_LFinTipoOD = Consulta.LC_LFinTipoOD,
+                LC_LFinTipoOI = Consulta.LC_LFinTipoOI,
+                LC_LFinCBOD = Consulta.LC_LFinCBOD,
+                LC_LFinCBOI = Consulta.LC_LFinCBOI,
+                LC_LFinDiamOD = Consulta.LC_LFinDiamOD,
+                LC_LFinDiamOI = Consulta.LC_LFinDiamOI,
+                LC_LFinEspesorOD = Consulta.LC_LFinEspesorOD,
+                LC_LFinEspesorOI = Consulta.LC_LFinEspesorOI,
+                LC_LFinSagitaOD = Consulta.LC_LFinSagitaOD,
+                LC_LFinSagitaOI = Consulta.LC_LFinSagitaOI,
+                LC_LFinDisenoOD = Consulta.LC_LFinDisenoOD,
+                LC_LFinDisenoOI = Consulta.LC_LFinDisenoOI,
+                LC_Diagnostico = Consulta.LC_Diagnostico,
+                LC_Humectante = Consulta.LC_Humectante,
+                LC_SolucLimpieza = Consulta.LC_SolucLimpieza
+            };
+
+            ClienteSelect = Clientes.FirstOrDefault(c => c.IdCliente == Consulta.IdCliente);
+            ProfesionalSelect = Personales.FirstOrDefault(p => p.IdPersonal == Consulta.IdProfesional);
+            PedidoSelect = Pedidos.FirstOrDefault(p => p.IdCompra == Consulta.IdPedido);
+        }
+        else
+        {
+            // Modo nueva consulta
+            _consulta = new Consulta
+            {
+                Fecha = DateTime.Today
+            };
+            ClienteSelect = null;
+            ProfesionalSelect = null;
+            PedidoSelect = null;
+        }
+    }
+
+    private async Task Guardar()
+    {
+        bool isValido = true;
 
         try
         {
-            Clientes = await ClienteService.ObtenerClienteAsync();
-            Personales = await PersonalService.ObtenerPersonalAsync();
-            Pedidos = await CompraService.ObtenerPedidosAsync();
-            StateHasChanged();
+            // Validaciones
+            if (ClienteSelect == null)
+            {
+                ToastService.ShowError("Debe seleccionar un cliente.", 6000);
+                isValido = false;
+            }
+
+            if (ProfesionalSelect == null)
+            {
+                ToastService.ShowError("Debe seleccionar un profesional.", 6000);
+                isValido = false;
+            }
+
+            if (!isValido)
+                return;
+
+            // Asignar las relaciones
+            _consulta.IdCliente = ClienteSelect!.IdCliente;
+            _consulta.Cliente = ClienteSelect;
+            _consulta.IdProfesional = ProfesionalSelect!.IdPersonal;
+            _consulta.Profesional = ProfesionalSelect;
+
+            if (PedidoSelect != null)
+            {
+                _consulta.IdPedido = PedidoSelect.IdCompra;
+                _consulta.Pedido = PedidoSelect;
+            }
+
+            // Si es edición, mantener el ID
+            if (Consulta != null && Consulta.IdConsulta > 0)
+            {
+                _consulta.IdConsulta = Consulta.IdConsulta;
+            }
+
+            await ConsultaService.GuardarConsultaAsync(_consulta);
+            await OnGuardar.InvokeAsync(_consulta);
+            await Cancelar();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            ToastService.ShowInfo("Error al cargar datos.", 5000);
-            Console.WriteLine($"Error al cargar los datos: {ex}");
+            ToastService.ShowError($"Error al guardar la consulta - {ex.Message}");
+        }
+    }
+
+    private async Task Cancelar()
+    {
+        Hidden = true;
+        _consulta = new Consulta();
+        ClienteSelect = null;
+        ProfesionalSelect = null;
+        PedidoSelect = null;
+        await HiddenChanged.InvokeAsync(Hidden);
+    }
+
+    private async Task Eliminar()
+    {
+        if (Consulta == null || Consulta.IdConsulta <= 0)
+        {
+            ToastService.ShowWarning("No hay una consulta válida para eliminar.", 4000);
+            return;
+        }
+
+        try
+        {
+            await ConsultaService.EliminarConsultaAsync(Consulta.IdConsulta);
+            await OnEliminar.InvokeAsync();
+            await Cancelar();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al eliminar la consulta: {ex.Message}", 6000);
         }
     }
 }

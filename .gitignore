@@ -1,0 +1,92 @@
+############################################
+# GENERAL
+############################################
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.cache
+
+############################################
+# VISUAL STUDIO
+############################################
+.vs/
+.vscode/
+
+############################################
+# BUILD OUTPUT
+############################################
+bin/
+obj/
+[Bb]uild/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+ARM/
+ARM64/
+
+############################################
+# .NET / NUGET
+############################################
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+artifacts/
+
+############################################
+# MAUI
+############################################
+Platforms/Android/bin/
+Platforms/Android/obj/
+Platforms/iOS/bin/
+Platforms/iOS/obj/
+Platforms/MacCatalyst/bin/
+Platforms/MacCatalyst/obj/
+Platforms/Windows/bin/
+Platforms/Windows/obj/
+
+# Android
+*.apk
+*.aab
+*.keystore
+local.properties
+
+# iOS / Mac
+*.xcworkspace
+*.xcuserstate
+*.xcuserdata/
+DerivedData/
+
+############################################
+# BLAZOR
+############################################
+wwwroot/_framework/
+wwwroot/_content/
+wwwroot/service-worker-assets.js
+
+############################################
+# TESTS
+############################################
+TestResults/
+coverage/
+
+############################################
+# CONFIGURACIONES LOCALES
+############################################
+secrets.json
+appsettings.Development.json
+appsettings.Local.json
+
+############################################
+# SISTEMA OPERATIVO
+############################################
+Thumbs.db
+Desktop.ini
+.DS_Store

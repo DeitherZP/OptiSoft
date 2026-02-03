@@ -38,12 +38,13 @@
 
 @if (!(ListPedidos == null))
 {
-    <FluentCard AreaRestricted="false" Style="max-height: 80vh;">
+    <FluentCard AreaRestricted="false" Style="max-height: 78vh; padding: 0.5em 2em">
         <FluentDataGrid Items="ListPedidos"
                         TGridItem="Compra"
                         Pagination="@pagination"
                         AutoFit=true
                         ShowHover=true
+                        DisplayMode="DataGridDisplayMode.Table"
                         OnRowClick="@(args => OnRowClicked(args.Item))">
             <PropertyColumn Property="tbl => tbl.Numero" Title="Número" Sortable="true" />
             <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" />
