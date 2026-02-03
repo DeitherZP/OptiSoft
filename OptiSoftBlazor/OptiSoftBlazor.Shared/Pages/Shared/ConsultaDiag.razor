@@ -15,7 +15,22 @@
         <div style="padding: 1em;">
             @if (_consulta?.IdConsulta > 0)
             {
-                <p>Aquí iran los botones</p>
+                <div class="nueva-fila">
+                    <div class="columna-flex">
+                        <FluentButton Appearance="Appearance.Accent"
+                                      OnClick="MotorRefractivo"
+                                      IconStart="@(new Icons.Filled.Size20.Glasses())">
+                            Motor Refractivo
+                        </FluentButton>
+                    </div>
+                    <div class="columna-flex">
+                        <FluentButton Appearance="Appearance.Accent"
+                                      OnClick="LenteContacto"
+                                      IconStart="@(new Icons.Filled.Size20.Eye())">
+                            Lente de Contacto
+                        </FluentButton>
+                    </div>
+                </div>
             }
             <FluentCard AreaRestricted="false" Style="height: fit-content">
                 <FluentHeader>
@@ -629,5 +644,15 @@
         {
             ToastService.ShowError($"Error al eliminar la consulta: {ex.Message}", 6000);
         }
+    }
+
+    private async Task MotorRefractivo()
+    {
+        ToastService.ShowInfo("Aquí se hará ell llamado para obtener el reporte", 5000);
+    }
+
+    private async Task LenteContacto()
+    {
+        ToastService.ShowInfo("Aquí se hará ell llamadao para obtener el reporte", 5000);
     }
 }
