@@ -1,10 +1,13 @@
 ﻿@using OptiSoftBlazor.Shared.Data
 @using OptiSoftBlazor.Shared.Services
+@using OptiSoftBlazor.Shared.Helpers
 
+@inject IJSRuntime JS
 @inject ClienteService ClienteService
 @inject PersonalService PersonalService
 @inject CompraService CompraService
 @inject ConsultaService ConsultaService
+@inject SeteoService SeteoService
 
 <FluentDialog Modal="true" @bind-Hidden="Hidden">
     <FluentHeader>
@@ -459,6 +462,7 @@
     private Cliente? ClienteSelect { get; set; }
     private Personal? ProfesionalSelect { get; set; }
     private Compra? PedidoSelect { get; set; }
+    private string ScEmpresa = "Server=bk2.elixirsa.net;Database=DemoMobile;User Id=infoelect;Password=vcsnfaM$1;MultipleActiveResult Sets=True;TrustServerCertificate=true;";
 
     protected override void OnParametersSet()
     {
@@ -648,11 +652,45 @@
 
     private async Task MotorRefractivo()
     {
-        ToastService.ShowInfo("Aquí se hará ell llamado para obtener el reporte", 5000);
+        var idCompra = _consulta?.IdPedido ?? 0;
+        if (idCompra == 0)
+        {
+            ToastService.ShowWarning("No hay un pedido válido para imprimir.", 4000);
+            return;
+        }
+
+        Seteo seteo = await SeteoService.ObtenerSeteoAsync();
+
+        var ruc = seteo.Ruc;
+        var stringConnection = ScEncripter.Encriptar(ScEmpresa);
+
+        var url = $"http://ws2.elixirsa.net:85/home/MotorRefractivo" +
+                  $"?idCompra={idCompra}" +
+                  $"&ruc={ruc}" +
+                  $"&parametro={stringConnection}";
+
+        await JS.InvokeVoidAsync("openReport", url);
     }
 
     private async Task LenteContacto()
     {
-        ToastService.ShowInfo("Aquí se hará ell llamadao para obtener el reporte", 5000);
+        var idCompra = _consulta?.IdPedido ?? 0;
+        if (idCompra == 0)
+        {
+            ToastService.ShowWarning("No hay un pedido válido para imprimir.", 4000);
+            return;
+        }
+
+        Seteo seteo = await SeteoService.ObtenerSeteoAsync();
+
+        var ruc = seteo.Ruc;
+        var stringConnection = ScEncripter.Encriptar(ScEmpresa);
+
+        var url = $"http://ws2.elixirsa.net:85/home/LenteContacto" +
+                  $"?idCompra={idCompra}" +
+                  $"&ruc={ruc}" +
+                  $"&parametro={stringConnection}";
+
+        await JS.InvokeVoidAsync("openReport", url);
     }
 }

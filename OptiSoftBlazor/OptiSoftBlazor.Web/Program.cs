@@ -51,6 +51,7 @@ builder.Services.AddScoped<ArticuloService>();
 builder.Services.AddScoped<DetCompraService>();
 builder.Services.AddScoped<ConsultaService>();
 builder.Services.AddScoped<PersonalService>();
+builder.Services.AddScoped<SeteoService>();
 builder.Services.AddScoped<IAuthService, IdentityAuthService>();
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
