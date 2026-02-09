@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
 using OptiSoftBlazor.Shared.Data;
+using OptiSoftBlazor.Shared.Data.Tenant;
 using OptiSoftBlazor.Shared.Services;
 using OptiSoftBlazor.Web.Components;
 using OptiSoftBlazor.Web.Services;
@@ -16,8 +17,29 @@ builder.Services.AddFluentUIComponents();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-builder.Services.AddDbContext<OptiSoftDbContext>(options =>
+// DB Central para tabla Tenants
+builder.Services.AddDbContext<TenantDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+// Servicio de Tenant - guarda el tenant actual
+builder.Services.AddScoped<ITenantService, TenantService>();
+
+// DbContextFactory - para los servicios que ya lo usan
+builder.Services.AddDbContextFactory<OptiSoftDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+// DbContext que cambia según el tenant
+builder.Services.AddScoped<OptiSoftDbContext>(sp =>
+{
+    var tenantService = sp.GetRequiredService<ITenantService>();
+    var conn = tenantService.CurrentConnectionString ?? connectionString;
+
+    var options = new DbContextOptionsBuilder<OptiSoftDbContext>()
+        .UseSqlServer(conn)
+        .Options;
+
+    return new OptiSoftDbContext(options);
+});
 
 // IDENTITY
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -40,10 +62,10 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
 });
 
-// REGISTRAR EL SERVICIO
-builder.Services.AddScoped<IAuthService, IdentityAuthService>();
+// Auth service multi-tenant
+builder.Services.AddScoped<IAuthService, MultiTenantAuthService>();
 
-// Tus servicios existentes
+// Tus servicios (NO TOCAR)
 builder.Services.AddScoped<ToastService>();
 builder.Services.AddScoped<CompraService>();
 builder.Services.AddScoped<ClienteService>();
@@ -51,27 +73,9 @@ builder.Services.AddScoped<ArticuloService>();
 builder.Services.AddScoped<DetCompraService>();
 builder.Services.AddScoped<ConsultaService>();
 builder.Services.AddScoped<PersonalService>();
-builder.Services.AddScoped<SeteoService>();
-builder.Services.AddScoped<IAuthService, IdentityAuthService>();
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
 var app = builder.Build();
-
-// Crear usuario admin
-using (var scope = app.Services.CreateScope())
-{
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-    var dbContext = scope.ServiceProvider.GetRequiredService<OptiSoftDbContext>();
-
-    await dbContext.Database.EnsureCreatedAsync();
-
-    if (await userManager.FindByNameAsync("admin") == null)
-    {
-        var user = new IdentityUser { UserName = "admin", Email = "admin@optisoft.com", EmailConfirmed = true };
-        await userManager.CreateAsync(user, "admin");
-        Console.WriteLine("✅ Usuario admin creado: admin / admin");
-    }
-}
 
 if (!app.Environment.IsDevelopment())
 {

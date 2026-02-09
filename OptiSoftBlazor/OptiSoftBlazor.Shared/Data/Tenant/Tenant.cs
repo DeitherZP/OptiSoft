@@ -10,7 +10,7 @@ namespace OptiSoftBlazor.Shared.Data.Tenant
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string? ID { get; set; }
+        public Guid? ID { get; set; }
 
         public string? Name { get; set; }
 
