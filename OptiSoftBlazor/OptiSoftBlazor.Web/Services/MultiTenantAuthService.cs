@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OptiSoftBlazor.Shared.Data;
 using OptiSoftBlazor.Shared.Services;
+using System.Security.Claims;
 
 namespace OptiSoftBlazor.Web.Services
 {
@@ -99,21 +101,24 @@ namespace OptiSoftBlazor.Web.Services
 
                 Console.WriteLine("✅ Contraseña válida");
 
-                // 9. Realizar el SignIn con el usuario completo (usuario@tenant)
-                var result = await _signInManager.PasswordSignInAsync(
-                    username,
-                    password,
-                    isPersistent: true,
-                    lockoutOnFailure: false);
-
-                if (result.Succeeded)
+                // 9. SignIn manual (sin usar SignInManager que usa DB central)
+                var claims = new List<Claim>
                 {
-                    Console.WriteLine($"✅ Login exitoso para {username} en tenant {tenantName}");
-                    return true;
-                }
+                    new Claim(ClaimTypes.NameIdentifier, identityUser.Id),
+                    new Claim(ClaimTypes.Name, identityUser.UserName!),
+                    new Claim("TenantName", tenantName)
+                };
 
-                Console.WriteLine($"❌ SignIn falló: {result}");
-                return false;
+                var identity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
+                var principal = new ClaimsPrincipal(identity);
+
+                await _signInManager.Context.SignInAsync(
+                    IdentityConstants.ApplicationScheme,
+                    principal,
+                    new AuthenticationProperties { IsPersistent = true });
+
+                Console.WriteLine($"✅ Login exitoso para {username} en tenant {tenantName}");
+                return true;
             }
             catch (Exception ex)
             {

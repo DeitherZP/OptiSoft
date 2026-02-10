@@ -8,16 +8,18 @@ namespace OptiSoftBlazor.Shared.Services
 {
     public class SeteoService
     {
-        private readonly OptiSoftDbContext _db;
+        private readonly IDbContextFactory<OptiSoftDbContext> _contextFactory;
 
-        public SeteoService(OptiSoftDbContext db)
+        public SeteoService(IDbContextFactory<OptiSoftDbContext> contextFactory)
         {
-            _db = db;
+            _contextFactory = contextFactory;
         }
 
         public async Task<Seteo?> ObtenerSeteoAsync()
         {
-            return await _db.Seteo
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            return await db.Seteo
                             .AsNoTracking()
                             .FirstOrDefaultAsync();
         }

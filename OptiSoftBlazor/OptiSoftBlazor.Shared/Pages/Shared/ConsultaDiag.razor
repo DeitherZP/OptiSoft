@@ -555,7 +555,7 @@
 
             ClienteSelect = Clientes.FirstOrDefault(c => c.IdCliente == Consulta.IdCliente);
             ProfesionalSelect = Personales.FirstOrDefault(p => p.IdPersonal == Consulta.IdProfesional);
-            PedidoSelect = Pedidos.FirstOrDefault(p => p.IdCompra == Consulta.IdPedido);
+            PedidoSelect = Pedidos.FirstOrDefault(p => p.idCompra == Consulta.IdPedido);
         }
         else
         {
@@ -600,7 +600,7 @@
 
             if (PedidoSelect != null)
             {
-                _consulta.IdPedido = PedidoSelect.IdCompra;
+                _consulta.IdPedido = PedidoSelect.idCompra;
                 _consulta.Pedido = PedidoSelect;
             }
 

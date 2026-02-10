@@ -9,17 +9,19 @@ namespace OptiSoftBlazor.Shared.Services
 {
     public class CompraService
     {
-        private readonly OptiSoftDbContext _db;
+        private readonly IDbContextFactory<OptiSoftDbContext> _contextFactory;
 
-        public CompraService(OptiSoftDbContext db)
+        public CompraService(IDbContextFactory<OptiSoftDbContext> contextFactory)
         {
-            _db = db;
+            _contextFactory = contextFactory;
         }
 
         // Obtener todas las compras
         public async Task<List<Compra>> ObtenerPedidosAsync()
         {
-            return await _db.Compra
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            return await db.Compra
                             .Include(c => c.Cliente)
                             .Where(c => c.IdTipoFactura == 13)
                             .OrderByDescending(c => c.Fecha)
@@ -29,6 +31,8 @@ namespace OptiSoftBlazor.Shared.Services
 
         public async Task GuardarCompraAsync(Compra compra)
         {
+            using var db = await _contextFactory.CreateDbContextAsync();
+
             if (compra == null)
                 throw new ArgumentNullException(nameof(compra));
 
@@ -41,37 +45,39 @@ namespace OptiSoftBlazor.Shared.Services
             if (compra.Cliente == null)
                 throw new ArgumentException("Debe seleccionar un cliente");
 
-            _db.Attach(compra.Cliente);
+            db.Attach(compra.Cliente);
 
-            if (compra.IdCompra == 0)
+            if (compra.idCompra == 0)
             {
-                await _db.Compra.AddAsync(compra);
+                await db.Compra.AddAsync(compra);
             }
             else
             {
-                var compraDb = await _db.Compra
-                                        .FirstOrDefaultAsync(c => c.IdCompra == compra.IdCompra);
+                var compraDb = await db.Compra
+                                        .FirstOrDefaultAsync(c => c.idCompra == compra.idCompra);
 
                 if (compraDb == null)
                     throw new Exception("La compra no existe");
 
                 compraDb.Numero = compra.Numero;
                 compraDb.Fecha = compra.Fecha;
-                compraDb.IdCliente = compra.Cliente.IdCliente;
+                compraDb.idCliente = compra.Cliente.IdCliente;
 
-                _db.Compra.Update(compraDb);
+                db.Compra.Update(compraDb);
             }
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
         }
 
         public async Task EliminarCompraAsync(int idCompra)
         {
-            var compra = await _db.Compra
-                .FirstOrDefaultAsync(c => c.IdCompra == idCompra);
+            using var db = await _contextFactory.CreateDbContextAsync();
 
-            _db.Compra.Remove(compra);
-            await _db.SaveChangesAsync();
+            var compra = await db.Compra
+                .FirstOrDefaultAsync(c => c.idCompra == idCompra);
+
+            db.Compra.Remove(compra);
+            await db.SaveChangesAsync();
         }
     }
 }

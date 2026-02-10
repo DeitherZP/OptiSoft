@@ -8,16 +8,18 @@ namespace OptiSoftBlazor.Shared.Services
 {
     public class PersonalService
     {
-        private readonly OptiSoftDbContext _db;
+        private readonly IDbContextFactory<OptiSoftDbContext> _contextFactory;
 
-        public PersonalService(OptiSoftDbContext db)
+        public PersonalService(IDbContextFactory<OptiSoftDbContext> contextFactory)
         {
-            _db = db;
+            _contextFactory = contextFactory;
         }
 
         public async Task<List<Personal>> ObtenerPersonalAsync()
         {
-            return await _db.Personal
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            return await db.Personal
                             .Where(a => a.Nombre != null && a.Nombre != "")
                             .OrderBy(a => a.Nombre)
                             .AsNoTracking()

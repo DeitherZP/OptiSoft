@@ -8,16 +8,18 @@ namespace OptiSoftBlazor.Shared.Services
 {
     public class ClienteService
     {
-        private readonly OptiSoftDbContext _db;
+        private readonly IDbContextFactory<OptiSoftDbContext> _contextFactory;
 
-        public ClienteService(OptiSoftDbContext db)
+        public ClienteService(IDbContextFactory<OptiSoftDbContext> contextFactory)
         {
-            _db = db;
+            _contextFactory = contextFactory;
         }
 
         public async Task<List<Cliente>> ObtenerClienteAsync()
         {
-            return await _db.Cliente
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            return await db.Cliente
                             .Where(c => c.Nombre != null && c.Nombre != "")
                             .OrderBy(c => c.Nombre)
                             .AsNoTracking()

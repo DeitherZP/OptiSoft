@@ -9,16 +9,18 @@ namespace OptiSoftBlazor.Shared.Services
 {
     public class DetCompraService
     {
-        private readonly OptiSoftDbContext _db;
+        private readonly IDbContextFactory<OptiSoftDbContext> _contextFactory;
 
-        public DetCompraService(OptiSoftDbContext db)
+        public DetCompraService(IDbContextFactory<OptiSoftDbContext> contextFactory)
         {
-            _db = db;
+            _contextFactory = contextFactory;
         }
 
         public async Task<List<DetCompra>> ObtenerDetComprasAsync(int idCompra)
         {
-            return await _db.DetCompra
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            return await db.DetCompra
                             .Where(dc => dc.IdCompra == idCompra)
                             .Include(dc => dc.Articulo)
                             .AsNoTracking()
@@ -30,7 +32,9 @@ namespace OptiSoftBlazor.Shared.Services
             if (detalles == null)
                 return;
 
-            var existentes = await _db.DetCompra
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            var existentes = await db.DetCompra
                                       .Where(d => d.IdCompra == idCompra)
                                       .ToListAsync();
 
@@ -53,7 +57,7 @@ namespace OptiSoftBlazor.Shared.Services
                 else
                 {
                     // INSERT
-                    _db.DetCompra.Add(new DetCompra
+                    db.DetCompra.Add(new DetCompra
                     {
                         IdCompra = idCompra,
                         IdArticulo = det.IdArticulo,
@@ -72,18 +76,20 @@ namespace OptiSoftBlazor.Shared.Services
                 .Where(e => !idsUI.Contains(e.IdDetCompra))
                 .ToList();
 
-            _db.DetCompra.RemoveRange(aEliminar);
+            db.DetCompra.RemoveRange(aEliminar);
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
         }
 
         public async Task EliminarDetCompraAsync(int idCompra)
         {
-            var detalles = _db.DetCompra
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            var detalles = db.DetCompra
                 .Where(d => d.IdCompra == idCompra);
 
-            _db.DetCompra.RemoveRange(detalles);
-            await _db.SaveChangesAsync();
+            db.DetCompra.RemoveRange(detalles);
+            await db.SaveChangesAsync();
         }
     }
 }

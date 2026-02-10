@@ -8,16 +8,18 @@ namespace OptiSoftBlazor.Shared.Services
 {
     public class ConsultaService
     {
-        private readonly OptiSoftDbContext _db;
+        private readonly IDbContextFactory<OptiSoftDbContext> _contextFactory;
 
-        public ConsultaService(OptiSoftDbContext db)
+        public ConsultaService(IDbContextFactory<OptiSoftDbContext> contextFactory)
         {
-            _db = db;
+            _contextFactory = contextFactory;
         }
 
         public async Task<List<Consulta>> ObtenerConsultasAsync()
         {
-            return await _db.Consulta
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            return await db.Consulta
                 .Include(c => c.Cliente)
                 .Include(c => c.Profesional)
                 .Include(c => c.Pedido)
@@ -27,7 +29,9 @@ namespace OptiSoftBlazor.Shared.Services
 
         public async Task<Consulta?> ObtenerConsultaPorIdAsync(int idConsulta)
         {
-            return await _db.Consulta
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            return await db.Consulta
                 .Include(c => c.Cliente)
                 .Include(c => c.Profesional)
                 .Include(c => c.Pedido)
@@ -38,15 +42,17 @@ namespace OptiSoftBlazor.Shared.Services
         {
             try
             {
+                using var db = await _contextFactory.CreateDbContextAsync();
+
                 if (consulta.IdConsulta == 0)
                 {
                     // Nueva consulta
-                    _db.Consulta.Add(consulta);
+                    db.Consulta.Add(consulta);
                 }
                 else
                 {
                     // Actualizar consulta existente
-                    var consultaExistente = await _db.Consulta
+                    var consultaExistente = await db.Consulta
                         .FirstOrDefaultAsync(c => c.IdConsulta == consulta.IdConsulta);
 
                     if (consultaExistente != null)
@@ -132,11 +138,11 @@ namespace OptiSoftBlazor.Shared.Services
                         consultaExistente.LC_Humectante = consulta.LC_Humectante;
                         consultaExistente.LC_SolucLimpieza = consulta.LC_SolucLimpieza;
 
-                        _db.Consulta.Update(consultaExistente);
+                        db.Consulta.Update(consultaExistente);
                     }
                 }
 
-                await _db.SaveChangesAsync();
+                await db.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -148,13 +154,15 @@ namespace OptiSoftBlazor.Shared.Services
         {
             try
             {
-                var consulta = await _db.Consulta
+                using var db = await _contextFactory.CreateDbContextAsync();
+
+                var consulta = await db.Consulta
                     .FirstOrDefaultAsync(c => c.IdConsulta == idConsulta);
 
                 if (consulta != null)
                 {
-                    _db.Consulta.Remove(consulta);
-                    await _db.SaveChangesAsync();
+                    db.Consulta.Remove(consulta);
+                    await db.SaveChangesAsync();
                 }
             }
             catch (Exception ex)

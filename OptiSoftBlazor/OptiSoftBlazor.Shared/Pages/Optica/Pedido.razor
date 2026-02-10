@@ -134,7 +134,7 @@
         IsLoading = true;
         StateHasChanged();
 
-        ListDetCompras = await DetCompraService.ObtenerDetComprasAsync(compra.IdCompra);
+        ListDetCompras = await DetCompraService.ObtenerDetComprasAsync(compra.idCompra);
         Clientes = await ClienteServicio.ObtenerClienteAsync();
         PedidoSeleccionado = compra;
         Hidden = false;

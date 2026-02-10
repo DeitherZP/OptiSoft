@@ -75,7 +75,7 @@
             Cancelar
         </FluentButton>
         
-        @if (Compra != null || Compra?.IdCompra > 0)
+        @if (Compra != null || Compra?.idCompra > 0)
         {
             <FluentButton Appearance="Appearance.Neutral"
                           OnClick="Eliminar"
@@ -123,7 +123,7 @@
         {
             Numero = Compra.Numero;
             Fecha = Compra.Fecha;
-            ClienteSelect = Clientes.FirstOrDefault(c => c.IdCliente == Compra.IdCliente);
+            ClienteSelect = Clientes.FirstOrDefault(c => c.IdCliente == Compra.idCliente);
 
             _detalles = DetCompras != null
             ? DetCompras.Select(d => new DetCompra
@@ -166,7 +166,7 @@
                 isValido = false;
             }
 
-            if (pedido.Cliente == null || pedido.IdCliente == 0)
+            if (pedido.Cliente == null || pedido.idCliente == 0)
             {
                 ToastService.ShowError("Debe seleccionar un cliente.", 6000);
                 isValido = false;
@@ -176,7 +176,7 @@
                 return;
 
             await CompraService.GuardarCompraAsync(pedido);
-            await DetCompraService.GuardarDetallesAsync(pedido.IdCompra, _detalles);
+            await DetCompraService.GuardarDetallesAsync(pedido.idCompra, _detalles);
             await OnGuardar.InvokeAsync(pedido);
             await Cancelar();
         }
@@ -197,7 +197,7 @@
 
     private async Task Eliminar()
     {
-        if (Compra == null || Compra.IdCompra <= 0)
+        if (Compra == null || Compra.idCompra <= 0)
         {
             ToastService.ShowWarning("No hay un pedido válido para eliminar.", 4000);
             return;
@@ -205,8 +205,8 @@
 
         try
         {
-            await DetCompraService.EliminarDetCompraAsync(Compra.IdCompra);
-            await CompraService.EliminarCompraAsync(Compra.IdCompra);
+            await DetCompraService.EliminarDetCompraAsync(Compra.idCompra);
+            await CompraService.EliminarCompraAsync(Compra.idCompra);
 
             await OnEliminar.InvokeAsync();
             await Cancelar();

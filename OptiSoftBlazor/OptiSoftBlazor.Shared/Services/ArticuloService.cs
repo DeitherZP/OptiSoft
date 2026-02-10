@@ -8,16 +8,18 @@ namespace OptiSoftBlazor.Shared.Services
 {
     public class ArticuloService
     {
-        private readonly OptiSoftDbContext _db;
+        private readonly IDbContextFactory<OptiSoftDbContext> _contextFactory;
 
-        public ArticuloService(OptiSoftDbContext db)
+        public ArticuloService(IDbContextFactory<OptiSoftDbContext> contextFactory)
         {
-            _db = db;
+            _contextFactory = contextFactory;
         }
 
         public async Task<List<Articulo>> ObtenerArticulosAsync()
         {
-            return await _db.Articulo
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            return await db.Articulo
                             .Where(a => a.Nombre != null && a.Nombre != "")
                             .OrderBy(a => a.Nombre)
                             .AsNoTracking()
