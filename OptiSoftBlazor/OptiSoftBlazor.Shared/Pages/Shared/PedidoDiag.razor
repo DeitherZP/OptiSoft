@@ -51,13 +51,13 @@
                                     ShowHover=true>
                         <PropertyColumn Property="tbl => tbl.Cantidad" Title="Cantidad" Sortable="true" />
                         <PropertyColumn Property="tbl => tbl.Articulo.Nombre" Title="Articulo" Sortable="true" />
-                        <TemplateColumn Title="" Width="100px">
+                        <TemplateColumn Title="">
                             <ChildContent Context="det">
                                 <div style="display:flex; justify-content:center; align-items:center; height:100%;">
-                                    <FluentButton Appearance="Appearance.Stealth"
-                                                  OnClick="@(() => EliminarDetalle(det))"
-                                                  Style="padding:0; min-width:auto;">
-                                        <FluentIcon Value="@(new Icons.Filled.Size20.Delete())" Color="Color.Error" />
+                                    <FluentButton Class="btn-delete-grid"
+                                                  Appearance="Appearance.Stealth"
+                                                  OnClick="@(() => EliminarDetalle(det))">
+                                        <FluentIcon Value="@(new Icons.Filled.Size20.Delete())" Color="Color.Error"/>
                                     </FluentButton>
                                 </div>
                             </ChildContent>
@@ -77,9 +77,10 @@
         
         @if (Compra != null || Compra?.idCompra > 0)
         {
-            <FluentButton Appearance="Appearance.Neutral"
-                          OnClick="Eliminar"
-                          IconStart="@(new Icons.Filled.Size20.Delete())">
+            <FluentButton Class="btn-danger"
+                          Appearance="Appearance.Neutral"
+                          OnClick="Eliminar" >
+                <FluentIcon Value="@(new Icons.Filled.Size20.Delete())" Color="Color.Neutral" Slot="start" />
                 Eliminar
             </FluentButton>
         }
@@ -123,7 +124,7 @@
         {
             Numero = Compra.Numero;
             Fecha = Compra.Fecha;
-            ClienteSelect = Clientes.FirstOrDefault(c => c.IdCliente == Compra.idCliente);
+            ClienteSelect = Clientes.FirstOrDefault(c => c.idCliente == Compra.idCliente);
 
             _detalles = DetCompras != null
             ? DetCompras.Select(d => new DetCompra

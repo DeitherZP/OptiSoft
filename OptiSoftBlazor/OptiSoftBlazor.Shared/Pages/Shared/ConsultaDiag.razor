@@ -433,9 +433,10 @@
 
         @if (Consulta != null && Consulta?.IdConsulta > 0)
         {
-            <FluentButton Appearance="Appearance.Neutral"
-                          OnClick="Eliminar"
-                          IconStart="@(new Icons.Filled.Size20.Delete())">
+            <FluentButton Class="btn-danger" 
+                          Appearance="Appearance.Neutral"
+                          OnClick="Eliminar" >
+                <FluentIcon Value="@(new Icons.Filled.Size20.Delete())" Color="Color.Neutral" Slot="start" />
                 Eliminar
             </FluentButton>
         }
@@ -472,7 +473,7 @@
             _consulta = new Consulta
             {
                 IdConsulta = Consulta.IdConsulta,
-                IdCliente = Consulta.IdCliente,
+                idCliente = Consulta.idCliente,
                 IdProfesional = Consulta.IdProfesional,
                 IdPedido = Consulta.IdPedido,
                 Fecha = Consulta.Fecha,
@@ -553,7 +554,7 @@
                 LC_SolucLimpieza = Consulta.LC_SolucLimpieza
             };
 
-            ClienteSelect = Clientes.FirstOrDefault(c => c.IdCliente == Consulta.IdCliente);
+            ClienteSelect = Clientes.FirstOrDefault(c => c.idCliente == Consulta.idCliente);
             ProfesionalSelect = Personales.FirstOrDefault(p => p.IdPersonal == Consulta.IdProfesional);
             PedidoSelect = Pedidos.FirstOrDefault(p => p.idCompra == Consulta.IdPedido);
         }
@@ -593,7 +594,7 @@
                 return;
 
             // Asignar las relaciones
-            _consulta.IdCliente = ClienteSelect!.IdCliente;
+            _consulta.idCliente = ClienteSelect!.idCliente;
             _consulta.Cliente = ClienteSelect;
             _consulta.IdProfesional = ProfesionalSelect!.IdPersonal;
             _consulta.Profesional = ProfesionalSelect;

@@ -14,9 +14,9 @@ namespace OptiSoftBlazor.Shared.Data
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int IdConsulta { get; set; }
 
-        public int IdCliente { get; set; }
+        public int idCliente { get; set; }
 
-        [ForeignKey(nameof(IdCliente))]
+        [ForeignKey(nameof(idCliente))]
         public Cliente? Cliente { get; set; }
 
         public int? IdPedido { get; set; }

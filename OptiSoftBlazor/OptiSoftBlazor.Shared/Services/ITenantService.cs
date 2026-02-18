@@ -8,7 +8,7 @@ namespace OptiSoftBlazor.Shared.Services
     {
         Task<string?> GetConnectionStringAsync(string tenantName);
         Task<Data.Tenant.Tenant?> GetTenantByNameAsync(string tenantName);
-        string? CurrentTenantName { get; set; }
-        string? CurrentConnectionString { get; set; }
+        Task<string?> GetCurrentTenantNameAsync();
+        Task<string?> GetCurrentConnectionStringAsync();
     }
 }

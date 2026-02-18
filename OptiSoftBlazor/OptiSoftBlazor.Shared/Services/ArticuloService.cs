@@ -8,9 +8,9 @@ namespace OptiSoftBlazor.Shared.Services
 {
     public class ArticuloService
     {
-        private readonly IDbContextFactory<OptiSoftDbContext> _contextFactory;
+        private readonly ITenantDbContextFactory _contextFactory;
 
-        public ArticuloService(IDbContextFactory<OptiSoftDbContext> contextFactory)
+        public ArticuloService(ITenantDbContextFactory contextFactory)
         {
             _contextFactory = contextFactory;
         }

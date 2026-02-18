@@ -8,9 +8,9 @@ namespace OptiSoftBlazor.Shared.Services
 {
     public class ConsultaService
     {
-        private readonly IDbContextFactory<OptiSoftDbContext> _contextFactory;
+        private readonly ITenantDbContextFactory _contextFactory;
 
-        public ConsultaService(IDbContextFactory<OptiSoftDbContext> contextFactory)
+        public ConsultaService(ITenantDbContextFactory contextFactory)
         {
             _contextFactory = contextFactory;
         }
@@ -58,7 +58,7 @@ namespace OptiSoftBlazor.Shared.Services
                     if (consultaExistente != null)
                     {
                         // Actualizar propiedades
-                        consultaExistente.IdCliente = consulta.IdCliente;
+                        consultaExistente.idCliente = consulta.idCliente;
                         consultaExistente.IdProfesional = consulta.IdProfesional;
                         consultaExistente.IdPedido = consulta.IdPedido;
                         consultaExistente.Fecha = consulta.Fecha;

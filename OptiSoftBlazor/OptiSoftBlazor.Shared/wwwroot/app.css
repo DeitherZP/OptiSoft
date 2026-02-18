@@ -128,6 +128,30 @@ code {
     color: #c02d76;
 }
 
+.btn-delete-grid::part(control) {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.btn-delete-grid:hover::part(control) {
+    background-color: #d13438 !important;
+    border-radius: 4px;
+}
+
+.btn-delete-grid:hover {
+    --error: white;
+}
+
+.btn-danger {
+    --neutral-fill-rest: #d13438;
+    --neutral-fill-hover: #b1232f;
+    --neutral-fill-active: #a21d29;
+    --neutral-foreground-rest: white;
+    --neutral-foreground-hover: white;
+    --neutral-foreground-active: white;
+}
+
 @media (max-width: 600px) {
     .header-gutters {
         margin: 0.5rem 3rem 0.5rem 1.5rem !important;

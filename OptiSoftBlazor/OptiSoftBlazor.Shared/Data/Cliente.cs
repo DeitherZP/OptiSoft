@@ -11,7 +11,7 @@ namespace OptiSoftBlazor.Shared.Data
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdCliente { get; set; }
+        public int idCliente { get; set; }
 
         [StringLength(100)]
         public String? Nombre { get; set; }

@@ -9,9 +9,9 @@ namespace OptiSoftBlazor.Shared.Services
 {
     public class CompraService
     {
-        private readonly IDbContextFactory<OptiSoftDbContext> _contextFactory;
+        private readonly ITenantDbContextFactory _contextFactory;
 
-        public CompraService(IDbContextFactory<OptiSoftDbContext> contextFactory)
+        public CompraService(ITenantDbContextFactory contextFactory)
         {
             _contextFactory = contextFactory;
         }
@@ -20,6 +20,9 @@ namespace OptiSoftBlazor.Shared.Services
         public async Task<List<Compra>> ObtenerPedidosAsync()
         {
             using var db = await _contextFactory.CreateDbContextAsync();
+
+            var connection = db.Database.GetConnectionString();
+            Console.WriteLine($"🔍 CompraService usando conexión: {connection}");
 
             return await db.Compra
                             .Include(c => c.Cliente)
@@ -61,7 +64,7 @@ namespace OptiSoftBlazor.Shared.Services
 
                 compraDb.Numero = compra.Numero;
                 compraDb.Fecha = compra.Fecha;
-                compraDb.idCliente = compra.Cliente.IdCliente;
+                compraDb.idCliente = compra.Cliente.idCliente;
 
                 db.Compra.Update(compraDb);
             }

@@ -59,8 +59,8 @@ namespace OptiSoftBlazor.Web.Services
                 Console.WriteLine($"🔗 Connection String: {tenant.ConnectionString?.Substring(0, Math.Min(50, tenant.ConnectionString.Length))}...");
 
                 // 4. Guardar el tenant actual en el servicio
-                _tenantService.CurrentTenantName = tenant.Name;
-                _tenantService.CurrentConnectionString = tenant.ConnectionString;
+                //_tenantService.CurrentTenantName = tenant.Name;
+                //_tenantService.CurrentConnectionString = tenant.ConnectionString;
 
                 // 5. Crear un DbContext temporal para la DB del tenant
                 var optionsBuilder = new DbContextOptionsBuilder<OptiSoftDbContext>();
@@ -131,10 +131,6 @@ namespace OptiSoftBlazor.Web.Services
         public async Task LogoutAsync()
         {
             await _signInManager.SignOutAsync();
-
-            // Limpiar la información del tenant actual
-            _tenantService.CurrentTenantName = null;
-            _tenantService.CurrentConnectionString = null;
 
             Console.WriteLine("✅ Logout exitoso");
         }

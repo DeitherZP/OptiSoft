@@ -9,9 +9,9 @@ namespace OptiSoftBlazor.Shared.Services
 {
     public class DetCompraService
     {
-        private readonly IDbContextFactory<OptiSoftDbContext> _contextFactory;
+        private readonly ITenantDbContextFactory _contextFactory;
 
-        public DetCompraService(IDbContextFactory<OptiSoftDbContext> contextFactory)
+        public DetCompraService(ITenantDbContextFactory contextFactory)
         {
             _contextFactory = contextFactory;
         }

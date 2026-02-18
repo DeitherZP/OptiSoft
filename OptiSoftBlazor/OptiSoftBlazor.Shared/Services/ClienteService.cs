@@ -8,9 +8,9 @@ namespace OptiSoftBlazor.Shared.Services
 {
     public class ClienteService
     {
-        private readonly IDbContextFactory<OptiSoftDbContext> _contextFactory;
+        private readonly ITenantDbContextFactory _contextFactory;
 
-        public ClienteService(IDbContextFactory<OptiSoftDbContext> contextFactory)
+        public ClienteService(ITenantDbContextFactory contextFactory)
         {
             _contextFactory = contextFactory;
         }

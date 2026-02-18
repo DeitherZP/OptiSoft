@@ -8,9 +8,9 @@ namespace OptiSoftBlazor.Shared.Services
 {
     public class SeteoService
     {
-        private readonly IDbContextFactory<OptiSoftDbContext> _contextFactory;
+        private readonly ITenantDbContextFactory _contextFactory;
 
-        public SeteoService(IDbContextFactory<OptiSoftDbContext> contextFactory)
+        public SeteoService(ITenantDbContextFactory contextFactory)
         {
             _contextFactory = contextFactory;
         }
