@@ -9,6 +9,20 @@
 @inject ConsultaService ConsultaService
 @inject SeteoService SeteoService
 
+<style>
+    .fluent-dialog-main {
+        --dialog-width: 1000px !important;
+        --dialog-max-height: 80vh !important;
+    }
+
+    @@media (max-width: 600px) {
+        .fluent-dialog-main {
+            --dialog-width: 90% !important;
+            --dialog-max-height: 80vh !important;
+        }
+    }
+</style>
+
 <FluentDialog Modal="true" @bind-Hidden="Hidden">
     <FluentHeader>
         <h3>@(Consulta == null ? "Nueva Consulta" : "Editar Consulta")</h3>
@@ -19,17 +33,19 @@
             @if (_consulta?.IdConsulta > 0)
             {
                 <div class="nueva-fila">
-                    <div class="columna-flex">
-                        <FluentButton Appearance="Appearance.Accent"
-                                      OnClick="MotorRefractivo"
-                                      IconStart="@(new Icons.Filled.Size20.Glasses())">
+                    <div class="columna-flex" style="max-width: 20%;">
+                        <FluentButton Class="btn-motor-refractivo"
+                                      Appearance="Appearance.Neutral"
+                                      OnClick="MotorRefractivo">
+                            <FluentIcon Value="@(new Icons.Filled.Size20.Glasses())" Color="Color.Neutral" Slot="start" />
                             Motor Refractivo
                         </FluentButton>
                     </div>
-                    <div class="columna-flex">
-                        <FluentButton Appearance="Appearance.Accent"
-                                      OnClick="LenteContacto"
-                                      IconStart="@(new Icons.Filled.Size20.Eye())">
+                    <div class="columna-flex" style="max-width: 20%;">
+                        <FluentButton Class="btn-lente-contacto"
+                                      Appearance="Appearance.Neutral"
+                                      OnClick="LenteContacto">
+                            <FluentIcon Value="@(new Icons.Filled.Size20.Eye())" Color="Color.Neutral" Slot="start" />
                             Lente de Contacto
                         </FluentButton>
                     </div>

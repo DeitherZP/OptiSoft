@@ -7,6 +7,20 @@
 @inject ArticuloService ArticuloService;
 @inject DetCompraService DetCompraService;
 
+<style>
+    .fluent-dialog-main {
+        --dialog-width: 850px !important;
+        --dialog-max-height: 80vh !important;
+    }
+
+    @@media (max-width: 600px) {
+        .fluent-dialog-main {
+            --dialog-width: 90% !important;
+            --dialog-max-height: 80vh !important;
+        }
+    }
+</style>
+
 <FluentDialog Modal="true" @bind-Hidden="Hidden">
     <FluentHeader>
         <h3>@(Compra == null ? "Nuevo Pedido" : "Editar Pedido")</h3>

@@ -15,20 +15,6 @@
 
 <LoadingSpinner @bind-Visible="IsLoading" />
 
-<style>
-    .fluent-dialog-main {
-        --dialog-width: 850px !important;
-        --dialog-max-height: 80vh !important;
-    }
-
-    @@media (max-width: 600px) {
-        .fluent-dialog-main {
-            --dialog-width: 90% !important;
-            --dialog-max-height: 80vh !important;
-        }
-    }
-</style>
-
 @if (!IsFirstRender)
 {
     <div class="nueva-fila">

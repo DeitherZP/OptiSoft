@@ -152,6 +152,24 @@ code {
     --neutral-foreground-active: white;
 }
 
+.btn-motor-refractivo {
+    --neutral-fill-rest: #A21BDE;
+    --neutral-fill-hover: #8D06C9;
+    --neutral-fill-active: #690699;
+    --neutral-foreground-rest: white;
+    --neutral-foreground-hover: white;
+    --neutral-foreground-active: white;
+}
+
+.btn-lente-contacto {
+    --neutral-fill-rest: #2cb20a;
+    --neutral-fill-hover: #209403;
+    --neutral-fill-active: #1d7e05;
+    --neutral-foreground-rest: white;
+    --neutral-foreground-hover: white;
+    --neutral-foreground-active: white;
+}
+
 @media (max-width: 600px) {
     .header-gutters {
         margin: 0.5rem 3rem 0.5rem 1.5rem !important;
