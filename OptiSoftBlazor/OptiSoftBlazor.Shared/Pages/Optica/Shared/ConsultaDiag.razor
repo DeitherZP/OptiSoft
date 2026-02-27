@@ -243,15 +243,7 @@
                                 <FluentTextArea @bind-Value="@_consulta.TipoLente"
                                                 Label="Tipo Lente"
                                                 Placeholder="Descripción del tipo de lente"
-                                                Rows="2" />
-                            </div>
-                        </div>
-                        <div class="fila-flex">
-                            <div class="columna-flex">
-                                <FluentTextArea @bind-Value="@_consulta.Lubricante"
-                                                Label="Lubricante"
-                                                Placeholder="Descripción del lubricante para lentes"
-                                                Rows="2" />
+                                                Rows="3" />
                             </div>
                         </div>
 
@@ -314,7 +306,7 @@
                                 <FluentTextArea @bind-Value="@_consulta.Tratamiento"
                                                 Label="Tratamiento"
                                                 Placeholder="Tratamiento adicional"
-                                                Rows="2" />
+                                                Rows="4" />
                             </div>
                         </div>
                     </FluentCard>
@@ -410,27 +402,17 @@
                             </div>
                             <div class="fila-flex" style="margin-top: 1em;">
                                 <div class="columna-flex">
-                                    <FluentTextArea @bind-Value="@_consulta.LC_LFinDisenoOI" Label="Diseño Oi" Placeholder="Ingrese el diseño para el ojo izquierdo" />
+                                    <FluentTextArea @bind-Value="@_consulta.LC_LFinDisenoOI" Label="Diseño Oi" Placeholder="Ingrese el diseño para el ojo izquierdo" Rows="4" />
                                 </div>
                             </div>
                         </FluentCard>
 
                         <FluentCard AreaRestricted="false" Style="max-height: fit-content; margin-top: 1em; padding-top: 1em;">
-                            <h4 style="margin-top: 0;">Recomendaciones</h4>
+                            <h4 style="margin-top: 0; margin-bottom: 0.5em;">Diagnóstico</h4>
 
-                            <div class="fila-flex" style="margin-top: 1em;">
+                            <div class="fila-flex">
                                 <div class="columna-flex">
-                                    <FluentTextArea @bind-Value="@_consulta.LC_Diagnostico" Label="Diagnóstico" Placeholder="Ingrese el diagnóstico" />
-                                </div>
-                            </div>
-                            <div class="fila-flex" style="margin-top: 1em;">
-                                <div class="columna-flex">
-                                    <FluentTextArea @bind-Value="@_consulta.LC_Humectante" Label="Humectante" Placeholder="Ingrese el humectante" />
-                                </div>
-                            </div>
-                            <div class="fila-flex" style="margin-top: 1em;">
-                                <div class="columna-flex">
-                                    <FluentTextArea @bind-Value="@_consulta.LC_SolucLimpieza" Label="Solución de Limpieza" Placeholder="Ingrese la solución de limpieza" />
+                                    <FluentTextArea @bind-Value="@_consulta.LC_Diagnostico" Placeholder="Ingrese el diagnóstico" Rows="4"/>
                                 </div>
                             </div>
                         </FluentCard>
@@ -530,7 +512,6 @@
 
                 // Recomendaciones
                 TipoLente = Consulta.TipoLente,
-                Lubricante = Consulta.Lubricante,
                 AlturaOD = Consulta.AlturaOD,
                 AlturaOI = Consulta.AlturaOI,
                 DiamArmVertical = Consulta.DiamArmVertical,
@@ -565,9 +546,7 @@
                 LC_LFinSagitaOI = Consulta.LC_LFinSagitaOI,
                 LC_LFinDisenoOD = Consulta.LC_LFinDisenoOD,
                 LC_LFinDisenoOI = Consulta.LC_LFinDisenoOI,
-                LC_Diagnostico = Consulta.LC_Diagnostico,
-                LC_Humectante = Consulta.LC_Humectante,
-                LC_SolucLimpieza = Consulta.LC_SolucLimpieza
+                LC_Diagnostico = Consulta.LC_Diagnostico
             };
 
             ClienteSelect = Clientes.FirstOrDefault(c => c.idCliente == Consulta.idCliente);

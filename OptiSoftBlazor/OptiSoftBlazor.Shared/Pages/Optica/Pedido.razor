@@ -25,7 +25,7 @@
 
 @if (!(ListPedidos == null))
 {
-    <FluentCard AreaRestricted="false" Style="max-height: 78vh; padding: 0.5em 2em">
+    <FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 78vh; padding: 0.5em;">
         <FluentDataGrid Items="ListPedidos"
                         TGridItem="Compra"
                         Pagination="@pagination"
@@ -71,6 +71,7 @@
             StateHasChanged();
             pedidos = await CompraServicio.ObtenerPedidosAsync();
             ListPedidos = pedidos.AsQueryable();
+            Clientes = await ClienteServicio.ObtenerClienteAsync();
         }
         catch (Exception ex)
         {
@@ -89,7 +90,7 @@
     {
         IsLoading = true;
         StateHasChanged();
-        Clientes = await ClienteServicio.ObtenerClienteAsync();
+        PedidoSeleccionado = null;
         Hidden = false;
         IsLoading = false;
         StateHasChanged();
@@ -122,7 +123,6 @@
         StateHasChanged();
 
         ListDetCompras = await DetCompraService.ObtenerDetComprasAsync(compra.idCompra);
-        Clientes = await ClienteServicio.ObtenerClienteAsync();
         PedidoSeleccionado = compra;
         Hidden = false;
 

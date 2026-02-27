@@ -19,14 +19,29 @@
 @if (!IsFirstRender)
 {
     <div class="nueva-fila">
-        <FluentButton Appearance="Appearance.Accent" OnClick="@AddConsulta" IconStart="@(new Icons.Filled.Size20.AddCircle())">Nuevo</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" OnClick="AddConsulta" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-top: 1.4em; margin-right: 3em">Nuevo</FluentButton>
+
+        <FluentAutocomplete Label="Cliente"
+                            Items="Clientes"
+                            TOption="Cliente"
+                            @bind-SelectedOption="ClienteSelect"
+                            OptionText="@(c => c.Nombre)"
+                            Virtualize="true"
+                            Multiple="false"
+                            MaximumOptionsSearch="int.MaxValue"
+                            MaximumSelectedOptions="1"
+                            Position="SelectPosition.Below"
+                            @bind-SelectedOption:after="FiltrarPorCliente"
+                            Style="max-width: 250px; margin-right: 1em;" />
+
+        <FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.Dismiss())" Style="margin-top: 1.4em;" Disabled="!(ClienteSelect?.idCliente > 0)" />
     </div>
 }
 
-@if (!(ListConsultas == null))
+@if (!(ListConsultasFiltradas == null))
 {
-    <FluentCard AreaRestricted="false" Style="max-height: 78vh; padding: 0.5em 2em">
-        <FluentDataGrid Items="ListConsultas"
+    <FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 74vh; padding: 0.5em;">
+        <FluentDataGrid Items="ListConsultasFiltradas"
                         TGridItem="Consulta"
                         Pagination="@pagination"
                         AutoFit=true
@@ -53,13 +68,16 @@
 @code {
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
     private List<Consulta>? consultas = new();
+    private List<Consulta>? consultasFiltradas = new();
     bool Hidden = true;
     private List<Cliente> Clientes = new();
     private List<Personal> Personales = new();
     private List<Compra> Pedidos = new();
     bool IsFirstRender = true;
     private Consulta? ConsultaSeleccionada;
-    private IQueryable<Consulta>? ListConsultas;
+    private IQueryable<Consulta>? ListConsultasFiltradas;
+
+    private Cliente? ClienteSelect { get; set; }
 
     private bool IsLoading { get; set; } = false;
 
@@ -73,7 +91,9 @@
             IsLoading = true;
             StateHasChanged();
             consultas = await ConsultaService.ObtenerConsultasAsync();
-            ListConsultas = consultas.AsQueryable();
+            consultasFiltradas = new List<Consulta>(consultas);
+            Clientes = await ClienteService.ObtenerClienteAsync();
+            ListConsultasFiltradas = consultasFiltradas.AsQueryable();
         }
         catch (Exception ex)
         {
@@ -93,9 +113,12 @@
         IsLoading = true;
         StateHasChanged();
 
-        Clientes = await ClienteService.ObtenerClienteAsync();
-        Personales = await PersonalService.ObtenerPersonalAsync();
-        Pedidos = await CompraService.ObtenerPedidosAsync();
+        if (!Pedidos.Any())
+            Pedidos = await CompraService.ObtenerPedidosAsync();
+
+        if (!Personales.Any())
+            Personales = await PersonalService.ObtenerPersonalAsync();
+
         ConsultaSeleccionada = null; // Nueva consulta
         Hidden = false;
 
@@ -108,7 +131,9 @@
         ToastService.ShowSuccess("Consulta guardada correctamente");
 
         consultas = await ConsultaService.ObtenerConsultasAsync();
-        ListConsultas = consultas.AsQueryable();
+        consultasFiltradas = new List<Consulta>(consultas);
+        ListConsultasFiltradas = consultasFiltradas.AsQueryable();
+        ClienteSelect = null; // Limpiar filtro después de guardar
     }
 
     private async Task EliminarConsulta()
@@ -116,7 +141,9 @@
         ToastService.ShowSuccess("La consulta ha sido eliminada correctamente");
 
         consultas = await ConsultaService.ObtenerConsultasAsync();
-        ListConsultas = consultas.AsQueryable();
+        consultasFiltradas = new List<Consulta>(consultas);
+        ListConsultasFiltradas = consultasFiltradas.AsQueryable();
+        ClienteSelect = null; // Limpiar filtro después de eliminar
     }
 
     private async Task OnRowClicked(Consulta consulta)
@@ -124,13 +151,41 @@
         IsLoading = true;
         StateHasChanged();
 
-        Clientes = await ClienteService.ObtenerClienteAsync();
-        Personales = await PersonalService.ObtenerPersonalAsync();
-        Pedidos = await CompraService.ObtenerPedidosAsync();
+        if (!Pedidos.Any())
+            Pedidos = await CompraService.ObtenerPedidosAsync();
+
+        if (!Personales.Any())
+            Personales = await PersonalService.ObtenerPersonalAsync();
+
         ConsultaSeleccionada = consulta;
         Hidden = false;
 
         IsLoading = false;
+        StateHasChanged();
+    }
+
+    private void LimpiarFiltro()
+    {
+        ClienteSelect = null;
+        FiltrarPorCliente();
+    }
+
+    private void FiltrarPorCliente()
+    {
+        if (consultas == null) return;
+
+        if (ClienteSelect?.idCliente > 0)
+        {
+            consultasFiltradas = consultas
+                .Where(c => c.Cliente?.idCliente == ClienteSelect.idCliente)
+                .ToList();
+        }
+        else
+        {
+            consultasFiltradas = new List<Consulta>(consultas);
+        }
+
+        ListConsultasFiltradas = consultasFiltradas.AsQueryable();
         StateHasChanged();
     }
 }

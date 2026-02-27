@@ -125,9 +125,6 @@ namespace OptiSoftBlazor.Shared.Data
         [StringLength(4000)]
         public string? TipoLente { get; set; }
 
-        [StringLength(4000)]
-        public string? Lubricante { get; set; }
-
         [StringLength(20)]
         public string? AlturaOD { get; set; }
 
@@ -251,12 +248,6 @@ namespace OptiSoftBlazor.Shared.Data
         #region Bloque 2
         [StringLength(4000)]
         public string? LC_Diagnostico { get; set; }
-
-        [StringLength(4000)]
-        public string? LC_Humectante { get; set; }
-
-        [StringLength(4000)]
-        public string? LC_SolucLimpieza { get; set; }
         #endregion
         #endregion
 

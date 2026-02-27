@@ -1,5 +1,6 @@
 ﻿@using OptiSoftBlazor.Shared.Data
 @using OptiSoftBlazor.Shared.Data.DTO
+@using OptiSoftBlazor.Shared.Pages.Shared
 @using OptiSoftBlazor.Shared.Services
 @using System.Threading.Tasks
 
@@ -20,6 +21,8 @@
         }
     }
 </style>
+
+<LoadingSpinner @bind-Visible="IsLoading" />
 
 <FluentDialog Modal="true" @bind-Hidden="Hidden">
     <FluentHeader>
@@ -49,7 +52,7 @@
                                   @bind-Value="Fecha"
                                   Style="width:100%" />
             </div>
-            <FluentCard AreaRestricted="false" Style="margin-bottom: 1em;">
+            <FluentCard AreaRestricted="false" Class="data-grid-table" Style="margin-bottom: 1em;">
                 <div class="column-flex">
                     <FluentButton Appearance="Appearance.Accent"
                                   OnClick="AbrirArticulos"
@@ -132,6 +135,8 @@
 
     private bool HiddenArt = true;
 
+    private bool IsLoading = false;
+
     protected override void OnParametersSet()
     {
         if (Compra != null)
@@ -204,7 +209,7 @@
     private async Task Cancelar()
     {
         Hidden = true;
-        Numero = "";
+        Numero = null;
         Fecha = DateTime.Now;
         ClienteSelect = null;
         await HiddenChanged.InvokeAsync(Hidden);
@@ -234,9 +239,25 @@
 
     private async Task AbrirArticulos()
     {
-        Articulos = await ArticuloService.ObtenerArticulosAsync();
-        HiddenArt = false;
-        StateHasChanged();
+        try
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            if (!Articulos.Any())
+                Articulos = await ArticuloService.ObtenerArticulosAsync();
+
+            HiddenArt = false;
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al cargar artículos: {ex.Message}", 5000);
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
+        }
     }
 
     private void ArticuloAgregado(ArticuloAgregadoEvent articulo)

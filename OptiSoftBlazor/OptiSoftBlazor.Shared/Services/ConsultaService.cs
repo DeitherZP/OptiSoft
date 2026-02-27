@@ -99,7 +99,6 @@ namespace OptiSoftBlazor.Shared.Services
 
                         // Recomendaciones
                         consultaExistente.TipoLente = consulta.TipoLente;
-                        consultaExistente.Lubricante = consulta.Lubricante;
                         consultaExistente.AlturaOD = consulta.AlturaOD;
                         consultaExistente.AlturaOI = consulta.AlturaOI;
                         consultaExistente.DiamArmVertical = consulta.DiamArmVertical;
@@ -135,8 +134,6 @@ namespace OptiSoftBlazor.Shared.Services
                         consultaExistente.LC_LFinDisenoOD = consulta.LC_LFinDisenoOD;
                         consultaExistente.LC_LFinDisenoOI = consulta.LC_LFinDisenoOI;
                         consultaExistente.LC_Diagnostico = consulta.LC_Diagnostico;
-                        consultaExistente.LC_Humectante = consulta.LC_Humectante;
-                        consultaExistente.LC_SolucLimpieza = consulta.LC_SolucLimpieza;
 
                         db.Consulta.Update(consultaExistente);
                     }

@@ -1,4 +1,15 @@
-﻿<div class="navmenu">
+﻿<style>
+    /* Solo para que se distinga */
+    .navmenu {
+        height: 92vh;
+        background: white;
+        box-shadow: 4px 0 8px rgba(0,0,0,0.15);
+        position: relative;
+        z-index: 1;
+    }
+</style>
+
+<div class="navmenu">
     <input type="checkbox" title="Menu expand/collapse toggle" id="navmenu-toggle" class="navmenu-icon" />
     <label for="navmenu-toggle" class="navmenu-icon"><FluentIcon Value="@(new Icons.Regular.Size20.Navigation())" Color="Color.Fill" /></label>
     <nav class="sitenav" aria-labelledby="main-menu">
@@ -6,9 +17,9 @@
             <FluentNavLink Href="/" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Home())" IconColor="Color.Accent">Home</FluentNavLink>
             @* <FluentNavLink Href="counter" Icon="@(new Icons.Regular.Size20.NumberSymbolSquare())" IconColor="Color.Accent">Counter</FluentNavLink>
             <FluentNavLink Href="weather" Icon="@(new Icons.Regular.Size20.WeatherPartlyCloudyDay())" IconColor="Color.Accent">Weather</FluentNavLink> *@
-            <FluentNavLink Href="pedido" Icon="@(new Icons.Regular.Size20.FolderDocument())" IconColor="Color.Accent">Pedido</FluentNavLink>
             <FluentNavLink Href="consulta" Icon="@(new Icons.Regular.Size20.EyeCircle())" IconColor="Color.Accent">Consulta</FluentNavLink>
-            <FluentNavLink Href="users" Icon="@(new Icons.Regular.Size20.PersonSettings())" IconColor="Color.Accent">Usuarios</FluentNavLink>
+            <FluentNavLink Href="pedido" Icon="@(new Icons.Regular.Size20.FolderDocument())" IconColor="Color.Accent">Pedido</FluentNavLink>
+            @* <FluentNavLink Href="users" Icon="@(new Icons.Regular.Size20.PersonSettings())" IconColor="Color.Accent">Usuarios</FluentNavLink> *@
         </FluentNavMenu>
     </nav>
 </div>

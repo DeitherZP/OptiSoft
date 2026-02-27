@@ -2,15 +2,26 @@
 @attribute [Authorize]
 
 @using OptiSoftBlazor.Shared.Services
+@using Microsoft.AspNetCore.Components.Authorization
 @inject IFormFactor FormFactor
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<PageTitle>Home</PageTitle>
+<PageTitle>OptiSoft</PageTitle>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new Fluent app running on <em>@factor</em> using <em>@platform</em>.
+<div style="width: 100%; text-align: center; padding: 3em 0;">
+    <h1 style="font-size: 3em;">¡Hola @userName, bienvenido!</h1>
+</div>
 
 @code {
     private string factor => FormFactor.GetFormFactor();
     private string platform => FormFactor.GetPlatform();
+    private string userName = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        userName = user.Identity?.Name ?? "Usuario";
+        userName = userName.Substring(0, userName.IndexOf('@'));
+    }
 }
