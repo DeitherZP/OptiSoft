@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OptiSoftBlazor.Shared.Pages.Shared.DTO
+namespace OptiSoftBlazor.Shared.Data.DTO
 {
     public class ArticuloAgregadoEvent
     {
