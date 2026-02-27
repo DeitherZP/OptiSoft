@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
+@using OptiSoftBlazor.Shared.Pages.Shared
 
 <!DOCTYPE html>
 <html lang="en">
@@ -18,6 +19,8 @@
     <CascadingAuthenticationState>
         <Routes />
     </CascadingAuthenticationState>
+
+    <ToastProviderInteractive />
 
     <script src="_framework/blazor.web.js"></script>
     <script src="@Assets["_content/OptiSoftBlazor.Shared/js/openReport.js"]"></script>

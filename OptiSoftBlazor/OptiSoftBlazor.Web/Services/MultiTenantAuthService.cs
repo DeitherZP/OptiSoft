@@ -30,7 +30,7 @@ namespace OptiSoftBlazor.Web.Services
                 // 1. Validar formato usuario@tenant
                 if (string.IsNullOrWhiteSpace(username) || !username.Contains("@"))
                 {
-                    Console.WriteLine("❌ Formato de usuario inválido. Debe ser: usuario@tenant");
+                    Console.WriteLine("Formato de usuario inválido. Debe ser: usuario@tenant");
                     return false;
                 }
 
@@ -38,25 +38,25 @@ namespace OptiSoftBlazor.Web.Services
                 var parts = username.Split('@');
                 if (parts.Length != 2)
                 {
-                    Console.WriteLine("❌ Formato de usuario inválido. Debe ser: usuario@tenant");
+                    Console.WriteLine("Formato de usuario inválido. Debe ser: usuario@tenant");
                     return false;
                 }
 
                 var user = parts[0];
                 var tenantName = parts[1];
 
-                Console.WriteLine($"🔍 Buscando tenant: {tenantName}");
+                Console.WriteLine($"Buscando tenant: {tenantName}");
 
                 // 3. Buscar el tenant en la DB central
                 var tenant = await _tenantService.GetTenantByNameAsync(tenantName);
                 if (tenant == null)
                 {
-                    Console.WriteLine($"❌ Tenant '{tenantName}' no encontrado");
+                    Console.WriteLine($"Tenant '{tenantName}' no encontrado");
                     return false;
                 }
 
-                Console.WriteLine($"✅ Tenant encontrado: {tenant.Name}");
-                Console.WriteLine($"🔗 Connection String: {tenant.ConnectionString?.Substring(0, Math.Min(50, tenant.ConnectionString.Length))}...");
+                Console.WriteLine($"Tenant encontrado: {tenant.Name}");
+                Console.WriteLine($"Connection String: {tenant.ConnectionString?.Substring(0, Math.Min(50, tenant.ConnectionString.Length))}...");
 
                 // 4. Guardar el tenant actual en el servicio
                 //_tenantService.CurrentTenantName = tenant.Name;
@@ -85,21 +85,21 @@ namespace OptiSoftBlazor.Web.Services
                 var identityUser = await userManager.FindByNameAsync(username);
                 if (identityUser == null)
                 {
-                    Console.WriteLine($"❌ Usuario '{username}' no encontrado en la base de datos del tenant");
+                    Console.WriteLine($"Usuario '{username}' no encontrado en la base de datos del tenant");
                     return false;
                 }
 
-                Console.WriteLine($"✅ Usuario encontrado: {identityUser.UserName}");
+                Console.WriteLine($"Usuario encontrado: {identityUser.UserName}");
 
                 // 8. Verificar la contraseña
                 var passwordValid = await userManager.CheckPasswordAsync(identityUser, password);
                 if (!passwordValid)
                 {
-                    Console.WriteLine("❌ Contraseña incorrecta");
+                    Console.WriteLine("Contraseña incorrecta");
                     return false;
                 }
 
-                Console.WriteLine("✅ Contraseña válida");
+                Console.WriteLine("Contraseña válida");
 
                 // 9. SignIn manual (sin usar SignInManager que usa DB central)
                 var claims = new List<Claim>
@@ -117,12 +117,12 @@ namespace OptiSoftBlazor.Web.Services
                     principal,
                     new AuthenticationProperties { IsPersistent = true });
 
-                Console.WriteLine($"✅ Login exitoso para {username} en tenant {tenantName}");
+                Console.WriteLine($"Login exitoso para {username} en tenant {tenantName}");
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error en LoginAsync: {ex.Message}");
+                Console.WriteLine($"Error en LoginAsync: {ex.Message}");
                 Console.WriteLine($"Stack trace: {ex.StackTrace}");
                 return false;
             }
@@ -132,7 +132,7 @@ namespace OptiSoftBlazor.Web.Services
         {
             await _signInManager.SignOutAsync();
 
-            Console.WriteLine("✅ Logout exitoso");
+            Console.WriteLine("Logout exitoso");
         }
     }
 }

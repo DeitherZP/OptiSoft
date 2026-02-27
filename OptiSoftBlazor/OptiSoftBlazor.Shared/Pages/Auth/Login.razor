@@ -9,30 +9,44 @@
 @inject IAuthService IAuthService
 @inject IHttpContextAccessor Http
 
-<FluentCard Style="width:400px;padding:2em;">
+<FluentCard Style="width: 450px; padding: 2em;">
     <form method="get" action="/Account/Login">
 
         <FluentStack Orientation="Orientation.Vertical" VerticalGap="16">
 
-            <h2 style="text-align:center">OptiSoft</h2>
-            <p style="text-align:center;">Use sus credenciales para ingresar al sistema</p>
+            <div style="width: 100%; text-align: center;">
+                <h1 style="margin: 0.5em 0;">OptiSoft</h1>
+                <p style="margin: 0;">Use sus credenciales para ingresar al sistema</p>
+            </div>
 
-            <FluentTextField Name="username"
-                             Label="Usuario"
-                             Required
-                             Style="width: 100%"/>
-
-            <FluentTextField Name="password"
-                             Label="Contraseña"
-                             TextFieldType="TextFieldType.Password"
-                             Required
-                             Style="width: 100%" />
-
-            <FluentButton Type="ButtonType.Submit"
-                          Appearance="Appearance.Accent"
-                          Style="width:100%;">
-                Iniciar sesión
-            </FluentButton>
+            <div class="fila-flex">
+                <div class="columna-flex">
+                    <FluentTextField Name="username"
+                                     Label="Usuario"
+                                     Required
+                                     Style="width: 100%"/>
+                </div>
+            </div>
+            
+            <div class="fila-flex">
+                <div class="columna-flex">
+                    <FluentTextField Name="password"
+                                     Label="Contraseña"
+                                     TextFieldType="TextFieldType.Password"
+                                     Required
+                                             Style="width: 100%" />
+                </div>
+            </div>
+            
+            <div class="fila-flex">
+                <div class="columna-flex">
+                    <FluentButton Type="ButtonType.Submit"
+                                  Appearance="Appearance.Accent"
+                                  Style="width:100%;">
+                        Iniciar sesión
+                            </FluentButton>
+                </div>
+            </div>
 
         </FluentStack>
     </form>

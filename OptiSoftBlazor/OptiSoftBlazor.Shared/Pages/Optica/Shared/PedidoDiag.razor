@@ -7,6 +7,7 @@
 @inject CompraService CompraService;
 @inject ArticuloService ArticuloService;
 @inject DetCompraService DetCompraService;
+@inject IToastService ToastService
 
 <style>
     .fluent-dialog-main {
@@ -179,6 +180,8 @@
 
         try
         {
+            IsLoading = true;
+            StateHasChanged();
 
             if (string.IsNullOrEmpty(pedido.Numero))
             {
@@ -202,7 +205,12 @@
         }
         catch (Exception ex)
         {
-            ToastService.ShowError($"Error al guardar el pedido - {ex.Message}");
+            ToastService.ShowError($"Error al guardar el pedido: {ex.Message}");
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
         }
     }
 
@@ -225,6 +233,9 @@
 
         try
         {
+            IsLoading = true;
+            StateHasChanged();
+
             await DetCompraService.EliminarDetCompraAsync(Compra.idCompra);
             await CompraService.EliminarCompraAsync(Compra.idCompra);
 
@@ -234,6 +245,11 @@
         catch (Exception ex)
         {
             ToastService.ShowError($"Error al eliminar el pedido: {ex.Message}", 6000);
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
         }
     }
 

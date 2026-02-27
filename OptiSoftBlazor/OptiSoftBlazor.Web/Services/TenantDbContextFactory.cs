@@ -18,7 +18,7 @@ namespace OptiSoftBlazor.Web.Services
             var conn = await _tenantService.GetCurrentConnectionStringAsync();
 
             if (string.IsNullOrWhiteSpace(conn))
-                throw new Exception("❌ Tenant no inicializado");
+                throw new Exception("Tenant no inicializado");
 
             return new OptiSoftDbContext(
                 new DbContextOptionsBuilder<OptiSoftDbContext>()

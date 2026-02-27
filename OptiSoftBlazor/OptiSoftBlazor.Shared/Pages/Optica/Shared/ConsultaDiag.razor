@@ -1,4 +1,5 @@
 ﻿@using OptiSoftBlazor.Shared.Data
+@using OptiSoftBlazor.Shared.Pages.Shared
 @using OptiSoftBlazor.Shared.Services
 @using OptiSoftBlazor.Shared.Helpers
 
@@ -22,6 +23,8 @@
         }
     }
 </style>
+
+<LoadingSpinner @bind-Visible="IsLoading" />
 
 <FluentDialog Modal="true" @bind-Hidden="Hidden">
     <FluentHeader>
@@ -122,22 +125,22 @@
 
                             <div class="fila-flex">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxUsoEsferaOD" Label="Esfera" />
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoEsferaOD" Label="Esfera" TextFieldType="TextFieldType.Number"/>
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxUsoCilindroOD" Label="Cilindro" />
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoCilindroOD" Label="Cilindro" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxUsoEjeOD" Label="Eje" />
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoEjeOD" Label="Eje" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxUsoAddOD" Label="Add" />
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoAddOD" Label="Add" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxUsoAvlOD" Label="Avl" />
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoAvlOD" Label="Avl" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxUsoAvcOD" Label="Avc" />
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoAvcOD" Label="Avc" TextFieldType="TextFieldType.Number" />
                                 </div>
                             </div>
                         </FluentCard>
@@ -146,22 +149,22 @@
 
                             <div class="fila-flex">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxUsoEsferaOI" Label="Esfera" />
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoEsferaOI" Label="Esfera" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxUsoCilindroOI" Label="Cilindro" />
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoCilindroOI" Label="Cilindro" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxUsoEjeOI" Label="Eje" />
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoEjeOI" Label="Eje" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxUsoAddOI" Label="Add" />
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoAddOI" Label="Add" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxUsoAvlOI" Label="Avl" />
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoAvlOI" Label="Avl" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxUsoAvcOI" Label="Avc" />
+                                    <FluentTextField @bind-Value="@_consulta.RxUsoAvcOI" Label="Avc" TextFieldType="TextFieldType.Number" />
                                 </div>
                             </div>
                         </FluentCard>
@@ -176,28 +179,28 @@
 
                             <div class="fila-flex">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxEsferaOD" Label="Esfera" />
+                                    <FluentTextField @bind-Value="@_consulta.RxEsferaOD" Label="Esfera" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxCilindroOD" Label="Cilindro" />
+                                    <FluentTextField @bind-Value="@_consulta.RxCilindroOD" Label="Cilindro" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxEjeOD" Label="Eje" />
+                                    <FluentTextField @bind-Value="@_consulta.RxEjeOD" Label="Eje" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxAddOD" Label="Add" />
+                                    <FluentTextField @bind-Value="@_consulta.RxAddOD" Label="Add" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxDnpOD" Label="Dnp" />
+                                    <FluentTextField @bind-Value="@_consulta.RxDnpOD" Label="Dnp" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxAltOD" Label="Alt" />
+                                    <FluentTextField @bind-Value="@_consulta.RxAltOD" Label="Alt" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxAvlOD" Label="Avl" />
+                                    <FluentTextField @bind-Value="@_consulta.RxAvlOD" Label="Avl" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxAvcOD" Label="Avc" />
+                                    <FluentTextField @bind-Value="@_consulta.RxAvcOD" Label="Avc" TextFieldType="TextFieldType.Number" />
                                 </div>
                             </div>
                         </FluentCard>
@@ -206,28 +209,28 @@
 
                             <div class="fila-flex">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxEsferaOI" Label="Esfera" />
+                                    <FluentTextField @bind-Value="@_consulta.RxEsferaOI" Label="Esfera" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxCilindroOI" Label="Cilindro" />
+                                    <FluentTextField @bind-Value="@_consulta.RxCilindroOI" Label="Cilindro" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxEjeOI" Label="Eje" />
+                                    <FluentTextField @bind-Value="@_consulta.RxEjeOI" Label="Eje" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxAddOI" Label="Add" />
+                                    <FluentTextField @bind-Value="@_consulta.RxAddOI" Label="Add" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxDnpOI" Label="Dnp" />
+                                    <FluentTextField @bind-Value="@_consulta.RxDnpOI" Label="Dnp" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxAltOI" Label="Alt" />
+                                    <FluentTextField @bind-Value="@_consulta.RxAltOI" Label="Alt" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxAvlOI" Label="Avl" />
+                                    <FluentTextField @bind-Value="@_consulta.RxAvlOI" Label="Avl" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxAvcOI" Label="Avc" />
+                                    <FluentTextField @bind-Value="@_consulta.RxAvcOI" Label="Avc" TextFieldType="TextFieldType.Number" />
                                 </div>
                             </div>
                         </FluentCard>
@@ -252,10 +255,10 @@
 
                             <div class="fila-flex">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.AlturaOD" Label="Ojo Derecho" />
+                                    <FluentTextField @bind-Value="@_consulta.AlturaOD" Label="Ojo Derecho" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.AlturaOI" Label="Ojo Izquierdo" />
+                                    <FluentTextField @bind-Value="@_consulta.AlturaOI" Label="Ojo Izquierdo" TextFieldType="TextFieldType.Number" />
                                 </div>
                             </div>
                         </FluentCard>
@@ -265,19 +268,19 @@
 
                             <div class="fila-flex">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.DiamArmVertical" Label="D. Vertical" />
+                                    <FluentTextField @bind-Value="@_consulta.DiamArmVertical" Label="D. Vertical" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.DiamArmHorizontal" Label="D. Horizontal" />
+                                    <FluentTextField @bind-Value="@_consulta.DiamArmHorizontal" Label="D. Horizontal" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.DiamArmPuente" Label="Puente" />
+                                    <FluentTextField @bind-Value="@_consulta.DiamArmPuente" Label="Puente" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.DiamArmMayor" Label="Mayor" />
+                                    <FluentTextField @bind-Value="@_consulta.DiamArmMayor" Label="Mayor" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.DiamArmTipo" Label="Tipo" />
+                                    <FluentTextField @bind-Value="@_consulta.DiamArmTipo" Label="Tipo" TextFieldType="TextFieldType.Number" />
                                 </div>
                             </div>
                         </FluentCard>
@@ -287,16 +290,16 @@
 
                             <div class="fila-flex">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.ParPersAP" Label="AP" />
+                                    <FluentTextField @bind-Value="@_consulta.ParPersAP" Label="AP" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.ParPersCP" Label="CP" />
+                                    <FluentTextField @bind-Value="@_consulta.ParPersCP" Label="CP" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.ParPersDV" Label="DV" />
+                                    <FluentTextField @bind-Value="@_consulta.ParPersDV" Label="DV" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.ParPersCorredor" Label="Corredor" />
+                                    <FluentTextField @bind-Value="@_consulta.ParPersCorredor" Label="Corredor" TextFieldType="TextFieldType.Number" />
                                 </div>
                             </div>
                         </FluentCard>
@@ -322,10 +325,10 @@
 
                             <div class="fila-flex" style="margin-top: 1em;">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_KeraK1OD" Label="K1" />
+                                    <FluentTextField @bind-Value="@_consulta.LC_KeraK1OD" Label="K1" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_KeraK2OD" Label="K2" />
+                                    <FluentTextField @bind-Value="@_consulta.LC_KeraK2OD" Label="K2" TextFieldType="TextFieldType.Number" />
                                 </div>
                             </div>
                         </FluentCard>
@@ -334,10 +337,10 @@
 
                             <div class="fila-flex" style="margin-top: 1em;">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_KeraK1OI" Label="K1" />
+                                    <FluentTextField @bind-Value="@_consulta.LC_KeraK1OI" Label="K1" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_KeraK2OI" Label="K2" />
+                                    <FluentTextField @bind-Value="@_consulta.LC_KeraK2OI" Label="K2" TextFieldType="TextFieldType.Number" />
                                 </div>
                             </div>
                         </FluentCard>
@@ -352,22 +355,22 @@
 
                             <div class="fila-flex" style="margin-top: 1em;">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_LFinRxOD" Label="Rx" />
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinRxOD" Label="Rx" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_LFinTipoOD" Label="Tipo" />
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinTipoOD" Label="Tipo" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_LFinCBOD" Label="CB" />
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinCBOD" Label="CB" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_LFinDiamOD" Label="Diámetro" />
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinDiamOD" Label="Diámetro" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_LFinEspesorOD" Label="Espesor" />
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinEspesorOD" Label="Espesor" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_LFinSagitaOD" Label="Sagita" />
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinSagitaOD" Label="Sagita" TextFieldType="TextFieldType.Number" />
                                 </div>
                             </div>
                             <div class="fila-flex" style="margin-top: 1em;">
@@ -382,22 +385,22 @@
 
                             <div class="fila-flex" style="margin-top: 1em;">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_LFinRxOI" Label="Rx" />
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinRxOI" Label="Rx" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_LFinTipoOI" Label="Tipo" />
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinTipoOI" Label="Tipo" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_LFinCBOI" Label="CB" />
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinCBOI" Label="CB" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_LFinDiamOI" Label="Diámetro" />
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinDiamOI" Label="Diámetro" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_LFinEspesorOI" Label="Espesor" />
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinEspesorOI" Label="Espesor" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_LFinSagitaOI" Label="Sagita" />
+                                    <FluentTextField @bind-Value="@_consulta.LC_LFinSagitaOI" Label="Sagita" TextFieldType="TextFieldType.Number" />
                                 </div>
                             </div>
                             <div class="fila-flex" style="margin-top: 1em;">
@@ -462,6 +465,8 @@
     private Personal? ProfesionalSelect { get; set; }
     private Compra? PedidoSelect { get; set; }
     private string ScEmpresa = "Server=bk2.elixirsa.net;Database=DemoMobile;User Id=infoelect;Password=vcsnfaM$1;MultipleActiveResult Sets=True;TrustServerCertificate=true;";
+
+    private bool IsLoading = false;
 
     protected override void OnParametersSet()
     {
@@ -572,6 +577,9 @@
 
         try
         {
+            IsLoading = true;
+            StateHasChanged();
+
             // Validaciones
             if (ClienteSelect == null)
             {
@@ -612,7 +620,13 @@
         }
         catch (Exception ex)
         {
-            ToastService.ShowError($"Error al guardar la consulta - {ex.Message}");
+            ToastService.ShowError($"Error al guardar la consulta: {ex.Message}");
+            Console.WriteLine($"Error al guardar la consulta: {ex}");
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
         }
     }
 
@@ -636,6 +650,9 @@
 
         try
         {
+            IsLoading = true;
+            StateHasChanged();
+
             await ConsultaService.EliminarConsultaAsync(Consulta.IdConsulta);
             await OnEliminar.InvokeAsync();
             await Cancelar();
@@ -643,6 +660,11 @@
         catch (Exception ex)
         {
             ToastService.ShowError($"Error al eliminar la consulta: {ex.Message}", 6000);
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
         }
     }
 
