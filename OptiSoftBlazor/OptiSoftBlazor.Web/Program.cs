@@ -55,6 +55,7 @@ builder.Services.AddScoped<DetCompraService>();
 builder.Services.AddScoped<ConsultaService>();
 builder.Services.AddScoped<PersonalService>();
 builder.Services.AddScoped<SeteoService>();
+builder.Services.AddScoped<ConfirmService>();
 
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 

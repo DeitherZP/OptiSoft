@@ -32,7 +32,7 @@
                         AutoFit=true
                         ShowHover=true
                         DisplayMode="DataGridDisplayMode.Table"
-                        OnRowClick="@(args => OnRowClicked(args.Item))">
+                        OnRowClick="@(args => OnRowClicked(args?.Item ?? new Compra()))">
             <PropertyColumn Property="tbl => tbl.Numero" Title="Número" Sortable="true" />
             <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" />
             <PropertyColumn Property="tbl => tbl.Cliente.Nombre" Title="Cliente" Sortable="true" />
@@ -124,6 +124,9 @@
 
         ListDetCompras = await DetCompraService.ObtenerDetComprasAsync(compra.idCompra);
         PedidoSeleccionado = compra;
+
+        //await Task.Delay(50);
+
         Hidden = false;
 
         IsLoading = false;

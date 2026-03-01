@@ -38,15 +38,15 @@
                                  Style="width:100%" />
             </div>
             <div class="column-flex" style="padding-top: 1em;">
-                <FluentAutocomplete Label="Cliente"
-                                    Items="@Clientes"
-                                    TOption="Cliente"
-                                    @bind-SelectedOption="ClienteSelect"
-                                    OptionText="@(c => c.Nombre)"
-                                    Virtualize="true"
-                                    Multiple="false"
-                                    MaximumOptionsSearch="int.MaxValue"
-                                    Position="SelectPosition.Below"/>
+                <FluentCombobox Label="Cliente"
+                                Items="@Clientes"
+                                TOption="Cliente"
+                                @bind-SelectedOption="ClienteSelect"
+                                OptionText="@(c => c.Nombre)"
+                                Multiple="false"
+                                Width="100%"
+                                Height="250px"
+                                Position="SelectPosition.Below"/>
             </div>
             <div class="column-flex" style="padding: 1em 0;">
                 <FluentDatePicker Label="Fecha"
@@ -134,12 +134,17 @@
     private List<Articulo> Articulos { get; set; } = new();
     private IQueryable<DetCompra>? ListDetCompras;
 
+    private List<Cliente> _clientesCargados = new();
+
     private bool HiddenArt = true;
 
     private bool IsLoading = false;
 
     protected override void OnParametersSet()
     {
+        if (!Hidden)
+            return;
+
         if (Compra != null)
         {
             Numero = Compra.Numero;
@@ -209,6 +214,7 @@
         }
         finally
         {
+            Limpiar();
             IsLoading = false;
             StateHasChanged();
         }
@@ -216,10 +222,8 @@
 
     private async Task Cancelar()
     {
+        Limpiar();
         Hidden = true;
-        Numero = null;
-        Fecha = DateTime.Now;
-        ClienteSelect = null;
         await HiddenChanged.InvokeAsync(Hidden);
     }
 
@@ -230,6 +234,10 @@
             ToastService.ShowWarning("No hay un pedido válido para eliminar.", 4000);
             return;
         }
+
+        var confirmado = await ConfirmService.ConfirmAsync("¿Está seguro de eliminar esta consulta?");
+        if (!confirmado)
+            return;
 
         try
         {
@@ -248,6 +256,7 @@
         }
         finally
         {
+            Limpiar();
             IsLoading = false;
             StateHasChanged();
         }
@@ -263,16 +272,13 @@
             if (!Articulos.Any())
                 Articulos = await ArticuloService.ObtenerArticulosAsync();
 
+            IsLoading = false;
             HiddenArt = false;
+            StateHasChanged();
         }
         catch (Exception ex)
         {
             ToastService.ShowError($"Error al cargar artículos: {ex.Message}", 5000);
-        }
-        finally
-        {
-            IsLoading = false;
-            StateHasChanged();
         }
     }
 
@@ -297,5 +303,12 @@
         ListDetCompras = _detalles.AsQueryable();
 
         StateHasChanged();
+    }
+
+    private void Limpiar()
+    {
+        Numero = null;
+        Fecha = DateTime.Now;
+        ClienteSelect = null;
     }
 }

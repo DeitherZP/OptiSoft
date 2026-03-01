@@ -32,15 +32,15 @@
                                        Placeholder="Ingrese la cantidad"/>
                 </div>
                 <div class="columna-flex" style="padding: 0 1em; margin-right: 0;">
-                    <FluentAutocomplete Label="Artículo"
-                                        Items="@Articulos"
-                                        TOption="Articulo"
-                                        @bind-SelectedOption="ArticuloSelect"
-                                        OptionText="@(a => a.Nombre)"
-                                        Virtualize="true"
-                                        Multiple="false"
-                                        MaximumOptionsSearch="int.MaxValue"
-                                        Position="SelectPosition.Below" />
+                    <FluentCombobox Label="Artículo"
+                                    Items="@Articulos"
+                                    TOption="Articulo"
+                                    @bind-SelectedOption="ArticuloSelect"
+                                    OptionText="@(a => a.Nombre)"
+                                    Multiple="false"
+                                    Width="100%"
+                                    Height="250px"
+                                    Position="SelectPosition.Below" />
                 </div>
             </div>
         </FluentDialogBody>

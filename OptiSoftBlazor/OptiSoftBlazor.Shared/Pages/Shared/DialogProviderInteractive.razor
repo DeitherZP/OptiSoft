@@ -1,0 +1,19 @@
+﻿@rendermode InteractiveServer
+
+<style>
+    .container-confmessage .fluent-dialog-main {
+        --dialog-width: 400px !important;
+        --dialog-max-height: auto !important;
+    }
+
+    @@media (max-width: 600px) {
+        .container-confmessage .fluent-dialog-main {
+            --dialog-width: 70% !important;
+            --dialog-max-height: auto !important;
+        }
+    }
+</style>
+
+<div class="container-confmessage">
+    <FluentDialogProvider />
+</div>

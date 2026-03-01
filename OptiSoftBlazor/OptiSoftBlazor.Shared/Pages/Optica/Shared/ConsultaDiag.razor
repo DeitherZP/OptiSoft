@@ -61,28 +61,28 @@
 
                 <div class="fila-flex">
                     <div class="columna-flex" style="padding-top: 1em;">
-                        <FluentAutocomplete Label="Cliente"
-                                            Items="@Clientes"
-                                            TOption="Cliente"
-                                            @bind-SelectedOption="ClienteSelect"
-                                            OptionText="@(c => c.Nombre)"
-                                            Virtualize="true"
-                                            Multiple="false"
-                                            MaximumOptionsSearch="int.MaxValue"
-                                            Position="SelectPosition.Below" />
+                        <FluentCombobox Label="Cliente"
+                                        Items="@Clientes"
+                                        TOption="Cliente"
+                                        @bind-SelectedOption="ClienteSelect"
+                                        OptionText="@(c => c.Nombre)"
+                                        Multiple="false"
+                                        Width="100%"
+                                        Height="250px"
+                                        Position="SelectPosition.Below" />
                     </div>
                 </div>
                 <div class="fila-flex">
                     <div class="columna-flex" style="padding-top: 1em;">
-                        <FluentAutocomplete Label="Profesional"
-                                            Items="@Personales"
-                                            TOption="Personal"
-                                            @bind-SelectedOption="ProfesionalSelect"
-                                            OptionText="@(c => c.Nombre)"
-                                            Virtualize="true"
-                                            Multiple="false"
-                                            MaximumOptionsSearch="int.MaxValue"
-                                            Position="SelectPosition.Below" />
+                        <FluentCombobox Label="Profesional"
+                                        Items="@Personales"
+                                        TOption="Personal"
+                                        @bind-SelectedOption="ProfesionalSelect"
+                                        OptionText="@(c => c.Nombre)"
+                                        Multiple="false"
+                                        Width="100%"
+                                        Height="250px"
+                                        Position="SelectPosition.Below" />
                     </div>
                 </div>
                 <div class="fila-flex">
@@ -91,15 +91,15 @@
                                           @bind-Value="@_consulta.Fecha" />
                     </div>
                     <div class="columna-flex" style="padding-top: 1em;">
-                        <FluentAutocomplete Label="Pedido"
-                                            Items="@Pedidos"
-                                            TOption="Compra"
-                                            @bind-SelectedOption="PedidoSelect"
-                                            OptionText="@(c => c.Numero)"
-                                            Virtualize="true"
-                                            Multiple="false"
-                                            MaximumOptionsSearch="int.MaxValue"
-                                            Position="SelectPosition.Below" />
+                        <FluentCombobox Label="Pedido"
+                                        Items="@Pedidos"
+                                        TOption="Compra"
+                                        @bind-SelectedOption="PedidoSelect"
+                                        OptionText="@(c => c.Numero)"
+                                        Multiple="false"
+                                        Width="100%"
+                                        Height="250px"
+                                        Position="SelectPosition.Below" />
                     </div>
                 </div>
                 <div class="fila-flex">
@@ -647,6 +647,10 @@
             ToastService.ShowWarning("No hay una consulta válida para eliminar.", 4000);
             return;
         }
+
+        var confirmado = await ConfirmService.ConfirmAsync("¿Está seguro de eliminar esta consulta?");
+        if (!confirmado)
+            return;
 
         try
         {
