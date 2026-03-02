@@ -40,19 +40,20 @@
     </FluentCard>
 }
 
-<PedidoDiag Hidden="@Hidden"
-            Compra="PedidoSeleccionado"
-            HiddenChanged="@(v => Hidden = v)"
-            Clientes="@Clientes"
-            DetCompras="ListDetCompras"
-            OnGuardar="GuardarPedido"
-            OnEliminar="EliminarPedido"/>
+@if (!Hidden)
+{
+    <PedidoDiag Hidden="@Hidden"
+                Compra="PedidoSeleccionado"
+                HiddenChanged="@(v => Hidden = v)"
+                DetCompras="ListDetCompras"
+                OnGuardar="GuardarPedido"
+                OnEliminar="EliminarPedido"/>
+}
 
 @code {
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
     private List<Compra>? pedidos = new();
     bool Hidden = true;
-    private List<Cliente> Clientes = new();
     private List<DetCompra>? ListDetCompras;
     bool IsFirstRender = true;
     private Compra? PedidoSeleccionado;
@@ -71,7 +72,6 @@
             StateHasChanged();
             pedidos = await CompraServicio.ObtenerPedidosAsync();
             ListPedidos = pedidos.AsQueryable();
-            Clientes = await ClienteServicio.ObtenerClienteAsync();
         }
         catch (Exception ex)
         {

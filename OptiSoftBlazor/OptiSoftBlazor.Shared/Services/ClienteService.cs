@@ -17,13 +17,21 @@ namespace OptiSoftBlazor.Shared.Services
 
         public async Task<List<Cliente>> ObtenerClienteAsync()
         {
-            using var db = await _contextFactory.CreateDbContextAsync();
+            var sw = System.Diagnostics.Stopwatch.StartNew();
 
-            return await db.Cliente
-                            .Where(c => c.Nombre != null && c.Nombre != "")
-                            .OrderBy(c => c.Nombre)
-                            .AsNoTracking()
-                            .ToListAsync();
+            using var db = await _contextFactory.CreateDbContextAsync();
+            Console.WriteLine($"CreateDbContext: {sw.ElapsedMilliseconds}ms");
+
+            var result = await db.Cliente
+                .Where(c => c.Nombre != null && c.Nombre != "")
+                .OrderBy(c => c.Nombre)
+                .AsNoTracking()
+                .ToListAsync();
+
+            Console.WriteLine($"ToListAsync: {sw.ElapsedMilliseconds}ms");
+            Console.WriteLine($"Clientes obtenidos: {result.Count}");
+
+            return result;
         }
     }
 }

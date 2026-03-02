@@ -17,11 +17,17 @@ builder.Services.AddFluentUIComponents();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-builder.Services.AddDbContext<TenantDbContext>(options =>
+builder.Services.AddDbContext<OptiSoftDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddDbContextFactory<OptiSoftDbContext>(options =>
+    options.UseSqlServer(connectionString), ServiceLifetime.Scoped);
+
+builder.Services.AddDbContext<TenantDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+builder.Services.AddDbContextFactory<TenantDbContext>(options =>
+    options.UseSqlServer(connectionString), ServiceLifetime.Scoped);
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {

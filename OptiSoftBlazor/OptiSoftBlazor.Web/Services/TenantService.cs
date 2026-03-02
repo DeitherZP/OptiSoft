@@ -8,21 +8,21 @@ namespace OptiSoftBlazor.Web.Services
 {
     public class TenantService : ITenantService
     {
-        private readonly TenantDbContext _tenantDbContext;
+        private readonly IDbContextFactory<TenantDbContext> _tenantDbContextFactory;
         private readonly AuthenticationStateProvider _authStateProvider;
 
         public TenantService(
-        TenantDbContext tenantDbContext,
-        AuthenticationStateProvider authStateProvider)
+            IDbContextFactory<TenantDbContext> tenantDbContextFactory,
+            AuthenticationStateProvider authStateProvider)
         {
-            _tenantDbContext = tenantDbContext;
+            _tenantDbContextFactory = tenantDbContextFactory;
             _authStateProvider = authStateProvider;
         }
+
         public async Task<string?> GetCurrentTenantNameAsync()
         {
             var authState = await _authStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
-
             return user?.FindFirst("TenantName")?.Value;
         }
 
@@ -32,21 +32,28 @@ namespace OptiSoftBlazor.Web.Services
             if (string.IsNullOrWhiteSpace(tenantName))
                 return null;
 
-            var tenant = await _tenantDbContext.Tenant
+            // 👇 Cada llamada crea su propio contexto, sin colisiones
+            await using var context = await _tenantDbContextFactory.CreateDbContextAsync();
+            var tenant = await context.Tenant
                 .AsNoTracking()
                 .FirstOrDefaultAsync(t => t.Name == tenantName);
 
             return tenant?.ConnectionString;
         }
 
-        // Mantén tus métodos existentes
-        public Task<Tenant?> GetTenantByNameAsync(string tenantName) =>
-            _tenantDbContext.Tenant.FirstOrDefaultAsync(t => t.Name == tenantName);
+        public async Task<Tenant?> GetTenantByNameAsync(string tenantName)
+        {
+            await using var context = await _tenantDbContextFactory.CreateDbContextAsync();
+            return await context.Tenant.FirstOrDefaultAsync(t => t.Name == tenantName);
+        }
 
-        public Task<string?> GetConnectionStringAsync(string tenantName) =>
-            _tenantDbContext.Tenant
+        public async Task<string?> GetConnectionStringAsync(string tenantName)
+        {
+            await using var context = await _tenantDbContextFactory.CreateDbContextAsync();
+            return await context.Tenant
                 .Where(t => t.Name == tenantName)
                 .Select(t => t.ConnectionString)
                 .FirstOrDefaultAsync();
+        }
     }
 }

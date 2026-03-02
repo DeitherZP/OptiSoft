@@ -7,6 +7,7 @@ namespace OptiSoftBlazor.Web.Services
     public class TenantDbContextFactory : ITenantDbContextFactory
     {
         private readonly ITenantService _tenantService;
+        private string? _cachedConnectionString; // 👈 cache en memoria del scope
 
         public TenantDbContextFactory(ITenantService tenantService)
         {
@@ -15,16 +16,26 @@ namespace OptiSoftBlazor.Web.Services
 
         public async Task<OptiSoftDbContext> CreateDbContextAsync()
         {
-            var conn = await _tenantService.GetCurrentConnectionStringAsync();
+            var sw = System.Diagnostics.Stopwatch.StartNew();
 
-            if (string.IsNullOrWhiteSpace(conn))
-                throw new Exception("Tenant no inicializado");
+            if (string.IsNullOrWhiteSpace(_cachedConnectionString))
+            {
+                _cachedConnectionString = await _tenantService.GetCurrentConnectionStringAsync();
+                Console.WriteLine($"GetConnectionString: {sw.ElapsedMilliseconds}ms");
+            }
+            else
+            {
+                Console.WriteLine("Usando connection string cacheada");
+            }
 
-            return new OptiSoftDbContext(
+            var ctx = new OptiSoftDbContext(
                 new DbContextOptionsBuilder<OptiSoftDbContext>()
-                    .UseSqlServer(conn)
+                    .UseSqlServer(_cachedConnectionString)
                     .Options
             );
+
+            Console.WriteLine($"CreateDbContext total: {sw.ElapsedMilliseconds}ms");
+            return ctx;
         }
     }
 

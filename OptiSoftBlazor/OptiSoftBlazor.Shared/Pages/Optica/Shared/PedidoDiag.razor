@@ -7,18 +7,19 @@
 @inject CompraService CompraService;
 @inject ArticuloService ArticuloService;
 @inject DetCompraService DetCompraService;
+@inject ClienteService ClienteService
 @inject IToastService ToastService
 
 <style>
     .fluent-dialog-main {
         --dialog-width: 850px !important;
-        --dialog-max-height: 80vh !important;
+        --dialog-max-height: 90vh !important;
     }
 
     @@media (max-width: 600px) {
         .fluent-dialog-main {
             --dialog-width: 90% !important;
-            --dialog-max-height: 80vh !important;
+            --dialog-max-height: 90vh !important;
         }
     }
 </style>
@@ -45,7 +46,8 @@
                                 OptionText="@(c => c.Nombre)"
                                 Multiple="false"
                                 Width="100%"
-                                Height="250px"
+                                Height="200px"
+                                Autocomplete="ComboboxAutocomplete.List"
                                 Position="SelectPosition.Below"/>
             </div>
             <div class="column-flex" style="padding: 1em 0;">
@@ -119,7 +121,6 @@
 @code {
     [Parameter] public bool Hidden { get; set; }
     [Parameter] public EventCallback<bool> HiddenChanged { get; set; }
-    [Parameter] public List<Cliente> Clientes { get; set; } = new();
     [Parameter] public EventCallback<Compra> OnGuardar { get; set; }
     [Parameter] public EventCallback OnEliminar { get; set; }
     [Parameter] public Compra? Compra { get; set; }
@@ -129,39 +130,45 @@
 
     private string? Numero;
     private DateTime? Fecha = DateTime.Today;
+    private List<Cliente> Clientes = new();
     private Cliente? ClienteSelect = new();
     private List<DetCompra> _detalles = new(); 
     private List<Articulo> Articulos { get; set; } = new();
     private IQueryable<DetCompra>? ListDetCompras;
 
-    private List<Cliente> _clientesCargados = new();
-
     private bool HiddenArt = true;
 
     private bool IsLoading = false;
 
-    protected override void OnParametersSet()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!Hidden)
+        if (!firstRender) 
             return;
 
+        IsLoading = true;
+        StateHasChanged();
+
+        Clientes = await ClienteService.ObtenerClienteAsync();
+
+        // Asignar cliente ahora que la lista está disponible
         if (Compra != null)
         {
-            Numero = Compra.Numero;
-            Fecha = Compra.Fecha;
             ClienteSelect = Clientes.FirstOrDefault(c => c.idCliente == Compra.idCliente);
 
-            _detalles = DetCompras != null
-            ? DetCompras.Select(d => new DetCompra
-            {
-                IdDetCompra = d.IdDetCompra,
-                IdArticulo = d.IdArticulo,
-                Articulo = d.Articulo,
-                Cantidad = d.Cantidad
-            }).ToList()
-            : new List<DetCompra>();
+            Numero = Compra.Numero;
+            Fecha = Compra.Fecha;
 
-            ListDetCompras = DetCompras?.AsQueryable();
+            _detalles = DetCompras != null
+                ? DetCompras.Select(d => new DetCompra
+                {
+                    IdDetCompra = d.IdDetCompra,
+                    IdArticulo = d.IdArticulo,
+                    Articulo = d.Articulo,
+                    Cantidad = d.Cantidad
+                }).ToList()
+                : new List<DetCompra>();
+
+            ListDetCompras = _detalles.AsQueryable();
         }
         else
         {
@@ -171,6 +178,9 @@
             _detalles = new List<DetCompra>();
             ListDetCompras = _detalles.AsQueryable();
         }
+
+        IsLoading = false;
+        StateHasChanged();
     }
 
     private async Task Guardar()
@@ -310,5 +320,7 @@
         Numero = null;
         Fecha = DateTime.Now;
         ClienteSelect = null;
+        _detalles = new List<DetCompra>();
+        ListDetCompras = _detalles.AsQueryable();
     }
 }
