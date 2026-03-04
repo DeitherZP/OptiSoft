@@ -50,7 +50,7 @@
                         ShowHover=true
                         DisplayMode="DataGridDisplayMode.Table"
                         OnRowClick="@(args => OnRowClicked(args?.Item ?? new Compra()))">
-            <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" IsDefaultSortColumn />
+            <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" IsDefaultSortColumn InitialSortDirection="SortDirection.Descending" />
             <PropertyColumn Property="tbl => tbl.Numero" Title="Número" Sortable="true" />
             <PropertyColumn Property="tbl => tbl.Cliente!.Nombre" Title="Cliente" Sortable="true" />
             <PropertyColumn Property="tbl => tbl.Laboratorio" Title="Laboratorio" Sortable="false" />
