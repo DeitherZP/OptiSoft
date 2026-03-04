@@ -1,9 +1,9 @@
 ﻿/*Filas Columnas*/
 .fila-flex {
     display: flex;
+    gap: 2em;
     flex-wrap: wrap;
     width: 100%; 
-    gap: 10px;
 }
 
 .columna-flex {

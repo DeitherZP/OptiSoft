@@ -27,6 +27,8 @@ namespace OptiSoftBlazor.Shared.Data
 
         public bool Finalizado { get; set; } = false;
 
+        public string? Laboratorio { get; set; } = string.Empty;
+
         public ObservableCollection<DetCompra> DetCompra { get; set; } = [];
     }
 }

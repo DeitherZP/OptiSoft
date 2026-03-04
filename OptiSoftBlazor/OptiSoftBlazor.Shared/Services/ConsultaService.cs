@@ -46,6 +46,10 @@ namespace OptiSoftBlazor.Shared.Services
 
                 if (consulta.IdConsulta == 0)
                 {
+                    consulta.Cliente = null;
+                    consulta.Pedido = null;
+                    consulta.Profesional = null;
+
                     // Nueva consulta
                     db.Consulta.Add(consulta);
                 }
@@ -53,6 +57,7 @@ namespace OptiSoftBlazor.Shared.Services
                 {
                     // Actualizar consulta existente
                     var consultaExistente = await db.Consulta
+                        .AsNoTracking()
                         .FirstOrDefaultAsync(c => c.IdConsulta == consulta.IdConsulta);
 
                     if (consultaExistente != null)

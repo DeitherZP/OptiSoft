@@ -11,6 +11,7 @@
 @inject ClienteService ClienteService
 @inject PersonalService PersonalService
 @inject CompraService CompraService
+@inject IJSRuntime JS
 
 <style>
     .autocomplete-opti fluent-anchored-region {
@@ -26,7 +27,7 @@
 @if (!IsFirstRender)
 {
     <div class="nueva-fila">
-        <FluentButton Appearance="Appearance.Accent" OnClick="AddConsulta" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-top: 1.4em; margin-right: 3em">Nuevo</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" OnClick="AddConsulta" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-top: 1.45em; margin-right: 3em">Nuevo</FluentButton>
 
         <FluentAutocomplete Label="Cliente"
                             Items="Clientes"
@@ -42,7 +43,7 @@
                             @bind-SelectedOption:after="FiltrarPorCliente"
                             Style="width: 300px; margin-right: 1em;" />
 
-        <FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.Dismiss())" Style="margin-top: 1.4em;" Disabled="!(ClienteSelect?.idCliente > 0)" />
+        <FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.FilterDismiss())" Style="margin-top: 1.45em;" Disabled="!(ClienteSelect?.idCliente > 0)" />
     </div>
 }
 
@@ -56,7 +57,7 @@
                         ShowHover=true
                         DisplayMode="DataGridDisplayMode.Table"
                         OnRowClick="@(args => OnRowClicked(args.Item ?? new()))">
-            <PropertyColumn Property="tbl => tbl.Cliente!.Nombre" Title="Cliente" Sortable="true" />
+            <PropertyColumn Property="tbl => tbl.Cliente!.Nombre" Title="Cliente" Sortable="true" IsDefaultSortColumn />
             <PropertyColumn Property="tbl => tbl.Pedido!.Numero" Title="N° Pedido" Sortable="true" />
             <PropertyColumn Property="tbl => tbl.Profesional!.Nombre" Title="Profesional" Sortable="true" />
             <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" />
@@ -68,14 +69,17 @@
     </FluentCard>
 }
 
-<ConsultaDiag Hidden="@Hidden"
-              Consulta="ConsultaSeleccionada"
-              HiddenChanged="@(v => Hidden = v)"
-              Clientes="@Clientes"
-              Personales="@Personales"
-              Pedidos="@Pedidos"
-              OnGuardar="GuardarConsulta"
-              OnEliminar="EliminarConsulta" />
+@if (!Hidden)
+{
+    <ConsultaDiag Hidden="@Hidden"
+                  Consulta="ConsultaSeleccionada"
+                  HiddenChanged="@(v => Hidden = v)"
+                  Clientes="@Clientes"
+                  Personales="@Personales"
+                  Pedidos="@Pedidos"
+                  OnGuardar="GuardarConsulta"
+                  OnEliminar="EliminarConsulta" />
+}
 
 @code {
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
@@ -97,6 +101,8 @@
     {
         if (!firstRender)
             return;
+
+        await JS.InvokeVoidAsync("translateFluentLabels");
 
         try
         {
@@ -140,22 +146,20 @@
 
     private async Task GuardarConsulta(Consulta consulta)
     {
-        ToastService.ShowSuccess("Consulta guardada correctamente");
-
         consultas = await ConsultaService.ObtenerConsultasAsync();
         consultasFiltradas = new List<Consulta>(consultas);
         ListConsultasFiltradas = consultasFiltradas.AsQueryable();
         ClienteSelect = null; // Limpiar filtro después de guardar
+        ToastService.ShowSuccess("Consulta guardada correctamente");
     }
 
     private async Task EliminarConsulta()
     {
-        ToastService.ShowSuccess("La consulta ha sido eliminada correctamente");
-
         consultas = await ConsultaService.ObtenerConsultasAsync();
         consultasFiltradas = new List<Consulta>(consultas);
         ListConsultasFiltradas = consultasFiltradas.AsQueryable();
         ClienteSelect = null; // Limpiar filtro después de eliminar
+        ToastService.ShowSuccess("La consulta ha sido eliminada correctamente");
     }
 
     private async Task OnRowClicked(Consulta consulta)

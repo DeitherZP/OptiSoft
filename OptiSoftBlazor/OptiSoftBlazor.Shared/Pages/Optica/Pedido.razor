@@ -11,6 +11,7 @@
 @inject ClienteService ClienteService
 @inject ArticuloService ArticuloService
 @inject DetCompraService DetCompraService
+@inject IJSRuntime JS
 
 <PageTitle>Pedido</PageTitle>
 
@@ -19,7 +20,7 @@
 @if (!IsFirstRender)
 {
     <div class="nueva-fila">
-        <FluentButton Appearance="Appearance.Accent" OnClick="@AddPedido" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-top: 1.4em; margin-right: 3em">Nuevo</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" OnClick="@AddPedido" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-top: 1.45em; margin-right: 3em">Nuevo</FluentButton>
         
         <FluentAutocomplete Label="Cliente"
                             Items="Clientes"
@@ -35,7 +36,7 @@
                             @bind-SelectedOption:after="FiltrarPorCliente"
                             Style="width: 300px; margin-right: 1em;" />
 
-        <FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.Dismiss())" Style="margin-top: 1.4em;" Disabled="!(ClienteSelect?.idCliente > 0)" />
+        <FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.FilterDismiss())" Style="margin-top: 1.45em;" Disabled="!(ClienteSelect?.idCliente > 0)" />
     </div>
 }
 
@@ -49,9 +50,10 @@
                         ShowHover=true
                         DisplayMode="DataGridDisplayMode.Table"
                         OnRowClick="@(args => OnRowClicked(args?.Item ?? new Compra()))">
+            <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" IsDefaultSortColumn />
             <PropertyColumn Property="tbl => tbl.Numero" Title="Número" Sortable="true" />
-            <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" />
             <PropertyColumn Property="tbl => tbl.Cliente!.Nombre" Title="Cliente" Sortable="true" />
+            <PropertyColumn Property="tbl => tbl.Laboratorio" Title="Laboratorio" Sortable="false" />
             <TemplateColumn Title="Estado" Sortable="true">
                 <ChildContent Context="tbl">
                     @(tbl.Finalizado ? "Finalizado" : "Pendiente")
@@ -95,6 +97,8 @@
         if (!firstRender)
             return;
 
+        await JS.InvokeVoidAsync("translateFluentLabels");
+
         try
         {
             IsLoading = true;
@@ -131,22 +135,20 @@
 
     private async Task GuardarPedido(Compra pedido)
     {
-        ToastService.ShowSuccess("Pedido guardado correctamente");
-
         pedidos = await CompraService.ObtenerPedidosAsync();
         pedidosFiltrados = new List<Compra>(pedidos);
         ListPedidos = pedidosFiltrados.AsQueryable();
         ClienteSelect = null;
+        ToastService.ShowSuccess("Pedido guardado correctamente");
     }
 
     private async Task EliminarPedido()
     {
-        ToastService.ShowSuccess("El pedido ha sido eliminado correctamente");
-
         pedidos = await CompraService.ObtenerPedidosAsync();
         pedidosFiltrados = new List<Compra>(pedidos);
         ListPedidos = pedidosFiltrados.AsQueryable();
         ClienteSelect = null;
+        ToastService.ShowSuccess("El pedido ha sido eliminado correctamente");
     }
 
     private async Task OnRowClicked(Compra compra)

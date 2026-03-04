@@ -6,6 +6,7 @@ using OptiSoftBlazor.Shared.Data.Tenant;
 using OptiSoftBlazor.Shared.Services;
 using OptiSoftBlazor.Web.Components;
 using OptiSoftBlazor.Web.Services;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,6 +65,8 @@ builder.Services.AddScoped<SeteoService>();
 builder.Services.AddScoped<ConfirmService>();
 
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
+
+builder.Services.AddLocalization();
 
 var app = builder.Build();
 

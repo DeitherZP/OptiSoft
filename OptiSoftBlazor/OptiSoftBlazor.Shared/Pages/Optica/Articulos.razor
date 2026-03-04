@@ -3,9 +3,11 @@
 @rendermode InteractiveServer
 
 @using OptiSoftBlazor.Shared.Data
+@using OptiSoftBlazor.Shared.Pages.Optica.Shared
 @using OptiSoftBlazor.Shared.Pages.Shared
 
 @inject ArticuloService ArticuloService
+@inject IJSRuntime JS
 
 <PageTitle>Artículos</PageTitle>
 
@@ -14,7 +16,7 @@
 @if (!IsFirstRender)
 {
     <div class="nueva-fila">
-        <FluentButton Appearance="Appearance.Accent" OnClick="@BotonPrueba" IconStart="@(new Icons.Filled.Size20.AddCircle())">Nuevo</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" OnClick="@AddArticulo" IconStart="@(new Icons.Filled.Size20.AddCircle())">Nuevo</FluentButton>
     </div>
 }
 
@@ -28,7 +30,7 @@
                         ShowHover="true"
                         DisplayMode="DataGridDisplayMode.Table"
                         OnRowClick="@(args => OnRowClicked(args?.Item ?? new Articulo()))">
-            <PropertyColumn Property="art => art.Nombre" Title="Artículo" Sortable="true" />
+            <PropertyColumn Property="art => art.Nombre" Title="Artículo" Sortable="true" IsDefaultSortColumn />
             <PropertyColumn Property="art => art.Codigo" Title="Código" Sortable="true" />
             <PropertyColumn Property="art => art.Precio2" Title="Precio" Sortable="true" />
         </FluentDataGrid>
@@ -39,9 +41,19 @@
     </FluentCard>
 }
 
+@if (!Hidden)
+{
+    <ArticuloViewDiag Hidden="@Hidden"
+                      Articulo="@ArticuloSeleccionado"
+                      HiddenChanged="@(v => Hidden = v)"
+                      OnGuardar="GuardarArticulo"
+                      OnEliminar="EliminarArticulo"/>
+}
+
 @code{
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
     private List<Articulo>? AuxArticulos = new();
+    private Articulo? ArticuloSeleccionado;
     private IQueryable<Articulo>? ListArt;
     bool Hidden = true;
     bool IsFirstRender = true;
@@ -51,6 +63,8 @@
     {
         if (!firstRender)
             return;
+
+        await JS.InvokeVoidAsync("translateFluentLabels");
 
         try
         {
@@ -71,9 +85,10 @@
         }
     }
 
-    private void BotonPrueba()
+    private void AddArticulo()
     {
-        ToastService.ShowInfo("Este es un botón de prueba", 5000);
+        Hidden = false;
+        StateHasChanged();
     }
 
     private async Task OnRowClicked(Articulo articulo)
@@ -81,6 +96,20 @@
         if (articulo.IdArticulo <= 0)
             return;
 
-        ToastService.ShowInfo("Aqu♂ se abrira el modal con el art♂culo", 5000);
+        ArticuloSeleccionado = articulo;
+        Hidden = false;
+        StateHasChanged();
+    }
+
+    private async Task GuardarArticulo(Articulo articulo)
+    {
+        AuxArticulos = await ArticuloService.ObtenerArticulosAsync();
+        ToastService.ShowSuccess("Pedido guardado correctamente");
+    }
+
+    private async Task EliminarArticulo()
+    {
+        AuxArticulos = await ArticuloService.ObtenerArticulosAsync();
+        ToastService.ShowSuccess("El pedido ha sido eliminado correctamente");
     }
 }

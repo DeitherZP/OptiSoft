@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Fast.Components.FluentUI;
 using OptiSoftBlazor.Shared.Data;
+using OptiSoftBlazor.Shared.Pages.Optica;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -64,7 +65,9 @@ namespace OptiSoftBlazor.Shared.Services
 
                 compraDb.Numero = compra.Numero;
                 compraDb.Fecha = compra.Fecha;
+                compraDb.Laboratorio = compra.Laboratorio;
                 compraDb.idCliente = compra.Cliente.idCliente;
+                compraDb.Finalizado = compra.Finalizado;
 
                 db.Compra.Update(compraDb);
             }
@@ -78,6 +81,9 @@ namespace OptiSoftBlazor.Shared.Services
 
             var compra = await db.Compra
                 .FirstOrDefaultAsync(c => c.idCompra == idCompra);
+
+            if (compra == null)
+                throw new Exception("La compra no existe");
 
             db.Compra.Remove(compra);
             await db.SaveChangesAsync();

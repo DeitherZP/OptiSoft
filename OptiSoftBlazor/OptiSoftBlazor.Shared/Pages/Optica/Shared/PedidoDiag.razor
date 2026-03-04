@@ -21,6 +21,15 @@
             --dialog-max-height: 90vh !important;
         }
     }
+
+    .autocomplete-estado fluent-anchored-region {
+        min-width: 375px;
+        max-width: 375px;
+    }
+
+    .autocomplete-estado fluent-anchored-region fluent-option {
+        margin: 0 0.5em 0 0.2em;
+    }
 </style>
 
 <LoadingSpinner @bind-Visible="IsLoading" />
@@ -56,14 +65,29 @@
                                         Position="SelectPosition.Below"/>
                 </div>
             </div>
-            <div class="nueva-fila" style="margin-bottom: 0;">
+            <div class="fila-flex" style="margin-bottom: 0;">
                 <div class="columna-flex" style="padding: 1em 0;">
                     <FluentDatePicker Label="Fecha"
                                       @bind-Value="Fecha"
                                       Style="width:100%" />
                 </div>
                 <div class="columna-flex" style="padding: 1em 0;">
-
+                    <FluentAutocomplete Label="Estado"
+                                        Items="Estados"
+                                        TOption="KeyValuePair<string, bool>"
+                                        Class="autocomplete-estado"
+                                        @bind-SelectedOption="EstadoSeleccionado"
+                                        OptionText="@(e => e.Key)"
+                                        Multiple="false"
+                                        MaximumSelectedOptions="1"
+                                        Style="width:100%" />
+                </div>
+            </div>
+            <div class="fila-flex" style="margin-bottom: 0;">
+                <div class="columna-flex" style="padding: 1em 0;">
+                    <FluentTextField Label="Laboratorio"
+                                    @bind-Value="Laboratorio"
+                                    Style="width:100%" />
                 </div>
             </div>
             <FluentCard AreaRestricted="false" Class="data-grid-table" Style="margin-bottom: 1em; padding: 0.5em;">
@@ -81,7 +105,7 @@
                                     AutoFit=false
                                     ShowHover=true>
                         <PropertyColumn Property="tbl => tbl.Cantidad" Title="Cantidad" Sortable="true" />
-                        <PropertyColumn Property="tbl => tbl.Articulo.Nombre" Title="Articulo" Sortable="true" />
+                        <PropertyColumn Property="tbl => tbl.Articulo.Nombre" Title="Articulo" Sortable="true" IsDefaultSortColumn />
                         <TemplateColumn Title="Acción">
                             <ChildContent Context="det">
                                 <div style="display:flex; justify-content:center; align-items:center; height:100%;">
@@ -144,6 +168,7 @@
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
 
     private string? Numero;
+    private string? Laboratorio;
     private DateTime? Fecha = DateTime.Today;
     private Cliente? ClienteSelect = new();
     private List<DetCompra> _detalles = new(); 
@@ -151,6 +176,14 @@
     private IQueryable<DetCompra>? ListDetCompras;
     private bool HiddenArt = true;
     private bool IsLoading = false;
+
+    private Dictionary<string, bool> Estados = new()
+    {
+        { "Pendiente", false },
+        { "Finalizado", true }
+    };
+
+    private KeyValuePair<string, bool> EstadoSeleccionado;
 
     protected override void OnParametersSet()
     {
@@ -160,6 +193,10 @@
 
             Numero = Compra.Numero;
             Fecha = Compra.Fecha;
+            Laboratorio = Compra.Laboratorio;
+
+            EstadoSeleccionado = Estados
+                .First(e => e.Value == Compra.Finalizado);
 
             _detalles = DetCompras != null
                 ? DetCompras.Select(d => new DetCompra
@@ -177,7 +214,9 @@
         {
             Numero = null;
             Fecha = DateTime.Today;
+            Laboratorio = null;
             ClienteSelect = null;
+            EstadoSeleccionado = Estados.First(e => e.Value == false);
             _detalles = new List<DetCompra>();
             ListDetCompras = _detalles.AsQueryable();
         }
@@ -189,7 +228,9 @@
 
         pedido.Numero = Numero;
         pedido.Fecha = Fecha;
+        pedido.Laboratorio = Laboratorio;
         pedido.Cliente = ClienteSelect;
+        pedido.Finalizado = EstadoSeleccionado.Value;
 
         bool isValido = true;
 
@@ -245,7 +286,7 @@
             return;
         }
 
-        var confirmado = await ConfirmService.ConfirmAsync("¿Está seguro de eliminar esta consulta?");
+        var confirmado = await ConfirmService.ConfirmAsync("¿Está seguro de eliminar este pedido?");
         if (!confirmado)
             return;
 
@@ -319,7 +360,9 @@
     {
         Numero = null;
         Fecha = DateTime.Now;
+        Laboratorio = null;
         ClienteSelect = null;
+        EstadoSeleccionado = Estados.First(e => e.Value == false);
         _detalles = new List<DetCompra>();
         ListDetCompras = _detalles.AsQueryable();
     }

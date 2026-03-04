@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OptiSoftBlazor.Shared.Data;
 using OptiSoftBlazor.Shared.Services;
+using OptiSoftBlazor.Shared.Helpers;
 
 namespace OptiSoftBlazor.Web.Services
 {
     public class TenantDbContextFactory : ITenantDbContextFactory
     {
         private readonly ITenantService _tenantService;
-        private string? _cachedConnectionString; // 👈 cache en memoria del scope
+        private string? _cachedConnectionString;
 
         public TenantDbContextFactory(ITenantService tenantService)
         {
@@ -22,6 +23,11 @@ namespace OptiSoftBlazor.Web.Services
             {
                 _cachedConnectionString = await _tenantService.GetCurrentConnectionStringAsync();
                 Console.WriteLine($"GetConnectionString: {sw.ElapsedMilliseconds}ms");
+
+                if (!ScEncripter.IsInitialized)
+                {
+                    ScEncripter.Initialize(_cachedConnectionString ?? "");
+                }
             }
             else
             {
@@ -30,7 +36,7 @@ namespace OptiSoftBlazor.Web.Services
 
             var ctx = new OptiSoftDbContext(
                 new DbContextOptionsBuilder<OptiSoftDbContext>()
-                    .UseSqlServer(_cachedConnectionString)
+                    .UseSqlServer(_cachedConnectionString) 
                     .Options
             );
 

@@ -1,0 +1,205 @@
+﻿@using OptiSoftBlazor.Shared.Data
+@using OptiSoftBlazor.Shared.Pages.Shared
+
+@inject ArticuloService ArticuloService
+
+<style>
+    .container-view-articulo .fluent-dialog-main {
+        --dialog-width: 700px !important;
+        --dialog-max-height: 90vh !important;
+    }
+
+    @@media (max-width: 600px) {
+        .container-view-articulo .fluent-dialog-main {
+            --dialog-width: 90% !important;
+            --dialog-max-height: 90vh !important;
+        }
+    }
+</style>
+
+<LoadingSpinner @bind-Visible="IsLoading" />
+
+<div class="container-view-articulo">
+    <FluentDialog Modal="true" @bind-Hidden="Hidden">
+        <FluentHeader>
+            <h3>@(Articulo == null ? "Nueva Artículo" : "Editar Artículo")</h3>
+        </FluentHeader>
+
+        <FluentDialogBody Style="overflow-y:auto; max-height: calc(80vh - 120px);">
+            <div style="padding: 1em;">
+                <div class="nueva-fila">
+                    <div class="columna-flex">
+                        <FluentTextField Label="Código" @bind-Value="@codigo" Placeholder="Ingrese el código del artículo" />
+                    </div>
+                </div>
+                <div class="nueva-fila">
+                    <div class="columna-flex">
+                        <FluentTextField Label="Artículo" @bind-Value="@nombre" Placeholder="Ingrese el nombre del artículo" />
+                    </div>
+                </div>
+                <div class="nueva-fila" style="gap: 2em;">
+                    <div class="columna-flex">
+                        <FluentNumberField Label="Precio" TValue="double" @bind-Value="@precio" Step="0.01" Placeholder="Ingrese el precio del artículo" />
+                    </div>
+                    <div class="columna-flex">
+                        <FluentNumberField Label="I.V.A." TValue="double" @bind-Value="@iva" Step="0.01" Placeholder="Ingrese el IVA del artículo" />
+                    </div>
+                </div>
+            </div>
+        </FluentDialogBody>
+        <FluentFooter Style="gap:1em">
+            <FluentButton Appearance="Appearance.Stealth"
+                          OnClick="Cancelar"
+                          IconStart="@(new Icons.Filled.Size20.DismissCircle())">
+                Cancelar
+            </FluentButton>
+
+            @if (Articulo != null || Articulo?.IdArticulo > 0)
+            {
+                <FluentButton Class="btn-danger"
+                              Appearance="Appearance.Neutral"
+                              OnClick="Eliminar">
+                    <FluentIcon Value="@(new Icons.Filled.Size20.Delete())" Color="Color.Neutral" Slot="start" />
+                    Eliminar
+                </FluentButton>
+            }
+
+            <FluentButton Appearance="Appearance.Accent"
+                          OnClick="Guardar"
+                          IconStart="@(new Icons.Filled.Size20.Save())">
+                Guardar
+            </FluentButton>
+        </FluentFooter>
+    </FluentDialog>
+</div>
+
+
+@code {
+    [Parameter] public bool Hidden { get; set; }
+    [Parameter] public EventCallback<bool> HiddenChanged { get; set; }
+    [Parameter] public EventCallback<Articulo> OnGuardar { get; set; }
+    [Parameter] public EventCallback OnEliminar { get; set; }
+    [Parameter] public Articulo? Articulo { get; set; }
+
+    private string? codigo { get; set; } = string.Empty;
+    private string? nombre { get; set; } = string.Empty;
+    private double precio { get; set; } = 0;
+    private double iva { get; set; } = 0;
+
+    private bool IsLoading = false;
+
+    protected override void OnParametersSet()
+    {
+        if (Articulo != null)
+        {
+            codigo = Articulo.Codigo;
+            nombre = Articulo.Nombre;
+            precio = Articulo.Precio2;
+            iva = Articulo.Iva;
+        }
+        else
+        {
+            codigo = null;
+            nombre = null;
+            precio = 0;
+            iva = 0;
+        }
+    }
+
+    private async Task Cancelar()
+    {
+        Limpiar();
+        Hidden = true;
+        await HiddenChanged.InvokeAsync(Hidden);
+    }
+
+    private async Task Guardar()
+    {
+        var articulo = Articulo ?? new Articulo();
+
+        articulo.Codigo = codigo;
+        articulo.Nombre = nombre;
+        articulo.Precio2 = precio;
+        articulo.Iva = iva;
+
+        bool isValido = true;
+
+        try
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            if (string.IsNullOrEmpty(articulo.Codigo))
+            {
+                ToastService.ShowError("Debe ingresar el código del artículo", 6000);
+                isValido = false;
+            }
+
+            if (string.IsNullOrEmpty(articulo.Nombre))
+            {
+                ToastService.ShowError("Debe ingresar el nombre del artículo", 6000);
+                isValido = false;
+            }
+
+            if (!isValido)
+                return;
+
+            await ArticuloService.GuardarArticuloAsync(articulo);
+            await OnGuardar.InvokeAsync(articulo);
+            await Cancelar();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al guardar el artículo: {ex.Message}");
+
+        }
+        finally
+        {
+            Limpiar();
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task Eliminar()
+    {
+        if (Articulo == null || Articulo.IdArticulo <= 0)
+        {
+            ToastService.ShowWarning("No hay un artículo válido para eliminar.", 4000);
+            return;
+        }
+
+        var confirmado = await ConfirmService.ConfirmAsync("¿Está seguro de eliminar este artículo?");
+        if (!confirmado)
+            return;
+
+        try
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            await ArticuloService.EliminarArticuloAsync(Articulo.IdArticulo);
+
+            await OnEliminar.InvokeAsync();
+            await Cancelar();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al eliminar el artículo: {ex.Message}", 6000);
+        }
+        finally
+        {
+            Limpiar();
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void Limpiar()
+    {
+        codigo = null;
+        nombre = null;
+        precio = 0;
+        iva = 0;
+    }
+}
