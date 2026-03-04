@@ -1,0 +1,86 @@
+﻿@page "/articulos"
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+@using OptiSoftBlazor.Shared.Data
+@using OptiSoftBlazor.Shared.Pages.Shared
+
+@inject ArticuloService ArticuloService
+
+<PageTitle>Artículos</PageTitle>
+
+<LoadingSpinner @bind-Visible="IsLoading" />
+
+@if (!IsFirstRender)
+{
+    <div class="nueva-fila">
+        <FluentButton Appearance="Appearance.Accent" OnClick="@BotonPrueba" IconStart="@(new Icons.Filled.Size20.AddCircle())">Nuevo</FluentButton>
+    </div>
+}
+
+@if (!(ListArt == null))
+{
+    <FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 78vh; padding: 0.5em;">
+        <FluentDataGrid Items="ListArt"
+                        TGridItem="Articulo"
+                        Pagination="@pagination"
+                        AutoFit="true"
+                        ShowHover="true"
+                        DisplayMode="DataGridDisplayMode.Table"
+                        OnRowClick="@(args => OnRowClicked(args?.Item ?? new Articulo()))">
+            <PropertyColumn Property="art => art.Nombre" Title="Artículo" Sortable="true" />
+            <PropertyColumn Property="art => art.Codigo" Title="Código" Sortable="true" />
+            <PropertyColumn Property="art => art.Precio2" Title="Precio" Sortable="true" />
+        </FluentDataGrid>
+        @if (ListArt.Count() > pagination.ItemsPerPage)
+        {
+            <FluentPaginator State="pagination" Style="padding: 0.5em 2em;" />
+        }
+    </FluentCard>
+}
+
+@code{
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    private List<Articulo>? AuxArticulos = new();
+    private IQueryable<Articulo>? ListArt;
+    bool Hidden = true;
+    bool IsFirstRender = true;
+    private bool IsLoading = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        try
+        {
+            IsLoading = true;
+            StateHasChanged();
+            AuxArticulos = await ArticuloService.ObtenerArticulosAsync();
+            ListArt = AuxArticulos.AsQueryable();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al cargar los datos. {ex.Message}", 5000);
+        }
+        finally
+        {
+            IsFirstRender = false;
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void BotonPrueba()
+    {
+        ToastService.ShowInfo("Este es un botón de prueba", 5000);
+    }
+
+    private async Task OnRowClicked(Articulo articulo)
+    {
+        if (articulo.IdArticulo <= 0)
+            return;
+
+        ToastService.ShowInfo("Aqu♂ se abrira el modal con el art♂culo", 5000);
+    }
+}

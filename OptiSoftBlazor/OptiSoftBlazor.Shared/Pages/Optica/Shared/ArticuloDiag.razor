@@ -24,7 +24,7 @@
     <FluentDialog Modal="true" @bind-Hidden="Hidden">
         <FluentHeader>Seleccione un artículo</FluentHeader>
 
-        <FluentDialogBody>
+        <FluentDialogBody Style="overflow: visible;">
             <div style="padding: 0.5em;">
                 <div class="columna-flex" style="padding: 0 1em; margin-right: 0;">
                     <FluentNumberField @bind-Value="Cantidad"
@@ -32,16 +32,19 @@
                                        Placeholder="Ingrese la cantidad"/>
                 </div>
                 <div class="columna-flex" style="padding: 0 1em; margin-right: 0;">
-                    <FluentCombobox Label="Artículo"
-                                    Items="@Articulos"
-                                    TOption="Articulo"
-                                    @bind-SelectedOption="ArticuloSelect"
-                                    OptionText="@(a => a.Nombre)"
-                                    Multiple="false"
-                                    Width="100%"
-                                    Height="250px"
-                                    Autocomplete="ComboboxAutocomplete.List"
-                                    Position="SelectPosition.Below" />
+                    <FluentAutocomplete Label="Artículo"
+                                        Items="@Articulos"
+                                        TOption="Articulo"
+                                        Class="autocomplete-opti"
+                                        @bind-SelectedOption="ArticuloSelect"
+                                        OptionText="@(a => a.Nombre)"
+                                        Multiple="false"
+                                        Virtualize="true"
+                                        MaximumOptionsSearch="int.MaxValue"
+                                        MaximumSelectedOptions="1"
+                                        Placeholder="Seleccione un artículo"
+                                        MaxAutoHeight="100px"
+                                        Position="SelectPosition.Below" />
                 </div>
             </div>
         </FluentDialogBody>

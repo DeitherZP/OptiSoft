@@ -22,6 +22,15 @@
             --dialog-max-height: 90vh !important;
         }
     }
+
+    .autocomplete-pedido fluent-anchored-region {
+        min-width: 430px;
+        max-width: 430px;
+    }
+
+    .autocomplete-pedido fluent-anchored-region fluent-option {
+        margin: 0 0.5em 0 0.2em;
+    }
 </style>
 
 <LoadingSpinner @bind-Visible="IsLoading" />
@@ -61,50 +70,51 @@
 
                 <div class="fila-flex">
                     <div class="columna-flex" style="padding-top: 1em;">
-                        <FluentCombobox Label="Cliente"
-                                        Items="@Clientes"
-                                        TOption="Cliente"
-                                        @bind-SelectedOption="ClienteSelect"
-                                        OptionText="@(c => c.Nombre)"
-                                        Multiple="false"
-                                        Width="100%"
-                                        Height="250px"
-                                        Autocomplete="ComboboxAutocomplete.List"
-                                        EnableClickToClose="true"
-                                        Position="SelectPosition.Below" />
+                        <FluentAutocomplete Label="Cliente"
+                                            Items="@Clientes"
+                                            TOption="Cliente"
+                                            Class="autocomplete-opti"
+                                            @bind-SelectedOption="ClienteSelect"
+                                            OptionText="@(c => c.Nombre)"
+                                            Multiple="false"
+                                            Virtualize="true"
+                                            MaximumSelectedOptions="1"
+                                            MaximumOptionsSearch="int.MaxValue"
+                                            Position="SelectPosition.Below" />
                     </div>
                 </div>
                 <div class="fila-flex">
                     <div class="columna-flex" style="padding-top: 1em;">
-                        <FluentCombobox Label="Profesional"
-                                        Items="@Personales"
-                                        TOption="Personal"
-                                        @bind-SelectedOption="ProfesionalSelect"
-                                        OptionText="@(c => c.Nombre)"
-                                        Multiple="false"
-                                        Width="100%"
-                                        Height="250px"
-                                        Autocomplete="ComboboxAutocomplete.List"
-                                        EnableClickToClose="true"
-                                        Position="SelectPosition.Below" />
+                        <FluentAutocomplete Label="Profesional"
+                                            Items="@Personales"
+                                            TOption="Personal"
+                                            Class="autocomplete-opti"
+                                            @bind-SelectedOption="ProfesionalSelect"
+                                            OptionText="@(c => c.Nombre)"
+                                            Multiple="false"
+                                            Virtualize="true"
+                                            MaximumSelectedOptions="1"
+                                            MaximumOptionsSearch="int.MaxValue"
+                                            Position="SelectPosition.Below" />
                     </div>
                 </div>
                 <div class="fila-flex">
                     <div class="columna-flex" style="padding-top: 1em;">
                         <FluentDatePicker Label="Fecha"
-                                          @bind-Value="@_consulta.Fecha" />
+                                          @bind-Value="@_consulta!.Fecha" />
                     </div>
                     <div class="columna-flex" style="padding-top: 1em;">
-                        <FluentCombobox Label="Pedido"
-                                        Items="@Pedidos"
-                                        TOption="Compra"
-                                        @bind-SelectedOption="PedidoSelect"
-                                        OptionText="@(c => c.Numero)"
-                                        Multiple="false"
-                                        Width="100%"
-                                        Height="250px"
-                                        Autocomplete="ComboboxAutocomplete.List""
-                                        Position="SelectPosition.Below" />
+                        <FluentAutocomplete Label="Pedido"
+                                            Items="@Pedidos"
+                                            TOption="Compra"
+                                            Class="autocomplete-pedido"
+                                            @bind-SelectedOption="PedidoSelect"
+                                            OptionText="@(c => c.Numero)"
+                                            Multiple="false"
+                                            Virtualize="true"
+                                            MaximumSelectedOptions="1"
+                                            MaximumOptionsSearch="int.MaxValue"
+                                            Position="SelectPosition.Below" />
                     </div>
                 </div>
                 <div class="fila-flex">
@@ -130,7 +140,7 @@
 
                             <div class="fila-flex">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxUsoEsferaOD" Label="Esfera" TextFieldType="TextFieldType.Number"/>
+                                    <FluentTextField @bind-Value="@_consulta!.RxUsoEsferaOD" Label="Esfera" TextFieldType="TextFieldType.Number"/>
                                 </div>
                                 <div class="columna-flex">
                                     <FluentTextField @bind-Value="@_consulta.RxUsoCilindroOD" Label="Cilindro" TextFieldType="TextFieldType.Number" />
@@ -154,7 +164,7 @@
 
                             <div class="fila-flex">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxUsoEsferaOI" Label="Esfera" TextFieldType="TextFieldType.Number" />
+                                    <FluentTextField @bind-Value="@_consulta!.RxUsoEsferaOI" Label="Esfera" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
                                     <FluentTextField @bind-Value="@_consulta.RxUsoCilindroOI" Label="Cilindro" TextFieldType="TextFieldType.Number" />
@@ -184,7 +194,7 @@
 
                             <div class="fila-flex">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxEsferaOD" Label="Esfera" TextFieldType="TextFieldType.Number" />
+                                    <FluentTextField @bind-Value="@_consulta!.RxEsferaOD" Label="Esfera" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
                                     <FluentTextField @bind-Value="@_consulta.RxCilindroOD" Label="Cilindro" TextFieldType="TextFieldType.Number" />
@@ -214,7 +224,7 @@
 
                             <div class="fila-flex">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.RxEsferaOI" Label="Esfera" TextFieldType="TextFieldType.Number" />
+                                    <FluentTextField @bind-Value="@_consulta!.RxEsferaOI" Label="Esfera" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
                                     <FluentTextField @bind-Value="@_consulta.RxCilindroOI" Label="Cilindro" TextFieldType="TextFieldType.Number" />
@@ -248,7 +258,7 @@
 
                         <div class="fila-flex">
                             <div class="columna-flex">
-                                <FluentTextArea @bind-Value="@_consulta.TipoLente"
+                                <FluentTextArea @bind-Value="@_consulta!.TipoLente"
                                                 Label="Tipo Lente"
                                                 Placeholder="Descripción del tipo de lente"
                                                 Rows="3" />
@@ -330,7 +340,7 @@
 
                             <div class="fila-flex" style="margin-top: 1em;">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_KeraK1OD" Label="K1" TextFieldType="TextFieldType.Number" />
+                                    <FluentTextField @bind-Value="@_consulta!.LC_KeraK1OD" Label="K1" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
                                     <FluentTextField @bind-Value="@_consulta.LC_KeraK2OD" Label="K2" TextFieldType="TextFieldType.Number" />
@@ -342,7 +352,7 @@
 
                             <div class="fila-flex" style="margin-top: 1em;">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_KeraK1OI" Label="K1" TextFieldType="TextFieldType.Number" />
+                                    <FluentTextField @bind-Value="@_consulta!.LC_KeraK1OI" Label="K1" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
                                     <FluentTextField @bind-Value="@_consulta.LC_KeraK2OI" Label="K2" TextFieldType="TextFieldType.Number" />
@@ -360,7 +370,7 @@
 
                             <div class="fila-flex" style="margin-top: 1em;">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_LFinRxOD" Label="Rx" TextFieldType="TextFieldType.Number" />
+                                    <FluentTextField @bind-Value="@_consulta!.LC_LFinRxOD" Label="Rx" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
                                     <FluentTextField @bind-Value="@_consulta.LC_LFinTipoOD" Label="Tipo" TextFieldType="TextFieldType.Number" />
@@ -390,7 +400,7 @@
 
                             <div class="fila-flex" style="margin-top: 1em;">
                                 <div class="columna-flex">
-                                    <FluentTextField @bind-Value="@_consulta.LC_LFinRxOI" Label="Rx" TextFieldType="TextFieldType.Number" />
+                                    <FluentTextField @bind-Value="@_consulta!.LC_LFinRxOI" Label="Rx" TextFieldType="TextFieldType.Number" />
                                 </div>
                                 <div class="columna-flex">
                                     <FluentTextField @bind-Value="@_consulta.LC_LFinTipoOI" Label="Tipo" TextFieldType="TextFieldType.Number" />
@@ -420,7 +430,7 @@
 
                             <div class="fila-flex">
                                 <div class="columna-flex">
-                                    <FluentTextArea @bind-Value="@_consulta.LC_Diagnostico" Placeholder="Ingrese el diagnóstico" Rows="4"/>
+                                    <FluentTextArea @bind-Value="@_consulta!.LC_Diagnostico" Placeholder="Ingrese el diagnóstico" Rows="4"/>
                                 </div>
                             </div>
                         </FluentCard>
@@ -686,9 +696,9 @@
             return;
         }
 
-        Seteo seteo = await SeteoService.ObtenerSeteoAsync();
+        Seteo? seteo = await SeteoService.ObtenerSeteoAsync();
 
-        var ruc = seteo.Ruc;
+        var ruc = seteo!.Ruc;
         var stringConnection = ScEncripter.Encriptar(ScEmpresa);
 
         var url = $"https://reportes.elixirsa.net/home/MotorRefractivo" +
@@ -708,9 +718,9 @@
             return;
         }
 
-        Seteo seteo = await SeteoService.ObtenerSeteoAsync();
+        Seteo? seteo = await SeteoService.ObtenerSeteoAsync();
 
-        var ruc = seteo.Ruc;
+        var ruc = seteo!.Ruc;
         var stringConnection = ScEncripter.Encriptar(ScEmpresa);
 
         var url = $"https://reportes.elixirsa.net/home/LenteContacto" +

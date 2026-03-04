@@ -7,8 +7,8 @@
 @using OptiSoftBlazor.Shared.Pages.Optica.Shared
 @using OptiSoftBlazor.Shared.Services
 
-@inject CompraService CompraServicio
-@inject ClienteService ClienteServicio
+@inject CompraService CompraService
+@inject ClienteService ClienteService
 @inject ArticuloService ArticuloService
 @inject DetCompraService DetCompraService
 
@@ -19,13 +19,29 @@
 @if (!IsFirstRender)
 {
     <div class="nueva-fila">
-        <FluentButton Appearance="Appearance.Accent" OnClick="@AddPedido" IconStart="@(new Icons.Filled.Size20.AddCircle())">Nuevo</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" OnClick="@AddPedido" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-top: 1.4em; margin-right: 3em">Nuevo</FluentButton>
+        
+        <FluentAutocomplete Label="Cliente"
+                            Items="Clientes"
+                            TOption="Cliente"
+                            Class="autocomplete-opti"
+                            @bind-SelectedOption="ClienteSelect"
+                            OptionText="@(c => c.Nombre)"
+                            Virtualize="true"
+                            Multiple="false"
+                            MaximumOptionsSearch="int.MaxValue"
+                            MaximumSelectedOptions="1"
+                            Position="SelectPosition.Below"
+                            @bind-SelectedOption:after="FiltrarPorCliente"
+                            Style="width: 300px; margin-right: 1em;" />
+
+        <FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.Dismiss())" Style="margin-top: 1.4em;" Disabled="!(ClienteSelect?.idCliente > 0)" />
     </div>
 }
 
 @if (!(ListPedidos == null))
 {
-    <FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 78vh; padding: 0.5em;">
+    <FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 74vh; padding: 0.5em;">
         <FluentDataGrid Items="ListPedidos"
                         TGridItem="Compra"
                         Pagination="@pagination"
@@ -35,8 +51,17 @@
                         OnRowClick="@(args => OnRowClicked(args?.Item ?? new Compra()))">
             <PropertyColumn Property="tbl => tbl.Numero" Title="Número" Sortable="true" />
             <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" />
-            <PropertyColumn Property="tbl => tbl.Cliente.Nombre" Title="Cliente" Sortable="true" />
+            <PropertyColumn Property="tbl => tbl.Cliente!.Nombre" Title="Cliente" Sortable="true" />
+            <TemplateColumn Title="Estado" Sortable="true">
+                <ChildContent Context="tbl">
+                    @(tbl.Finalizado ? "Finalizado" : "Pendiente")
+                </ChildContent>
+            </TemplateColumn>
         </FluentDataGrid>
+        @if (ListPedidos.Count() > pagination.ItemsPerPage)
+        {
+            <FluentPaginator State="pagination" Style="padding: 0.5em 2em;" />
+        }
     </FluentCard>
 }
 
@@ -44,6 +69,7 @@
 {
     <PedidoDiag Hidden="@Hidden"
                 Compra="PedidoSeleccionado"
+                Clientes="Clientes"
                 HiddenChanged="@(v => Hidden = v)"
                 DetCompras="ListDetCompras"
                 OnGuardar="GuardarPedido"
@@ -53,11 +79,14 @@
 @code {
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
     private List<Compra>? pedidos = new();
+    private List<Compra>? pedidosFiltrados = new();
     bool Hidden = true;
     private List<DetCompra>? ListDetCompras;
     bool IsFirstRender = true;
     private Compra? PedidoSeleccionado;
     private IQueryable<Compra>? ListPedidos;
+    private List<Cliente> Clientes { get; set; } = new();
+    private Cliente? ClienteSelect { get; set; }
 
     private bool IsLoading { get; set; } = false;
 
@@ -70,8 +99,10 @@
         {
             IsLoading = true;
             StateHasChanged();
-            pedidos = await CompraServicio.ObtenerPedidosAsync();
-            ListPedidos = pedidos.AsQueryable();
+            pedidos = await CompraService.ObtenerPedidosAsync();
+            pedidosFiltrados = new List<Compra>(pedidos);
+            Clientes = await ClienteService.ObtenerClienteAsync();
+            ListPedidos = pedidosFiltrados.AsQueryable();
         }
         catch (Exception ex)
         {
@@ -90,14 +121,11 @@
     {
         IsLoading = true;
         StateHasChanged();
+
         PedidoSeleccionado = null;
         Hidden = false;
-        IsLoading = false;
-        StateHasChanged();
-    }
 
-    private void cerrarModal()
-    {
+        IsLoading = false;
         StateHasChanged();
     }
 
@@ -105,31 +133,60 @@
     {
         ToastService.ShowSuccess("Pedido guardado correctamente");
 
-        pedidos = await CompraServicio.ObtenerPedidosAsync();
-        ListPedidos = pedidos.AsQueryable();
+        pedidos = await CompraService.ObtenerPedidosAsync();
+        pedidosFiltrados = new List<Compra>(pedidos);
+        ListPedidos = pedidosFiltrados.AsQueryable();
+        ClienteSelect = null;
     }
 
     private async Task EliminarPedido()
     {
         ToastService.ShowSuccess("El pedido ha sido eliminado correctamente");
 
-        pedidos = await CompraServicio.ObtenerPedidosAsync();
-        ListPedidos = pedidos.AsQueryable();
+        pedidos = await CompraService.ObtenerPedidosAsync();
+        pedidosFiltrados = new List<Compra>(pedidos);
+        ListPedidos = pedidosFiltrados.AsQueryable();
+        ClienteSelect = null;
     }
 
     private async Task OnRowClicked(Compra compra)
     {
+        if (compra.idCompra <= 0)
+            return;
+
         IsLoading = true;
         StateHasChanged();
 
         ListDetCompras = await DetCompraService.ObtenerDetComprasAsync(compra.idCompra);
         PedidoSeleccionado = compra;
 
-        //await Task.Delay(50);
-
         Hidden = false;
-
         IsLoading = false;
         StateHasChanged();
+    }
+
+    private void FiltrarPorCliente()
+    {
+        if (pedidos == null) return;
+
+        if (ClienteSelect?.idCliente > 0)
+        {
+            pedidosFiltrados = pedidos
+                .Where(c => c.Cliente?.idCliente == ClienteSelect.idCliente)
+                .ToList();
+        }
+        else
+        {
+            pedidosFiltrados = new List<Compra>(pedidos);
+        }
+
+        ListPedidos = pedidosFiltrados.AsQueryable();
+        StateHasChanged();
+    }
+
+    private void LimpiarFiltro()
+    {
+        ClienteSelect = null;
+        FiltrarPorCliente();
     }
 }

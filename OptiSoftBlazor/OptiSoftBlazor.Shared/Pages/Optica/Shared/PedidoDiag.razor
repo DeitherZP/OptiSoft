@@ -8,7 +8,6 @@
 @inject ArticuloService ArticuloService;
 @inject DetCompraService DetCompraService;
 @inject ClienteService ClienteService
-@inject IToastService ToastService
 
 <style>
     .fluent-dialog-main {
@@ -33,45 +32,57 @@
 
     <FluentDialogBody Style="overflow-y:auto; max-height: calc(80vh - 120px);">
         <div style="padding: 0 1em;">
-            <div class="column-flex" style="padding-top: 1em;">
-                <FluentTextField @bind-Value="Numero"
-                                 Label="Número"
-                                 Style="width:100%" />
+            <div class="nueva-fila" style="margin-bottom: 0;">
+                <div class="columna-flex" style="padding-top: 1em;">
+                    <FluentTextField @bind-Value="Numero"
+                                     Label="Número"
+                                     Placeholder="Ingrese el número de pedido"
+                                     Style="width:100%" />
+                </div>
             </div>
-            <div class="column-flex" style="padding-top: 1em;">
-                <FluentCombobox Label="Cliente"
-                                Items="@Clientes"
-                                TOption="Cliente"
-                                @bind-SelectedOption="ClienteSelect"
-                                OptionText="@(c => c.Nombre)"
-                                Multiple="false"
-                                Width="100%"
-                                Height="200px"
-                                Autocomplete="ComboboxAutocomplete.List"
-                                Position="SelectPosition.Below"/>
+            <div class="nueva-fila" style="margin-bottom: 0;">
+                <div class="columna-flex" style="padding-top: 1em;">
+                    <FluentAutocomplete Label="Cliente"
+                                        Items="@Clientes"
+                                        TOption="Cliente"
+                                        Placeholder="Seleccione un cliente"
+                                        Class="autocomplete-opti"
+                                        @bind-SelectedOption="ClienteSelect"
+                                        OptionText="@(c => c.Nombre)"
+                                        Virtualize="true"
+                                        Multiple="false"
+                                        MaximumSelectedOptions="1"
+                                        MaximumOptionsSearch="int.MaxValue"
+                                        Position="SelectPosition.Below"/>
+                </div>
             </div>
-            <div class="column-flex" style="padding: 1em 0;">
-                <FluentDatePicker Label="Fecha"
-                                  @bind-Value="Fecha"
-                                  Style="width:100%" />
+            <div class="nueva-fila" style="margin-bottom: 0;">
+                <div class="columna-flex" style="padding: 1em 0;">
+                    <FluentDatePicker Label="Fecha"
+                                      @bind-Value="Fecha"
+                                      Style="width:100%" />
+                </div>
+                <div class="columna-flex" style="padding: 1em 0;">
+
+                </div>
             </div>
-            <FluentCard AreaRestricted="false" Class="data-grid-table" Style="margin-bottom: 1em;">
+            <FluentCard AreaRestricted="false" Class="data-grid-table" Style="margin-bottom: 1em; padding: 0.5em;">
                 <div class="column-flex">
                     <FluentButton Appearance="Appearance.Accent"
                                   OnClick="AbrirArticulos"
-                                  IconStart="@(new Icons.Filled.Size20.AddCircle())">
+                                  IconStart="@(new Icons.Filled.Size20.AddCircle())"
+                                  Style="margin: 1em;">
                         Agregar Artículo
                     </FluentButton>
                 </div>
                 <div class="column-flex">
                     <FluentDataGrid Items="ListDetCompras"
                                     TGridItem="DetCompra"
-                                    Pagination="@pagination"
                                     AutoFit=false
                                     ShowHover=true>
                         <PropertyColumn Property="tbl => tbl.Cantidad" Title="Cantidad" Sortable="true" />
                         <PropertyColumn Property="tbl => tbl.Articulo.Nombre" Title="Articulo" Sortable="true" />
-                        <TemplateColumn Title="">
+                        <TemplateColumn Title="Acción">
                             <ChildContent Context="det">
                                 <div style="display:flex; justify-content:center; align-items:center; height:100%;">
                                     <FluentButton Class="btn-delete-grid"
@@ -113,10 +124,13 @@
     </FluentFooter>
 </FluentDialog>
 
-<ArticuloDiag Hidden="@HiddenArt"
-              HiddenChanged="@(v => HiddenArt = v)"
-              Articulos="Articulos"
-              OnArticuloAgregado="ArticuloAgregado" />
+@if (!HiddenArt)
+{
+    <ArticuloDiag Hidden="@HiddenArt"
+                  HiddenChanged="@(v => HiddenArt = v)"
+                  Articulos="Articulos"
+                  OnArticuloAgregado="ArticuloAgregado" />
+}
 
 @code {
     [Parameter] public bool Hidden { get; set; }
@@ -125,35 +139,24 @@
     [Parameter] public EventCallback OnEliminar { get; set; }
     [Parameter] public Compra? Compra { get; set; }
     [Parameter] public List<DetCompra>? DetCompras { get; set; }
+    [Parameter] public List<Cliente>? Clientes { get; set; }
 
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
 
     private string? Numero;
     private DateTime? Fecha = DateTime.Today;
-    private List<Cliente> Clientes = new();
     private Cliente? ClienteSelect = new();
     private List<DetCompra> _detalles = new(); 
     private List<Articulo> Articulos { get; set; } = new();
     private IQueryable<DetCompra>? ListDetCompras;
-
     private bool HiddenArt = true;
-
     private bool IsLoading = false;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnParametersSet()
     {
-        if (!firstRender) 
-            return;
-
-        IsLoading = true;
-        StateHasChanged();
-
-        Clientes = await ClienteService.ObtenerClienteAsync();
-
-        // Asignar cliente ahora que la lista está disponible
         if (Compra != null)
         {
-            ClienteSelect = Clientes.FirstOrDefault(c => c.idCliente == Compra.idCliente);
+            ClienteSelect = Clientes!.FirstOrDefault(c => c.idCliente == Compra.idCliente);
 
             Numero = Compra.Numero;
             Fecha = Compra.Fecha;
@@ -178,9 +181,6 @@
             _detalles = new List<DetCompra>();
             ListDetCompras = _detalles.AsQueryable();
         }
-
-        IsLoading = false;
-        StateHasChanged();
     }
 
     private async Task Guardar()
@@ -282,8 +282,8 @@
             if (!Articulos.Any())
                 Articulos = await ArticuloService.ObtenerArticulosAsync();
 
-            IsLoading = false;
             HiddenArt = false;
+            IsLoading = false;
             StateHasChanged();
         }
         catch (Exception ex)

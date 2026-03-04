@@ -12,6 +12,13 @@
 @inject PersonalService PersonalService
 @inject CompraService CompraService
 
+<style>
+    .autocomplete-opti fluent-anchored-region {
+        min-width: 600px;
+        max-width: 600px;
+    }
+</style>
+
 <PageTitle>Consulta</PageTitle>
 
 <LoadingSpinner @bind-Visible="IsLoading" />
@@ -24,6 +31,7 @@
         <FluentAutocomplete Label="Cliente"
                             Items="Clientes"
                             TOption="Cliente"
+                            Class="autocomplete-opti"
                             @bind-SelectedOption="ClienteSelect"
                             OptionText="@(c => c.Nombre)"
                             Virtualize="true"
@@ -32,7 +40,7 @@
                             MaximumSelectedOptions="1"
                             Position="SelectPosition.Below"
                             @bind-SelectedOption:after="FiltrarPorCliente"
-                            Style="max-width: 250px; margin-right: 1em;" />
+                            Style="width: 300px; margin-right: 1em;" />
 
         <FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.Dismiss())" Style="margin-top: 1.4em;" Disabled="!(ClienteSelect?.idCliente > 0)" />
     </div>
@@ -47,12 +55,16 @@
                         AutoFit=true
                         ShowHover=true
                         DisplayMode="DataGridDisplayMode.Table"
-                        OnRowClick="@(args => OnRowClicked(args.Item))">
-            <PropertyColumn Property="tbl => tbl.Cliente.Nombre" Title="Cliente" Sortable="true" />
-            <PropertyColumn Property="tbl => tbl.Pedido.Numero" Title="N° Pedido" Sortable="true" />
-            <PropertyColumn Property="tbl => tbl.Profesional.Nombre" Title="Profesional" Sortable="true" />
+                        OnRowClick="@(args => OnRowClicked(args.Item ?? new()))">
+            <PropertyColumn Property="tbl => tbl.Cliente!.Nombre" Title="Cliente" Sortable="true" />
+            <PropertyColumn Property="tbl => tbl.Pedido!.Numero" Title="N° Pedido" Sortable="true" />
+            <PropertyColumn Property="tbl => tbl.Profesional!.Nombre" Title="Profesional" Sortable="true" />
             <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" />
         </FluentDataGrid>
+        @if (ListConsultasFiltradas.Count() > pagination.ItemsPerPage)
+        {
+            <FluentPaginator State="pagination" Style="padding: 0.5em 2em;" />
+        }
     </FluentCard>
 }
 
@@ -148,6 +160,9 @@
 
     private async Task OnRowClicked(Consulta consulta)
     {
+        if (consulta.IdConsulta <= 0)
+            return;
+
         IsLoading = true;
         StateHasChanged();
 

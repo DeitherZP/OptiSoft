@@ -24,15 +24,15 @@ namespace OptiSoftBlazor.Shared.Data
         [ForeignKey(nameof(IdPedido))]
         public Compra? Pedido { get; set; }
 
+        public int? IdProfesional { get; set; }
+
+        [ForeignKey(nameof(IdProfesional))]
+        public Personal? Profesional { get; set; }
+
         public DateTime? Fecha { get; set; } = DateTime.Today;
 
 
         #region Informacion Global
-
-        public int IdProfesional { get; set; }
-
-        [ForeignKey(nameof(IdProfesional))]
-        public Personal? Profesional { get; set; }
 
         public string? Motivo { get; set; }
 

@@ -25,6 +25,8 @@ namespace OptiSoftBlazor.Shared.Data
 
         public int IdTipoFactura { get; set; } = 13;
 
+        public bool Finalizado { get; set; } = false;
+
         public ObservableCollection<DetCompra> DetCompra { get; set; } = [];
     }
 }

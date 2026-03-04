@@ -15,10 +15,10 @@ namespace OptiSoftBlazor.Shared.Data
 
         [Required]
         [StringLength(100)]
-        public string Codigo { get; set; }
+        public string? Codigo { get; set; }
 
         [Column("Articulo")]
-        public string Nombre { get; set; }
+        public string? Nombre { get; set; }
 
         public double Precio2 { get; set; }
 
