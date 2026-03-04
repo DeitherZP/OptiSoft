@@ -58,7 +58,7 @@
                         DisplayMode="DataGridDisplayMode.Table"
                         OnRowClick="@(args => OnRowClicked(args.Item ?? new()))">
             <PropertyColumn Property="tbl => tbl.Cliente!.Nombre" Title="Cliente" Sortable="true" IsDefaultSortColumn />
-            <PropertyColumn Property="tbl => tbl.Pedido!.Numero" Title="N° Pedido" Sortable="true" />
+            <PropertyColumn Property="tbl => tbl.PedidoNumero" Title="N° Pedido" Sortable="true" />
             <PropertyColumn Property="tbl => tbl.Profesional!.Nombre" Title="Profesional" Sortable="true" />
             <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" />
         </FluentDataGrid>

@@ -14,7 +14,7 @@ namespace OptiSoftBlazor.Shared.Data
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int idCompra { get; set; }
 
-        public string? Numero { get; set; }
+        public string? Numero { get; set; } = string.Empty;
 
         public DateTime? Fecha { get; set; } = DateTime.Today;
 

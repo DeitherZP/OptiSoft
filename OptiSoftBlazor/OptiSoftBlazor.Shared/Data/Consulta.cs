@@ -31,6 +31,18 @@ namespace OptiSoftBlazor.Shared.Data
 
         public DateTime? Fecha { get; set; } = DateTime.Today;
 
+        [NotMapped]
+        public string PedidoNumero
+        {
+            get
+            {
+                // Aquí SÍ puedes usar el FK
+                if (IdPedido == null)
+                    return string.Empty;
+
+                return Pedido?.Numero ?? string.Empty;
+            }
+        }
 
         #region Informacion Global
 
