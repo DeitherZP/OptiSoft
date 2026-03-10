@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.Extensions.Options;
+using OptiSoftBlazor.Shared.Data.Users;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace OptiSoftBlazor.Shared.Data
 {
-    public class OptiSoftDbContext : IdentityDbContext
+    public class OptiSoftDbContext : IdentityDbContext<ApplicationUser>
     {
         public OptiSoftDbContext(DbContextOptions<OptiSoftDbContext> options) : base(options)
         {
@@ -23,7 +24,7 @@ namespace OptiSoftBlazor.Shared.Data
         public DbSet<Consulta> Consulta { get; set; }
         public DbSet<Personal> Personal { get; set; }
         public DbSet<Seteo> Seteo { get; set; }
-        public DbSet<OptiUsers> OptiUsers { get; set; }
+        public DbSet<ApplicationUser> ApplicationUser { get; set; }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
@@ -69,6 +70,9 @@ namespace OptiSoftBlazor.Shared.Data
             modelBuilder.Entity<Consulta>().ToTable("Consulta", t => t.ExcludeFromMigrations());
             modelBuilder.Entity<Personal>().ToTable("Personal", t => t.ExcludeFromMigrations());
             modelBuilder.Entity<Seteo>().ToTable("Seteo", t => t.ExcludeFromMigrations());
+            //modelBuilder.Entity<ApplicationUser>().ToTable("ApplicationUser", t => t.ExcludeFromMigrations());
+
+            //modelBuilder.Entity<ApplicationUser>().ToTable("AspNetUsers");
 
             modelBuilder.Entity<Consulta>(b =>
             {
@@ -79,10 +83,6 @@ namespace OptiSoftBlazor.Shared.Data
                     .HasForeignKey(c => c.IdProfesional)
                     .OnDelete(DeleteBehavior.Restrict);
             });
-
-            modelBuilder.Entity<OptiUsers>()
-                .HasIndex(u => u.UserName)
-                .IsUnique();
         }
     }
 }

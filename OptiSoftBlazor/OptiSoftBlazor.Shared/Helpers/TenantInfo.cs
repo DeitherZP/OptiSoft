@@ -4,9 +4,10 @@ using System.Text;
 
 namespace OptiSoftBlazor.Shared.Helpers
 {
-    public static class ScEncripter
+    public static class TenantInfo
     {
         private static string? _cadenaEncriptada;
+        private static string? _tenantName;
 
         private static string Encriptar(string cadenaConexion)
         {
@@ -58,12 +59,16 @@ namespace OptiSoftBlazor.Shared.Helpers
                 $"Connection Timeout=300000;";
         }
 
-        public static void Initialize(string cadenaConexionReal)
+        public static void Initialize(string cadenaConexionReal, string tenantName)
         {
             if (string.IsNullOrWhiteSpace(cadenaConexionReal))
                 throw new ArgumentException("Cadena de conexión inválida.");
 
+            if (string.IsNullOrWhiteSpace(tenantName))
+                throw new ArgumentException("Tenant inválido.");
+
             _cadenaEncriptada = Encriptar(cadenaConexionReal);
+            _tenantName = tenantName;
         }
 
         public static string GetConnectionString()
@@ -72,6 +77,14 @@ namespace OptiSoftBlazor.Shared.Helpers
                 throw new InvalidOperationException("La cadena no ha sido inicializada.");
 
             return _cadenaEncriptada;
+        }
+
+        public static string GetTenantName()
+        {
+            if (string.IsNullOrWhiteSpace(_tenantName))
+                throw new InvalidOperationException("El nombre del tenant no ha sido inicializado.");
+
+            return _tenantName;
         }
 
         public static bool IsInitialized =>

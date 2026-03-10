@@ -1,0 +1,79 @@
+﻿using Microsoft.EntityFrameworkCore;
+using OptiSoftBlazor.Shared.Data;
+using OptiSoftBlazor.Shared.Data.Users;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using OptiSoftBlazor.Shared.Helpers;
+
+namespace OptiSoftBlazor.Shared.Services
+{
+    public class UsuariosService
+    {
+        private readonly ITenantDbContextFactory _contextFactory;
+
+        public UsuariosService(ITenantDbContextFactory contextFactory)
+        {
+            _contextFactory = contextFactory;
+        }
+
+        public async Task<List<ApplicationUser>> ObtenerUsuariosAsync()
+        {
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            var tenant = TenantInfo.GetTenantName();
+
+            return await db.ApplicationUser
+                           .Where(a => a.UserName.EndsWith("@" + tenant))
+                           .Include(a => a.Personal)
+                           .OrderBy(a => a.UserName)
+                           .AsNoTracking()
+                           .ToListAsync();
+        }
+
+        public async Task GuardarUsuarioAsync(ApplicationUser user)
+        {
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            if (string.IsNullOrWhiteSpace(user.UserName))
+                throw new ArgumentException("El nombre de usuario es obligatorio");
+
+            if (user.Id == null)
+            {
+                await db.ApplicationUser.AddAsync(user);
+            }
+            else
+            {
+                var userDb = await db.ApplicationUser
+                                     .FirstOrDefaultAsync(a => a.Id == user.Id);
+
+                if (userDb == null)
+                    throw new Exception("El usuario no existe");
+
+                userDb.UserName = user.UserName;
+                userDb.PasswordHash = user.PasswordHash;
+
+                db.ApplicationUser.Update(userDb);
+            }
+
+            await db.SaveChangesAsync();
+        }
+
+        public async Task EliminarUsuarioAsync(string idUser)
+        {
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            var user = await db.ApplicationUser
+                .FirstOrDefaultAsync(a => a.Id == idUser);
+
+            if (user == null)
+                throw new Exception("El artículo no existe");
+
+            db.ApplicationUser.Remove(user);
+            await db.SaveChangesAsync();
+        }
+    }
+}

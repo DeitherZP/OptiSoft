@@ -49,7 +49,7 @@
 
 @if (!(ListConsultasFiltradas == null))
 {
-    <FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 74vh; padding: 0.5em;">
+    <FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 78vh; padding: 0.5em;">
         <FluentDataGrid Items="ListConsultasFiltradas"
                         TGridItem="Consulta"
                         Pagination="@pagination"
@@ -57,10 +57,10 @@
                         ShowHover=true
                         DisplayMode="DataGridDisplayMode.Table"
                         OnRowClick="@(args => OnRowClicked(args.Item ?? new()))">
-            <PropertyColumn Property="tbl => tbl.Cliente!.Nombre" Title="Cliente" Sortable="true" IsDefaultSortColumn />
+            <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" IsDefaultSortColumn InitialSortDirection="SortDirection.Descending" />
+            <PropertyColumn Property="tbl => tbl.Cliente!.Nombre" Title="Cliente" Sortable="true" />
             <PropertyColumn Property="tbl => tbl.PedidoNumero" Title="N° Pedido" Sortable="true" />
             <PropertyColumn Property="tbl => tbl.Profesional!.Nombre" Title="Profesional" Sortable="true" />
-            <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" />
         </FluentDataGrid>
         @if (ListConsultasFiltradas.Count() > pagination.ItemsPerPage)
         {

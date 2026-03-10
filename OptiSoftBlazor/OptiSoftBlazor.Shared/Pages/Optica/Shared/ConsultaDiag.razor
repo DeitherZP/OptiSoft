@@ -13,7 +13,7 @@
 <style>
     .fluent-dialog-main {
         --dialog-width: 1000px !important;
-        --dialog-max-height: 90vh !important;
+        --dialog-max-height: 95vh !important;
     }
 
     @@media (max-width: 600px) {
@@ -733,7 +733,7 @@
         Seteo? seteo = await SeteoService.ObtenerSeteoAsync();
 
         var ruc = seteo!.Ruc;
-        var stringConnection = ScEncripter.GetConnectionString(); ;
+        var stringConnection = TenantInfo.GetConnectionString(); ;
 
         var url = $"https://reportes.elixirsa.net/home/MotorRefractivo" +
                   $"?idCompra={idCompra}" +
@@ -755,7 +755,7 @@
         Seteo? seteo = await SeteoService.ObtenerSeteoAsync();
 
         var ruc = seteo!.Ruc;
-        var stringConnection = ScEncripter.GetConnectionString(); ;
+        var stringConnection = TenantInfo.GetConnectionString(); ;
 
         var url = $"https://reportes.elixirsa.net/home/LenteContacto" +
                   $"?idCompra={idCompra}" +

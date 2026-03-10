@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OptiSoftBlazor.Shared.Data;
+using OptiSoftBlazor.Shared.Data.Users;
 using OptiSoftBlazor.Shared.Services;
 using System.Security.Claims;
 
@@ -69,11 +70,11 @@ namespace OptiSoftBlazor.Web.Services
                 using var tenantContext = new OptiSoftDbContext(optionsBuilder.Options);
 
                 // 6. Crear UserManager temporal para la DB del tenant
-                var userStore = new Microsoft.AspNetCore.Identity.EntityFrameworkCore.UserStore<IdentityUser>(tenantContext);
-                var userManager = new UserManager<IdentityUser>(
+                var userStore = new Microsoft.AspNetCore.Identity.EntityFrameworkCore.UserStore<ApplicationUser>(tenantContext);
+                var userManager = new UserManager<ApplicationUser>(
                     userStore,
                     null,
-                    new PasswordHasher<IdentityUser>(),
+                    new PasswordHasher<ApplicationUser>(),
                     null,
                     null,
                     null,

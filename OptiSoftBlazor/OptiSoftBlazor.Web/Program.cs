@@ -63,6 +63,7 @@ builder.Services.AddScoped<ConsultaService>();
 builder.Services.AddScoped<PersonalService>();
 builder.Services.AddScoped<SeteoService>();
 builder.Services.AddScoped<ConfirmService>();
+builder.Services.AddScoped<UsuariosService>();
 
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 

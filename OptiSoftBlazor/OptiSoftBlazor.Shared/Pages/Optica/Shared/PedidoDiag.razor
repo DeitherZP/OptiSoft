@@ -66,12 +66,12 @@
                 </div>
             </div>
             <div class="fila-flex" style="margin-bottom: 0;">
-                <div class="columna-flex" style="padding: 1em 0;">
+                <div class="columna-flex" style="padding-top: 1em;">
                     <FluentDatePicker Label="Fecha"
                                       @bind-Value="Fecha"
                                       Style="width:100%" />
                 </div>
-                <div class="columna-flex" style="padding: 1em 0;">
+                <div class="columna-flex" style="padding-top: 1em;">
                     <FluentAutocomplete Label="Estado"
                                         Items="Estados"
                                         TOption="KeyValuePair<string, bool>"
@@ -87,6 +87,7 @@
                 <div class="columna-flex" style="padding: 1em 0;">
                     <FluentTextField Label="Laboratorio"
                                     @bind-Value="Laboratorio"
+                                    Placeholder="Ingrese el laboratorio"
                                     Style="width:100%" />
                 </div>
             </div>

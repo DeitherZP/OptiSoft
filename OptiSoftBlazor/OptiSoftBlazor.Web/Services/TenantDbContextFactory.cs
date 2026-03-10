@@ -9,6 +9,7 @@ namespace OptiSoftBlazor.Web.Services
     {
         private readonly ITenantService _tenantService;
         private string? _cachedConnectionString;
+        private string? _cachedTenantName;
 
         public TenantDbContextFactory(ITenantService tenantService)
         {
@@ -22,11 +23,12 @@ namespace OptiSoftBlazor.Web.Services
             if (string.IsNullOrWhiteSpace(_cachedConnectionString))
             {
                 _cachedConnectionString = await _tenantService.GetCurrentConnectionStringAsync();
+                _cachedTenantName = await _tenantService.GetCurrentTenantNameAsync();
                 Console.WriteLine($"GetConnectionString: {sw.ElapsedMilliseconds}ms");
 
-                if (!ScEncripter.IsInitialized)
+                if (!TenantInfo.IsInitialized)
                 {
-                    ScEncripter.Initialize(_cachedConnectionString ?? "");
+                    TenantInfo.Initialize(_cachedConnectionString ?? "", _cachedTenantName ?? "");
                 }
             }
             else

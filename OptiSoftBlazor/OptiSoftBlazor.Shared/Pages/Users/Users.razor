@@ -1,10 +1,98 @@
 ﻿@page "/users"
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+@using OptiSoftBlazor.Shared.Data.Users
 @using OptiSoftBlazor.Shared.Pages.Shared
+
+@inject UsuariosService UsuariosService
+@inject IJSRuntime JS
 
 <PageTitle>Usuarios</PageTitle>
 
 <LoadingSpinner @bind-Visible="IsLoading" />
 
+@if (!IsFirstRender)
+{
+	<div class="nueva-fila">
+		<FluentButton Appearance="Appearance.Accent" OnClick="@AddUser" IconStart="@(new Icons.Filled.Size20.AddCircle())">Nuevo</FluentButton>
+	</div>
+}
+
+@if (ListUser != null)
+{
+	<FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 82vh; padding: 0.5em;">
+		<FluentDataGrid Items="ListUser"
+						TGridItem="ApplicationUser"
+						Pagination="@pagination"
+						AutoFit="true"
+						ShowHover="true"
+						DisplayMode="DataGridDisplayMode.Table"
+						OnRowClick="@(args => OnRowClicked(args?.Item ?? new ApplicationUser()))">
+			<PropertyColumn Property="a => a.UserName" Title="Usuario" Sortable="true" IsDefaultSortColumn />
+			<PropertyColumn Property="a => a.NombrePersonal" Title="Personal" Sortable="true" IsDefaultSortColumn />
+			<PropertyColumn Property="a => a.ForcePasswordChange" Title="Cambiar Contraseña" Sortable="true" />
+		</FluentDataGrid>
+		@if (ListUser.Count() > pagination.ItemsPerPage)
+		{
+			<FluentPaginator State="pagination" Style="padding: 0.5em 2em;" />
+		}
+	</FluentCard>
+}
+
 @code {
 	private bool IsLoading = false;
+	private bool IsFirstRender = true;
+	private bool Hidden = true;
+
+	PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+
+	private IQueryable<ApplicationUser>? ListUser;
+	private List<ApplicationUser>? AuxUser = new();
+	private ApplicationUser? UserSeleccionado;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (!firstRender)
+			return;
+
+		await JS.InvokeVoidAsync("translateFluentLabels");
+
+		try
+		{
+			IsLoading = true;
+			StateHasChanged();
+			AuxUser = await UsuariosService.ObtenerUsuariosAsync();
+			ListUser = AuxUser.AsQueryable();
+		}
+		catch (Exception ex)
+		{
+			ToastService.ShowError($"Error al cargar los datos. {ex.Message}", 5000);
+		}
+		finally
+		{
+			IsLoading = false;
+			IsFirstRender = false;
+			StateHasChanged();
+		}
+
+		IsFirstRender = false;
+	}
+
+	private void AddUser()
+	{
+		ToastService.ShowInfo("Falta implementar funcionalidad de para agregar nuevos usuarios");
+	}
+
+	private async Task OnRowClicked(ApplicationUser user)
+	{
+		ToastService.ShowInfo("Falta implementar funcionalidad de para agregar nuevos usuarios");
+
+		if (string.IsNullOrEmpty(user.Id))
+			return;
+
+		UserSeleccionado = user;
+		Hidden = false;
+		StateHasChanged();
+	}
 }
