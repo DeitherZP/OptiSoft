@@ -32,9 +32,13 @@
 						ShowHover="true"
 						DisplayMode="DataGridDisplayMode.Table"
 						OnRowClick="@(args => OnRowClicked(args?.Item ?? new ApplicationUser()))">
-			<PropertyColumn Property="a => a.UserName" Title="Usuario" Sortable="true" IsDefaultSortColumn />
-			<PropertyColumn Property="a => a.NombrePersonal" Title="Personal" Sortable="true" IsDefaultSortColumn />
-			<PropertyColumn Property="a => a.ForcePasswordChange" Title="Cambiar Contraseña" Sortable="true" />
+			<PropertyColumn Property="a => a.UserName" Title="Usuario" Sortable="true" Align="Align.Center" IsDefaultSortColumn />
+			<PropertyColumn Property="a => a.NombrePersonal" Title="Personal" Sortable="true" Align="Align.Center" />
+			<TemplateColumn Title="Cambiar Contraseña" Sortable="true" Align="Align.Center">
+				<ChildContent Context="tbl">
+					<FluentCheckbox Checked="@tbl.ForcePasswordChange" Disabled="true" />
+				</ChildContent>
+			</TemplateColumn>
 		</FluentDataGrid>
 		@if (ListUser.Count() > pagination.ItemsPerPage)
 		{
@@ -48,7 +52,9 @@
 	<UserDiag Hidden="@Hidden"
 			  HiddenChanged="@(v => Hidden = v)"
 			  User="UserSeleccionado"
-			  Personals="Personals" />
+			  Personals="Personals"
+			  OnGuardar="GuardarUsuario"
+			  OnEliminar="EliminarUsuario" />
 }
 
 @code {
@@ -121,12 +127,28 @@
 
 	private async Task OnRowClicked(ApplicationUser user)
 	{
-		if (string.IsNullOrEmpty(user.Id))
+		if (string.IsNullOrEmpty(user.UserName))
 			return;
 
 		await CargarPersonal();
 		UserSeleccionado = user;
 		Hidden = false;
 		StateHasChanged();
+	}
+
+	private async Task GuardarUsuario()
+	{
+		AuxUser = await UsuariosService.ObtenerUsuariosAsync();
+		ListUser = AuxUser.AsQueryable();
+		UserSeleccionado = null;
+		ToastService.ShowSuccess("Usuario guardado correctamente.");
+	}
+
+	private async Task EliminarUsuario()
+	{
+		AuxUser = await UsuariosService.ObtenerUsuariosAsync();
+		ListUser = AuxUser.AsQueryable();
+		UserSeleccionado = null;
+		ToastService.ShowSuccess("Usuario eliminado correctamente");
 	}
 }

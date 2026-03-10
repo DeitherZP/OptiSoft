@@ -50,10 +50,10 @@
                         ShowHover=true
                         DisplayMode="DataGridDisplayMode.Table"
                         OnRowClick="@(args => OnRowClicked(args?.Item ?? new Compra()))">
-            <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" IsDefaultSortColumn InitialSortDirection="SortDirection.Descending" />
-            <PropertyColumn Property="tbl => tbl.Numero" Title="Número" Sortable="true" />
-            <PropertyColumn Property="tbl => tbl.Cliente!.Nombre" Title="Cliente" Sortable="true" />
-            <PropertyColumn Property="tbl => tbl.Laboratorio" Title="Laboratorio" Sortable="false" />
+            <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" Align="Align.Center" IsDefaultSortColumn InitialSortDirection="SortDirection.Descending" />
+            <PropertyColumn Property="tbl => tbl.Numero" Title="Número" Sortable="true" Align="Align.Center" />
+            <PropertyColumn Property="tbl => tbl.Cliente!.Nombre" Title="Cliente" Sortable="true" Align="Align.Center" />
+            <PropertyColumn Property="tbl => tbl.Laboratorio" Title="Laboratorio" Sortable="false" Align="Align.Center" />
             <TemplateColumn Title="Estado" Sortable="true">
                 <ChildContent Context="tbl">
                     @(tbl.Finalizado ? "Finalizado" : "Pendiente")
@@ -139,7 +139,7 @@
         pedidosFiltrados = new List<Compra>(pedidos);
         ListPedidos = pedidosFiltrados.AsQueryable();
         ClienteSelect = null;
-        ToastService.ShowSuccess("Pedido guardado correctamente");
+        ToastService.ShowSuccess("Pedido guardado correctamente.");
     }
 
     private async Task EliminarPedido()

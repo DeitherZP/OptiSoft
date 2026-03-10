@@ -1,8 +1,10 @@
 ﻿@using OptiSoftBlazor.Shared.Data
 @using OptiSoftBlazor.Shared.Data.Users
+@using OptiSoftBlazor.Shared.Helpers
 @using OptiSoftBlazor.Shared.Pages.Shared
 
 @inject PersonalService PersonalService
+@inject UsuariosService UsuariosService
 @inject IJSRuntime JS
 
 <style>
@@ -104,6 +106,8 @@
     [Parameter] public bool Hidden { get; set; }
     [Parameter] public EventCallback<bool> HiddenChanged { get; set; }
     [Parameter] public List<Personal>? Personals { get; set; }
+    [Parameter] public EventCallback OnGuardar { get; set; }
+    [Parameter] public EventCallback OnEliminar { get; set; }
 
     private bool IsLoading = false;
 
@@ -116,6 +120,8 @@
         if (User != null)
         {
             UserName = User.UserName;
+            UserPersonal = Personals?
+                .FirstOrDefault(p => p.IdPersonal == User.idPersonal);
         }
         else
         {
@@ -124,14 +130,97 @@
         }
     }
 
-    private void Guardar()
+    private async Task Guardar()
     {
-        ToastService.ShowInfo("Falta implementar funcionalidad de guardar.", 5000);
+        var user = User ?? new ApplicationUser();
+
+        user.UserName = UserName;
+        user.PasswordHash = Password;
+        user.idPersonal = UserPersonal?.IdPersonal;
+
+        bool isValido = true;
+
+        try
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            if (string.IsNullOrEmpty(user.UserName))
+            {
+                if (string.IsNullOrWhiteSpace(user.UserName))
+                    ToastService.ShowError("El nombre de usuario no puede contener espacios.", 5000);
+                else
+                    ToastService.ShowError("Debe ingresar un nombre de usuario.", 5000);
+
+                isValido = false;
+            }
+
+            if (!user!.UserName!.EndsWith("@" + TenantInfo.GetTenantName()))
+            {
+                ToastService.ShowError("Hace falta el nombre del tenant de su empresa.", 5000);
+                isValido = false;
+            }
+
+            if (string.IsNullOrEmpty(user.PasswordHash))
+            {
+                ToastService.ShowError("Debe generar una contraseña para el usuario.", 5000);
+                isValido = false;
+            }
+
+            if (!isValido)
+                return;
+
+            await UsuariosService.GuardarUsuarioAsync(user);
+
+            await OnGuardar.InvokeAsync();
+            await Cancelar();
+            Limpiar();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al guardar al usuario: {ex.Message}");
+            Console.WriteLine($"Error al guardar al usuario: {ex}");
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
+        }
     }
 
-    private void Eliminar()
+    private async Task Eliminar()
     {
-        ToastService.ShowInfo("Falta implementar funcionalidad de eliminar.", 5000);
+        if (User == null || string.IsNullOrWhiteSpace(User.Id))
+        {
+            ToastService.ShowWarning("No hay un usuario válido para eliminar.", 4000);
+            return;
+        }
+
+        var confirmado = await ConfirmService.ConfirmAsync("¿Está seguro de eliminar este usuario?");
+        if (!confirmado)
+            return;
+
+        try
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            await UsuariosService.EliminarUsuarioAsync(User.Id);
+
+            await OnEliminar.InvokeAsync();
+            await Cancelar();
+            Limpiar();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al eliminar al usuario: {ex.Message}", 6000);
+
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
+        }
     }
 
     private async Task Cancelar()

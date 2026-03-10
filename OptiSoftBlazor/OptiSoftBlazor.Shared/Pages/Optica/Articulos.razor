@@ -30,9 +30,9 @@
                         ShowHover="true"
                         DisplayMode="DataGridDisplayMode.Table"
                         OnRowClick="@(args => OnRowClicked(args?.Item ?? new Articulo()))">
-            <PropertyColumn Property="art => art.Nombre" Title="Artículo" Sortable="true" IsDefaultSortColumn />
-            <PropertyColumn Property="art => art.Codigo" Title="Código" Sortable="true" />
-            <PropertyColumn Property="art => art.Precio2" Title="Precio" Sortable="true" />
+            <PropertyColumn Property="art => art.Codigo" Title="Código" Sortable="true" Align="Align.Center" />
+            <PropertyColumn Property="art => art.Nombre" Title="Artículo" Sortable="true" Align="Align.Center" IsDefaultSortColumn />
+            <PropertyColumn Property="art => art.Precio2" Title="Precio" Sortable="true" Align="Align.Center" />
         </FluentDataGrid>
         @if (ListArt.Count() > pagination.ItemsPerPage)
         {

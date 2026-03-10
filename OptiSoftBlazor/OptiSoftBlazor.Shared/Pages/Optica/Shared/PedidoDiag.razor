@@ -259,6 +259,7 @@
             await DetCompraService.GuardarDetallesAsync(pedido.idCompra, _detalles);
             await OnGuardar.InvokeAsync(pedido);
             await Cancelar();
+            Limpiar();
         }
         catch (Exception ex)
         {
@@ -266,7 +267,6 @@
         }
         finally
         {
-            Limpiar();
             IsLoading = false;
             StateHasChanged();
         }
@@ -301,6 +301,7 @@
 
             await OnEliminar.InvokeAsync();
             await Cancelar();
+            Limpiar();
         }
         catch (Exception ex)
         {
@@ -308,7 +309,6 @@
         }
         finally
         {
-            Limpiar();
             IsLoading = false;
             StateHasChanged();
         }

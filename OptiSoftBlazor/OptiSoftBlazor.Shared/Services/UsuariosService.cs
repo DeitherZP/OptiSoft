@@ -41,20 +41,19 @@ namespace OptiSoftBlazor.Shared.Services
             if (string.IsNullOrWhiteSpace(user.UserName))
                 throw new ArgumentException("El nombre de usuario es obligatorio");
 
-            if (user.Id == null)
+            var userDb = await db.ApplicationUser
+                         .FirstOrDefaultAsync(a => a.Id == user.Id);
+
+            if (userDb == null)
             {
                 await db.ApplicationUser.AddAsync(user);
             }
             else
             {
-                var userDb = await db.ApplicationUser
-                                     .FirstOrDefaultAsync(a => a.Id == user.Id);
-
-                if (userDb == null)
-                    throw new Exception("El usuario no existe");
-
                 userDb.UserName = user.UserName;
-                userDb.PasswordHash = user.PasswordHash;
+
+                if (!string.IsNullOrEmpty(user.PasswordHash))
+                    userDb.PasswordHash = user.PasswordHash;
 
                 db.ApplicationUser.Update(userDb);
             }
