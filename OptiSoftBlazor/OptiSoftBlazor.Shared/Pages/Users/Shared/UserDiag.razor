@@ -1,0 +1,188 @@
+﻿@using OptiSoftBlazor.Shared.Data
+@using OptiSoftBlazor.Shared.Data.Users
+@using OptiSoftBlazor.Shared.Pages.Shared
+
+@inject PersonalService PersonalService
+@inject IJSRuntime JS
+
+<style>
+    .fluent-dialog-main {
+        --dialog-width: 800px !important;
+        --dialog-max-height: 90vh !important;
+    }
+
+    @@media (max-width: 600px) {
+        .fluent-dialog-main {
+            --dialog-width: 90% !important;
+            --dialog-max-height: 90vh !important;
+        }
+    }
+</style>
+
+<LoadingSpinner @bind-Visible="IsLoading" />
+
+<FluentDialog Modal="true" @bind-Hidden="Hidden">
+    <FluentHeader>
+        <h3>@(User == null ? "Nuevo Usuario" : "Editar Usuario")</h3>
+    </FluentHeader>
+
+    <FluentDialogBody Style="overflow-y: auto; max-height: calc(80vh - 120px);">
+        <div style="padding: 1em;">
+            <div class="nueva-fila" style="margin-bottom: 0;">
+                <div class="columna-flex">
+                    <FluentTextField @bind-Value="UserName"
+                                     Label="Usuario"
+                                     Placeholder="Ingrese el usuario" />
+                </div>
+            </div>
+            <div class="nueva-fila" style="margin-bottom: 0;">
+                <div class="columna-flex" style="padding-top: 1em;">
+                    <FluentAutocomplete Label="Personal"
+                                        Items="@Personals"
+                                        TOption="Personal"
+                                        Placeholder="Seleccione un personal"
+                                        Class="autocomplete-opti"
+                                        @bind-SelectedOption="UserPersonal"
+                                        OptionText="@(c => c.Nombre)"
+                                        Virtualize="true"
+                                        Multiple="false"
+                                        MaximumSelectedOptions="1"
+                                        MaximumOptionsSearch="int.MaxValue"
+                                        Position="SelectPosition.Below" />
+                </div>
+            </div>
+            <div class="fila-flex" style="gap: 1em !important;">
+                <div class="columna-flex" style="min-width: 80%; max-width: 80%; padding-top: 1em; margin-bottom: 1em;">
+                    <FluentTextField @bind-Value="Password"
+                                     Label="Contraseña"
+                                     Placeholder="Genere una contraseña" />
+                </div>
+                <div class="columna-flex" style="min-width: 8%; max-width: 8%; padding-top: 1em; margin-right: 0;">
+                    <FluentButton Appearance="Appearance.Accent"
+                                  OnClick="CopiarPassword"
+                                  Style="margin-top: 1.7em;"
+                                  Disabled="@(string.IsNullOrEmpty(Password))"
+                                  IconStart="@(new Icons.Filled.Size20.Copy())" />
+                </div>
+                <div class="columna-flex" style="min-width: 8%; max-width: 8%; padding-top: 1em; margin-right: 0;">
+                    <FluentButton Appearance="Appearance.Accent"
+                                  OnClick="GenerarContraseña"
+                                  Style="margin-top: 1.7em;"
+                                  IconStart="@( User == null ? new Icons.Filled.Size20.PersonKey() : new Icons.Filled.Size20.KeyReset())" />
+                </div>
+            </div>
+        </div>
+    </FluentDialogBody>
+
+    <FluentFooter Style="gap:1em">
+        <FluentButton Appearance="Appearance.Stealth"
+                      OnClick="Cancelar"
+                      IconStart="@(new Icons.Filled.Size20.DismissCircle())">
+            Cancelar
+        </FluentButton>
+
+        @if (User != null || !string.IsNullOrWhiteSpace(User?.Id))
+        {
+            <FluentButton Class="btn-danger"
+                          Appearance="Appearance.Neutral"
+                          OnClick="Eliminar">
+                <FluentIcon Value="@(new Icons.Filled.Size20.Delete())" Color="Color.Neutral" Slot="start" />
+                Eliminar
+            </FluentButton>
+        }
+
+        <FluentButton Appearance="Appearance.Accent"
+                      OnClick="Guardar"
+                      IconStart="@(new Icons.Filled.Size20.Save())">
+            Guardar
+        </FluentButton>
+    </FluentFooter>
+</FluentDialog>
+
+@code {
+    [Parameter] public ApplicationUser? User { get; set;}
+    [Parameter] public bool Hidden { get; set; }
+    [Parameter] public EventCallback<bool> HiddenChanged { get; set; }
+    [Parameter] public List<Personal>? Personals { get; set; }
+
+    private bool IsLoading = false;
+
+    private string? UserName;
+    private string? Password;
+    private Personal? UserPersonal;
+
+    protected override void OnParametersSet()
+    {
+        if (User != null)
+        {
+            UserName = User.UserName;
+        }
+        else
+        {
+            UserName = null;
+            Password = null;
+        }
+    }
+
+    private void Guardar()
+    {
+        ToastService.ShowInfo("Falta implementar funcionalidad de guardar.", 5000);
+    }
+
+    private void Eliminar()
+    {
+        ToastService.ShowInfo("Falta implementar funcionalidad de eliminar.", 5000);
+    }
+
+    private async Task Cancelar()
+    {
+        Limpiar();
+        Hidden = true;
+        await HiddenChanged.InvokeAsync(Hidden);
+    }
+
+    private void GenerarContraseña()
+    {
+        const string uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const string lowercase = "abcdefghijklmnopqrstuvwxyz";
+        const string numbers = "0123456789";
+        const string symbols = "!@#$%&*()-_=+.?";
+
+        var random = new Random();
+        var password = new char[8];
+
+        password[0] = uppercase[random.Next(uppercase.Length)];
+        password[1] = lowercase[random.Next(lowercase.Length)];
+        password[2] = numbers[random.Next(numbers.Length)];
+        password[3] = symbols[random.Next(symbols.Length)];
+
+        var allChars = uppercase + lowercase + numbers + symbols;
+        for (int i = 4; i < password.Length; i++)
+        {
+            password[i] = allChars[random.Next(allChars.Length)];
+        }
+
+        Password = new string(password.OrderBy(x => random.Next()).ToArray());
+    }
+
+    private async Task CopiarPassword()
+    {
+        if (!string.IsNullOrEmpty(Password))
+        {
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", Password);
+            ToastService.ShowSuccess("Contraseña copiada en portapapeles.", 5000);
+        }
+        else
+        {
+           ToastService.ShowInfo("No hay contraseña para copiar.", 5000);
+        }
+    }
+
+    private void Limpiar()
+    {
+        UserName = null;
+        Password = null;
+        UserPersonal = null;
+        User = null;
+    }
+}

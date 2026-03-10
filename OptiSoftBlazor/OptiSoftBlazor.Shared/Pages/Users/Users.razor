@@ -2,10 +2,13 @@
 @attribute [Authorize]
 @rendermode InteractiveServer
 
+@using OptiSoftBlazor.Shared.Data
 @using OptiSoftBlazor.Shared.Data.Users
 @using OptiSoftBlazor.Shared.Pages.Shared
+@using OptiSoftBlazor.Shared.Pages.Users.Shared
 
 @inject UsuariosService UsuariosService
+@inject PersonalService PersonalService
 @inject IJSRuntime JS
 
 <PageTitle>Usuarios</PageTitle>
@@ -40,6 +43,14 @@
 	</FluentCard>
 }
 
+@if (!Hidden)
+{
+	<UserDiag Hidden="@Hidden"
+			  HiddenChanged="@(v => Hidden = v)"
+			  User="UserSeleccionado"
+			  Personals="Personals" />
+}
+
 @code {
 	private bool IsLoading = false;
 	private bool IsFirstRender = true;
@@ -50,6 +61,7 @@
 	private IQueryable<ApplicationUser>? ListUser;
 	private List<ApplicationUser>? AuxUser = new();
 	private ApplicationUser? UserSeleccionado;
+	private List<Personal>? Personals = new();
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
@@ -79,18 +91,40 @@
 		IsFirstRender = false;
 	}
 
-	private void AddUser()
+	private async Task AddUser()
 	{
-		ToastService.ShowInfo("Falta implementar funcionalidad de para agregar nuevos usuarios");
+		await CargarPersonal();
+		UserSeleccionado = null;
+		Hidden = false;
+		StateHasChanged();
+	}
+
+	private async Task CargarPersonal()
+	{
+		try
+		{
+			IsLoading = true;
+			StateHasChanged();
+
+			Personals = await PersonalService.ObtenerPersonalAsync();
+		}
+		catch (Exception ex)
+		{
+			ToastService.ShowError($"Error al cargar datos del personal: {ex}", 5000);
+		}
+		finally
+		{
+			IsLoading = false;
+			StateHasChanged();
+		}
 	}
 
 	private async Task OnRowClicked(ApplicationUser user)
 	{
-		ToastService.ShowInfo("Falta implementar funcionalidad de para agregar nuevos usuarios");
-
 		if (string.IsNullOrEmpty(user.Id))
 			return;
 
+		await CargarPersonal();
 		UserSeleccionado = user;
 		Hidden = false;
 		StateHasChanged();
