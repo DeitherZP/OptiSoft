@@ -26,6 +26,7 @@ namespace OptiSoftBlazor.Shared.Services
             return await db.ApplicationUser
                            .Where(a => a.UserName.EndsWith("@" + tenant))
                            .Include(a => a.Personal)
+                                .ThenInclude(p => p.RolSucursal)
                            .OrderBy(a => a.UserName)
                            .AsNoTracking()
                            .ToListAsync();
@@ -51,6 +52,7 @@ namespace OptiSoftBlazor.Shared.Services
             else
             {
                 userDb.UserName = user.UserName;
+                userDb.ForcePasswordChange = user.ForcePasswordChange;
 
                 if (!string.IsNullOrEmpty(user.PasswordHash))
                     userDb.PasswordHash = user.PasswordHash;

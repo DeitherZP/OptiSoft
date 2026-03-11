@@ -51,14 +51,14 @@ namespace OptiSoftBlazor.Shared.Services
 
             db.Attach(compra.Cliente);
 
-            if (compra.idCompra == 0)
+            if (compra.IdCompra == 0)
             {
                 await db.Compra.AddAsync(compra);
             }
             else
             {
                 var compraDb = await db.Compra
-                                        .FirstOrDefaultAsync(c => c.idCompra == compra.idCompra);
+                                        .FirstOrDefaultAsync(c => c.IdCompra == compra.IdCompra);
 
                 if (compraDb == null)
                     throw new Exception("La compra no existe");
@@ -66,7 +66,7 @@ namespace OptiSoftBlazor.Shared.Services
                 compraDb.Numero = compra.Numero;
                 compraDb.Fecha = compra.Fecha;
                 compraDb.Laboratorio = compra.Laboratorio;
-                compraDb.idCliente = compra.Cliente.idCliente;
+                compraDb.IdCliente = compra.Cliente.IdCliente;
                 compraDb.Finalizado = compra.Finalizado;
 
                 db.Compra.Update(compraDb);
@@ -80,7 +80,7 @@ namespace OptiSoftBlazor.Shared.Services
             using var db = await _contextFactory.CreateDbContextAsync();
 
             var compra = await db.Compra
-                .FirstOrDefaultAsync(c => c.idCompra == idCompra);
+                .FirstOrDefaultAsync(c => c.IdCompra == idCompra);
 
             if (compra == null)
                 throw new Exception("La compra no existe");

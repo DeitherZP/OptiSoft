@@ -18,11 +18,11 @@ namespace OptiSoftBlazor.Shared.Data
         public int IdArticulo { get; set; }
 
         [ForeignKey(nameof(IdArticulo))]
-        public Articulo Articulo { get; set; }
+        public Articulo? Articulo { get; set; }
 
         public int IdCompra { get; set; }
 
         [ForeignKey(nameof(IdCompra))]
-        public Compra Compra { get; set; }
+        public Compra? Compra { get; set; }
     }
 }

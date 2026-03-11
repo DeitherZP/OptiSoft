@@ -131,7 +131,7 @@
             Cancelar
         </FluentButton>
         
-        @if (Compra != null || Compra?.idCompra > 0)
+        @if (Compra != null || Compra?.IdCompra > 0)
         {
             <FluentButton Class="btn-danger"
                           Appearance="Appearance.Neutral"
@@ -190,7 +190,7 @@
     {
         if (Compra != null)
         {
-            ClienteSelect = Clientes!.FirstOrDefault(c => c.idCliente == Compra.idCliente);
+            ClienteSelect = Clientes!.FirstOrDefault(c => c.IdCliente == Compra.IdCliente);
 
             Numero = Compra.Numero;
             Fecha = Compra.Fecha;
@@ -246,7 +246,7 @@
                 isValido = false;
             }
 
-            if (pedido.Cliente == null || pedido.idCliente == 0)
+            if (pedido.Cliente == null || pedido.IdCliente == 0)
             {
                 ToastService.ShowError("Debe seleccionar un cliente.", 6000);
                 isValido = false;
@@ -256,7 +256,7 @@
                 return;
 
             await CompraService.GuardarCompraAsync(pedido);
-            await DetCompraService.GuardarDetallesAsync(pedido.idCompra, _detalles);
+            await DetCompraService.GuardarDetallesAsync(pedido.IdCompra, _detalles);
             await OnGuardar.InvokeAsync(pedido);
             await Cancelar();
             Limpiar();
@@ -281,7 +281,7 @@
 
     private async Task Eliminar()
     {
-        if (Compra == null || Compra.idCompra <= 0)
+        if (Compra == null || Compra.IdCompra <= 0)
         {
             ToastService.ShowWarning("No hay un pedido válido para eliminar.", 4000);
             return;
@@ -296,8 +296,8 @@
             IsLoading = true;
             StateHasChanged();
 
-            await DetCompraService.EliminarDetCompraAsync(Compra.idCompra);
-            await CompraService.EliminarCompraAsync(Compra.idCompra);
+            await DetCompraService.EliminarDetCompraAsync(Compra.IdCompra);
+            await CompraService.EliminarCompraAsync(Compra.IdCompra);
 
             await OnEliminar.InvokeAsync();
             await Cancelar();

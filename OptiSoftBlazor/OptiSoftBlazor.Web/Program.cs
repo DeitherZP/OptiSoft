@@ -1,4 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿/*
+  _~_
+ (o o)
+ / V \
+/( _ )\
+ ^^ ^^
+*/
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
 using OptiSoftBlazor.Shared.Data;
@@ -64,6 +72,7 @@ builder.Services.AddScoped<PersonalService>();
 builder.Services.AddScoped<SeteoService>();
 builder.Services.AddScoped<ConfirmService>();
 builder.Services.AddScoped<UsuariosService>();
+builder.Services.AddScoped<SucursalService>();
 
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 

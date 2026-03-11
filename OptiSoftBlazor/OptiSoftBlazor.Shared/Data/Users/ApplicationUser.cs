@@ -22,11 +22,22 @@ namespace OptiSoftBlazor.Shared.Data.Users
         {
             get
             {
-                // Aquí SÍ puedes usar el FK
                 if (string.IsNullOrEmpty(Id))
                     return string.Empty;
 
                 return Personal?.Nombre ?? string.Empty;
+            }
+        }
+
+        [NotMapped]
+        public string NombreSucursal
+        {
+            get
+            {
+                if (Personal?.RolSucursal?.IdRolSucursal == 0 || Personal?.RolSucursal?.IdRolSucursal == null)
+                    return string.Empty;
+
+                return Personal?.RolSucursal?.Sucursal ?? string.Empty;
             }
         }
     }

@@ -27,10 +27,9 @@
 @if (!IsFirstRender)
 {
     <div class="nueva-fila">
-        <FluentButton Appearance="Appearance.Accent" OnClick="AddConsulta" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-top: 1.45em; margin-right: 3em">Nuevo</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" OnClick="AddConsulta" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-right: 3em">Nuevo</FluentButton>
 
-        <FluentAutocomplete Label="Cliente"
-                            Items="Clientes"
+        <FluentAutocomplete Items="Clientes"
                             TOption="Cliente"
                             Class="autocomplete-opti"
                             @bind-SelectedOption="ClienteSelect"
@@ -43,13 +42,13 @@
                             @bind-SelectedOption:after="FiltrarPorCliente"
                             Style="width: 300px; margin-right: 1em;" />
 
-        <FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.FilterDismiss())" Style="margin-top: 1.45em;" Disabled="!(ClienteSelect?.idCliente > 0)" />
+        <FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.FilterDismiss())" Disabled="!(ClienteSelect?.IdCliente > 0)" />
     </div>
 }
 
 @if (!(ListConsultasFiltradas == null))
 {
-    <FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 78vh; padding: 0.5em;">
+    <FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 80vh; padding: 0.5em;">
         <FluentDataGrid Items="ListConsultasFiltradas"
                         TGridItem="Consulta"
                         Pagination="@pagination"
@@ -82,7 +81,7 @@
 }
 
 @code {
-    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    PaginationState pagination = new PaginationState { ItemsPerPage = 9 };
     private List<Consulta>? consultas = new();
     private List<Consulta>? consultasFiltradas = new();
     bool Hidden = true;
@@ -193,10 +192,10 @@
     {
         if (consultas == null) return;
 
-        if (ClienteSelect?.idCliente > 0)
+        if (ClienteSelect?.IdCliente > 0)
         {
             consultasFiltradas = consultas
-                .Where(c => c.Cliente?.idCliente == ClienteSelect.idCliente)
+                .Where(c => c.Cliente?.IdCliente == ClienteSelect.IdCliente)
                 .ToList();
         }
         else

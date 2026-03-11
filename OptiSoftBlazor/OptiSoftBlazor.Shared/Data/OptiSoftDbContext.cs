@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.Extensions.Options;
+using OptiSoftBlazor.Shared.Data.Aditionals;
 using OptiSoftBlazor.Shared.Data.Users;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace OptiSoftBlazor.Shared.Data
         public DbSet<Consulta> Consulta { get; set; }
         public DbSet<Personal> Personal { get; set; }
         public DbSet<Seteo> Seteo { get; set; }
+        public DbSet<RolSucursal> RolSucursal { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

@@ -54,9 +54,10 @@
                 </div>
             </div>
             <div class="fila-flex" style="gap: 1em !important;">
-                <div class="columna-flex" style="min-width: 80%; max-width: 80%; padding-top: 1em; margin-bottom: 1em;">
+                <div class="columna-flex" style="min-width: 58%; max-width: 58%; padding-top: 1em; margin-bottom: 0;">
                     <FluentTextField @bind-Value="Password"
                                      Label="Contraseña"
+                                     @bind-Value:after="ValidarForPassCh"
                                      Placeholder="Genere una contraseña" />
                 </div>
                 <div class="columna-flex" style="min-width: 8%; max-width: 8%; padding-top: 1em; margin-right: 0;">
@@ -72,7 +73,22 @@
                                   Style="margin-top: 1.7em;"
                                   IconStart="@( User == null ? new Icons.Filled.Size20.PersonKey() : new Icons.Filled.Size20.KeyReset())" />
                 </div>
+                <div class="columna-flex" style="min-width: 20%; max-width: 20%; padding-top: 1em; margin-bottom: 0; align-items: center;">
+                    <label class="form-label" style="font-weight: 600; margin-top: 0.7em;">Cambiar Contraseña</label>
+                    <FluentCheckbox @bind-Value="ForcePasswordChange" Disabled="DisabledForPassCh" />
+                </div>
             </div>
+
+            @*<FluentCard AreaRestricted="false" Class="data-grid-table" Style="margin-top: 1.5em; padding: 0.5em;">
+                <div class="column-flex">
+                    <FluentButton Appearance="Appearance.Accent"
+                                  OnClick="AgregarRol"
+                                  IconStart="@(new Icons.Filled.Size20.AddCircle())"
+                                  Style="margin: 1em;">
+                        Agregar Artículo
+                    </FluentButton>
+                </div>
+            </FluentCard>*@
         </div>
     </FluentDialogBody>
 
@@ -114,6 +130,8 @@
     private string? UserName;
     private string? Password;
     private Personal? UserPersonal;
+    private bool ForcePasswordChange = false;
+    private bool DisabledForPassCh = false;
 
     protected override void OnParametersSet()
     {
@@ -122,11 +140,11 @@
             UserName = User.UserName;
             UserPersonal = Personals?
                 .FirstOrDefault(p => p.IdPersonal == User.idPersonal);
+            ForcePasswordChange = User.ForcePasswordChange;
         }
         else
         {
-            UserName = null;
-            Password = null;
+            Limpiar();
         }
     }
 
@@ -137,6 +155,7 @@
         user.UserName = UserName;
         user.PasswordHash = Password;
         user.idPersonal = UserPersonal?.IdPersonal;
+        user.ForcePasswordChange = ForcePasswordChange;
 
         bool isValido = true;
 
@@ -158,12 +177,6 @@
             if (!user!.UserName!.EndsWith("@" + TenantInfo.GetTenantName()))
             {
                 ToastService.ShowError("Hace falta el nombre del tenant de su empresa.", 5000);
-                isValido = false;
-            }
-
-            if (string.IsNullOrEmpty(user.PasswordHash))
-            {
-                ToastService.ShowError("Debe generar una contraseña para el usuario.", 5000);
                 isValido = false;
             }
 
@@ -252,6 +265,10 @@
         }
 
         Password = new string(password.OrderBy(x => random.Next()).ToArray());
+
+        ForcePasswordChange = true;
+        DisabledForPassCh = true;
+        StateHasChanged();
     }
 
     private async Task CopiarPassword()
@@ -263,7 +280,7 @@
         }
         else
         {
-           ToastService.ShowInfo("No hay contraseña para copiar.", 5000);
+            ToastService.ShowInfo("No hay contraseña para copiar.", 5000);
         }
     }
 
@@ -273,5 +290,21 @@
         Password = null;
         UserPersonal = null;
         User = null;
+        Personals = null;
+        ForcePasswordChange = false;
+    }
+
+    private void AgregarRol()
+    {
+        ToastService.ShowInfo("NO esta agregada la funcion para agregar rol", 5000);
+    }
+
+    private void ValidarForPassCh()
+    {
+        if (!string.IsNullOrEmpty(Password))
+            return;
+
+        ForcePasswordChange = false;
+        DisabledForPassCh = false;
     }
 }

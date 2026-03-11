@@ -24,7 +24,7 @@
 
 @if (ListUser != null)
 {
-	<FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 82vh; padding: 0.5em;">
+	<FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 80vh; padding: 0.5em;">
 		<FluentDataGrid Items="ListUser"
 						TGridItem="ApplicationUser"
 						Pagination="@pagination"
@@ -34,9 +34,10 @@
 						OnRowClick="@(args => OnRowClicked(args?.Item ?? new ApplicationUser()))">
 			<PropertyColumn Property="a => a.UserName" Title="Usuario" Sortable="true" Align="Align.Center" IsDefaultSortColumn />
 			<PropertyColumn Property="a => a.NombrePersonal" Title="Personal" Sortable="true" Align="Align.Center" />
+			<PropertyColumn Property="a => a.NombreSucursal" Title="Sucursal" Sortable="true" Align="Align.Center" />
 			<TemplateColumn Title="Cambiar Contraseña" Sortable="true" Align="Align.Center">
 				<ChildContent Context="tbl">
-					<FluentCheckbox Checked="@tbl.ForcePasswordChange" Disabled="true" />
+					<FluentCheckbox Checked="@tbl.ForcePasswordChange" ReadOnly="true" />
 				</ChildContent>
 			</TemplateColumn>
 		</FluentDataGrid>

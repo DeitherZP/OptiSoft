@@ -521,7 +521,7 @@
             _consulta = new Consulta
             {
                 IdConsulta = Consulta.IdConsulta,
-                idCliente = Consulta.idCliente,
+                IdCliente = Consulta.IdCliente,
                 IdProfesional = Consulta.IdProfesional,
                 IdPedido = Consulta.IdPedido,
                 Fecha = Consulta.Fecha,
@@ -599,9 +599,9 @@
                 LC_Diagnostico = Consulta.LC_Diagnostico
             };
 
-            ClienteSelect = Clientes.FirstOrDefault(c => c.idCliente == Consulta.idCliente);
+            ClienteSelect = Clientes.FirstOrDefault(c => c.IdCliente == Consulta.IdCliente);
             ProfesionalSelect = Personales.FirstOrDefault(p => p.IdPersonal == Consulta.IdProfesional);
-            PedidoSelect = Pedidos.FirstOrDefault(p => p.idCompra == Consulta.IdPedido);
+            PedidoSelect = Pedidos.FirstOrDefault(p => p.IdCompra == Consulta.IdPedido);
         }
         else
         {
@@ -642,9 +642,9 @@
                 return;
 
             // Asignar las relaciones
-            _consulta.idCliente = ClienteSelect!.idCliente;
+            _consulta.IdCliente = ClienteSelect!.IdCliente;
             _consulta.IdProfesional = ProfesionalSelect!.IdPersonal;
-            _consulta.IdPedido = PedidoSelect?.idCompra;
+            _consulta.IdPedido = PedidoSelect?.IdCompra;
 
             // 🔥 MUY IMPORTANTE: limpiar navegación
             _consulta.Cliente = null;
@@ -653,7 +653,7 @@
 
             if (PedidoSelect != null)
             {
-                _consulta.IdPedido = PedidoSelect.idCompra;
+                _consulta.IdPedido = PedidoSelect.IdCompra;
                 _consulta.Pedido = PedidoSelect;
             }
 
@@ -779,7 +779,7 @@
         }
 
         Pedidos = _pedidosOriginales
-            .Where(p => p.idCliente == ClienteSelect.idCliente)
+            .Where(p => p.IdCliente == ClienteSelect.IdCliente)
             .ToList();
 
         if (Pedidos.Count == 0)

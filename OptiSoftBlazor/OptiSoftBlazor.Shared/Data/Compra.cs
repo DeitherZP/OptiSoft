@@ -12,15 +12,15 @@ namespace OptiSoftBlazor.Shared.Data
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int idCompra { get; set; }
+        public int IdCompra { get; set; }
 
         public string? Numero { get; set; } = string.Empty;
 
         public DateTime? Fecha { get; set; } = DateTime.Today;
 
-        public int? idCliente { get; set; }
+        public int? IdCliente { get; set; }
 
-        [ForeignKey(nameof(idCliente))]
+        [ForeignKey(nameof(IdCliente))]
         public Cliente? Cliente { get; set; }
 
         public int IdTipoFactura { get; set; } = 13;

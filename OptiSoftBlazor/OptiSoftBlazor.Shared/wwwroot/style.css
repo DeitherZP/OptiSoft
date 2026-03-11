@@ -9,6 +9,7 @@
 .columna-flex {
     flex: 1;
     box-sizing: border-box;
+    width: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -298,7 +299,7 @@
 
 /*Contenedores*/
 
-. theme-settings-container{
+.theme-settings-container{
     max-width: 900px;
     margin: 0 auto;
 }

@@ -22,7 +22,7 @@
 
 @if (!(ListArt == null))
 {
-    <FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 82vh; padding: 0.5em;">
+    <FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 80vh; padding: 0.5em;">
         <FluentDataGrid Items="ListArt"
                         TGridItem="Articulo"
                         Pagination="@pagination"
@@ -51,7 +51,7 @@
 }
 
 @code{
-    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    PaginationState pagination = new PaginationState { ItemsPerPage = 9 };
     private List<Articulo>? AuxArticulos = new();
     private Articulo? ArticuloSeleccionado;
     private IQueryable<Articulo>? ListArt;

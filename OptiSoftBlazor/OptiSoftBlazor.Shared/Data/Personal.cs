@@ -1,4 +1,5 @@
-﻿using OptiSoftBlazor.Shared.Pages.Optica;
+﻿using OptiSoftBlazor.Shared.Data.Aditionals;
+using OptiSoftBlazor.Shared.Pages.Optica;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,5 +20,10 @@ namespace OptiSoftBlazor.Shared.Data
         public string? Nombre { get; set; }
 
         public string? Cedula { get; set; }
+
+        public int? IdRolSucursal { get; set; }
+
+        [ForeignKey(nameof(IdRolSucursal))]
+        public RolSucursal? RolSucursal { get; set; }
     }
 }

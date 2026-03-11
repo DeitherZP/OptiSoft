@@ -63,7 +63,7 @@ namespace OptiSoftBlazor.Shared.Services
                     if (consultaExistente != null)
                     {
                         // Actualizar propiedades
-                        consultaExistente.idCliente = consulta.idCliente;
+                        consultaExistente.IdCliente = consulta.IdCliente;
                         consultaExistente.IdProfesional = consulta.IdProfesional;
                         consultaExistente.IdPedido = consulta.IdPedido;
                         consultaExistente.Fecha = consulta.Fecha;
