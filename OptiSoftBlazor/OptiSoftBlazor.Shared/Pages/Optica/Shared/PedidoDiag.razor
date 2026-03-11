@@ -62,7 +62,8 @@
                                         Multiple="false"
                                         MaximumSelectedOptions="1"
                                         MaximumOptionsSearch="int.MaxValue"
-                                        Position="SelectPosition.Below"/>
+                                        Position="SelectPosition.Below"
+                                        ReadOnly="@(ClienteConsulta != null)"/>
                 </div>
             </div>
             <div class="fila-flex" style="margin-bottom: 0;">
@@ -165,6 +166,7 @@
     [Parameter] public Compra? Compra { get; set; }
     [Parameter] public List<DetCompra>? DetCompras { get; set; }
     [Parameter] public List<Cliente>? Clientes { get; set; }
+    [Parameter] public Cliente? ClienteConsulta { get; set; }
 
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
 
@@ -216,7 +218,7 @@
             Numero = null;
             Fecha = DateTime.Today;
             Laboratorio = null;
-            ClienteSelect = null;
+            ClienteSelect = ClienteConsulta;
             EstadoSeleccionado = Estados.First(e => e.Value == false);
             _detalles = new List<DetCompra>();
             ListDetCompras = _detalles.AsQueryable();

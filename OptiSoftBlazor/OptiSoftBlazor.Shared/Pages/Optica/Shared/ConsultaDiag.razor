@@ -106,18 +106,28 @@
                                               @bind-Value="@_consulta!.Fecha" />
                         </div>
                         <div class="columna-flex" style="padding-top: 1em;">
-                            <FluentAutocomplete Label="Pedido"
-                                                Items="@Pedidos"
-                                                TOption="Compra"
-                                                Class="autocomplete-pedido"
-                                                @bind-SelectedOption="PedidoSelect"
-                                                OptionText="@(c => c.Numero)"
-                                                Multiple="false"
-                                                Virtualize="true"
-                                                ReadOnly="@(!activarPedido)"
-                                                MaximumSelectedOptions="1"
-                                                MaximumOptionsSearch="int.MaxValue"
-                                                Position="SelectPosition.Below" />
+                            <div class="fila-flex" style="gap: 0.5em;">
+                                <div class="columna-flex" style="min-width: 90%; max-width: 90%;">
+                                    <FluentAutocomplete Label="Pedido"
+                                                        Items="@Pedidos"
+                                                        TOption="Compra"
+                                                        Class="autocomplete-pedido"
+                                                        @bind-SelectedOption="PedidoSelect"
+                                                        OptionText="@(c => c.Numero)"
+                                                        Multiple="false"
+                                                        Virtualize="true"
+                                                        ReadOnly="@(!activarPedido)"
+                                                        MaximumSelectedOptions="1"
+                                                        MaximumOptionsSearch="int.MaxValue"
+                                                        Position="SelectPosition.Below" />
+                                </div>
+                                <div class="columna-flex" style="margin-top: 1.7em; min-width: 8%; max-width: 8%;">
+                                    <FluentButton Appearance="Appearance.Accent"
+                                                  OnClick="AddPedido"
+                                                  Disabled="@(ClienteSelect == null)"
+                                                  IconStart="@(new Icons.Filled.Size20.Add())" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="nueva-fila" style="margin-top: 1em;">
@@ -487,6 +497,15 @@
     </FluentFooter>
 </FluentDialog>
 
+@if (!HiddenPedido)
+{
+    <PedidoDiag Hidden="@HiddenPedido"
+                ClienteConsulta="ClienteSelect"
+                Clientes="Clientes"
+                HiddenChanged="@(v => HiddenPedido = v)"
+                OnGuardar="PedidoGuardado" />
+}
+
 @code {
     [Parameter] public bool Hidden { get; set; }
     [Parameter] public EventCallback<bool> HiddenChanged { get; set; }
@@ -503,6 +522,7 @@
     private Compra? PedidoSelect { get; set; }
     private List<Compra> _pedidosOriginales = new();
     private bool activarPedido = false;
+    private bool HiddenPedido = true;
 
     private bool IsLoading = false;
 
@@ -792,5 +812,33 @@
 
         activarPedido = true;
         StateHasChanged();
+    }
+
+    private async Task AddPedido()
+    {
+        HiddenPedido = false;
+    }
+
+    private async Task PedidoGuardado(Compra pedido)
+    {
+        try
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            var todosPedidos = await CompraService.ObtenerPedidosAsync();
+            _pedidosOriginales = todosPedidos;
+            FiltrarPedidoCliente();
+            PedidoSelect = Pedidos.FirstOrDefault(p => p.IdCompra == pedido.IdCompra);
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al recargar datos: {ex.Message}", 5000);
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
+        }
     }
 }
