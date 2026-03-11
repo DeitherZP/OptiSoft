@@ -5,26 +5,37 @@
 @inject ArticuloService ArticuloService;
 
 <style>
-    .container-modal .fluent-dialog-main {
+    .container-modal-articulo .fluent-dialog-main {
         --dialog-width: 650px !important;
         --dialog-max-height: 90vh !important;
     }
 
     @@media (max-width: 600px) {
-        .container-modal .fluent-dialog-main {
+        .container-modal-articulo .fluent-dialog-main {
             --dialog-width: 90% !important;
             --dialog-max-height: 90vh !important;
         }
     }
+
+    .autocomplete-articulo fluent-anchored-region {
+        min-width: 555px;
+        max-width: 555px;
+        min-height: 100px !important;
+        max-height: 100px !important;
+    }
+
+        .autocomplete-articulo fluent-anchored-region fluent-option {
+        margin: 0 0.5em 0 0.2em;
+    }
 </style>
 
-<div class="container-modal">
-    <FluentDialog Modal="true" @bind-Hidden="Hidden">
+<div class="container-modal-articulo">
+    <FluentDialog Modal="true" @bind-Hidden="HiddenArticulo">
         <FluentHeader>Seleccione un artículo</FluentHeader>
 
         <FluentDialogBody Style="overflow: visible;">
             <div style="padding: 0.5em;">
-                <div class="columna-flex" style="padding: 0 1em; margin-right: 0;">
+                <div class="columna-flex" style="padding: 0 1em; margin-right: 0; margin-bottom: 1.5em;">
                     <FluentNumberField @bind-Value="Cantidad"
                                        Label="Cantidad"
                                        Placeholder="Ingrese la cantidad"/>
@@ -33,7 +44,7 @@
                     <FluentAutocomplete Label="Artículo"
                                         Items="@Articulos"
                                         TOption="Articulo"
-                                        Class="autocomplete-opti"
+                                        Class="autocomplete-articulo"
                                         @bind-SelectedOption="ArticuloSelect"
                                         OptionText="@(a => a.Nombre)"
                                         Multiple="false"
@@ -64,8 +75,8 @@
 </div>
 
 @code{
-    [Parameter] public bool Hidden { get; set; }
-    [Parameter] public EventCallback<bool> HiddenChanged { get; set; }
+    [Parameter] public bool HiddenArticulo { get; set; }
+    [Parameter] public EventCallback<bool> HiddenArticuloChanged { get; set; }
     [Parameter] public List<Articulo> Articulos { get; set; } = new();
     [Parameter] public EventCallback<Articulo> OnGuardar { get; set; }
     [Parameter] public Articulo? ArticuloSelect { get; set; }
@@ -75,10 +86,10 @@
 
     private async Task Cerrar()
     {
-        Hidden = true;
+        HiddenArticulo = true;
         ArticuloSelect = null;
         Cantidad = 1;
-        await HiddenChanged.InvokeAsync(Hidden);
+        await HiddenArticuloChanged.InvokeAsync(HiddenArticulo);
     }
 
     private async Task Agregar()

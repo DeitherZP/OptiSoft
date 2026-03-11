@@ -3,7 +3,7 @@ using OptiSoftBlazor.Shared.Services;
 
 namespace OptiSoftBlazor.Web.Services;
 
-public class IdentityAuthService : IAuthService
+public class IdentityAuthService
 {
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;

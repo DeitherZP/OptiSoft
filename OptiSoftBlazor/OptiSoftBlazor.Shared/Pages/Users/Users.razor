@@ -18,7 +18,14 @@
 @if (!IsFirstRender)
 {
 	<div class="nueva-fila">
-		<FluentButton Appearance="Appearance.Accent" OnClick="@AddUser" IconStart="@(new Icons.Filled.Size20.AddCircle())">Nuevo</FluentButton>
+		<FluentButton Appearance="Appearance.Accent" OnClick="@AddUser" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-right: 3em">Nuevo</FluentButton>
+
+		<FluentTextField Placeholder="Buscar por usuario, personal o sucursal..."
+						 Style="width: 300px; margin-right: 1em;"
+						 @bind-Value="TextoBusqueda"
+						 @bind-Value:after="FiltrarUsuario" />
+
+		<FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.FilterDismiss())" Disabled="@(string.IsNullOrEmpty(TextoBusqueda))" />
 	</div>
 }
 
@@ -48,10 +55,10 @@
 	</FluentCard>
 }
 
-@if (!Hidden)
+@if (!HiddenUser)
 {
-	<UserDiag Hidden="@Hidden"
-			  HiddenChanged="@(v => Hidden = v)"
+	<UserDiag Hidden="@HiddenUser"
+			  HiddenChanged="@(v => HiddenUser = v)"
 			  User="UserSeleccionado"
 			  Personals="Personals"
 			  OnGuardar="GuardarUsuario"
@@ -61,14 +68,16 @@
 @code {
 	private bool IsLoading = false;
 	private bool IsFirstRender = true;
-	private bool Hidden = true;
+	private bool HiddenUser = true;
 
 	PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
 
 	private IQueryable<ApplicationUser>? ListUser;
 	private List<ApplicationUser>? AuxUser = new();
+	private List<ApplicationUser>? UsersFiltrados = new();
 	private ApplicationUser? UserSeleccionado;
 	private List<Personal>? Personals = new();
+	private string? TextoBusqueda;
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
@@ -82,6 +91,8 @@
 			IsLoading = true;
 			StateHasChanged();
 			AuxUser = await UsuariosService.ObtenerUsuariosAsync();
+			UsersFiltrados = new List<ApplicationUser>(AuxUser);
+			ListUser = UsersFiltrados.AsQueryable();
 			ListUser = AuxUser.AsQueryable();
 		}
 		catch (Exception ex)
@@ -102,7 +113,7 @@
 	{
 		await CargarPersonal();
 		UserSeleccionado = null;
-		Hidden = false;
+		HiddenUser = false;
 		StateHasChanged();
 	}
 
@@ -133,14 +144,15 @@
 
 		await CargarPersonal();
 		UserSeleccionado = user;
-		Hidden = false;
+		HiddenUser = false;
 		StateHasChanged();
 	}
 
 	private async Task GuardarUsuario()
 	{
 		AuxUser = await UsuariosService.ObtenerUsuariosAsync();
-		ListUser = AuxUser.AsQueryable();
+		UsersFiltrados = new List<ApplicationUser>(AuxUser);
+		ListUser = UsersFiltrados.AsQueryable();
 		UserSeleccionado = null;
 		ToastService.ShowSuccess("Usuario guardado correctamente.");
 	}
@@ -148,8 +160,41 @@
 	private async Task EliminarUsuario()
 	{
 		AuxUser = await UsuariosService.ObtenerUsuariosAsync();
-		ListUser = AuxUser.AsQueryable();
+		UsersFiltrados = new List<ApplicationUser>(AuxUser);
+		ListUser = UsersFiltrados.AsQueryable();
 		UserSeleccionado = null;
 		ToastService.ShowSuccess("Usuario eliminado correctamente");
+	}
+
+	private void LimpiarFiltro()
+	{
+		TextoBusqueda = null;
+		FiltrarUsuario();
+	}
+
+	private void FiltrarUsuario()
+	{
+		if (AuxUser == null)
+			return;
+
+		if (string.IsNullOrWhiteSpace(TextoBusqueda))
+		{
+			UsersFiltrados = new List<ApplicationUser>(AuxUser);
+		}
+		else
+		{
+			var texto = TextoBusqueda.Trim().ToLower();
+
+			UsersFiltrados = AuxUser
+				.Where(p =>
+					(!string.IsNullOrEmpty(p.UserName) && p.UserName.ToLower().Contains(texto)) ||
+					(!string.IsNullOrEmpty(p.NombrePersonal) && p.NombrePersonal.ToLower().Contains(texto)) ||
+					(!string.IsNullOrEmpty(p.NombreSucursal) && p.NombreSucursal.ToLower().Contains(texto))
+				)
+				.ToList();
+		}
+
+		ListUser = UsersFiltrados.AsQueryable();
+		StateHasChanged();
 	}
 }

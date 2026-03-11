@@ -1,10 +1,10 @@
 ﻿@page "/Account/Login"
 @attribute [AllowAnonymous]
+@layout MinimalLayout
 
 @using Microsoft.AspNetCore.Http
 @using OptiSoftBlazor.Shared.Services
 
-@layout MinimalLayout
 @inject NavigationManager Nav
 @inject IAuthService IAuthService
 @inject IHttpContextAccessor Http

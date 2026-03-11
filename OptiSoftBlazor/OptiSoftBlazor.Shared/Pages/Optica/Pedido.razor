@@ -22,20 +22,12 @@
     <div class="nueva-fila">
         <FluentButton Appearance="Appearance.Accent" OnClick="@AddPedido" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-right: 3em">Nuevo</FluentButton>
         
-        <FluentAutocomplete Items="Clientes"
-                            TOption="Cliente"
-                            Class="autocomplete-opti"
-                            @bind-SelectedOption="ClienteSelect"
-                            OptionText="@(c => c.Nombre)"
-                            Virtualize="true"
-                            Multiple="false"
-                            MaximumOptionsSearch="int.MaxValue"
-                            MaximumSelectedOptions="1"
-                            Position="SelectPosition.Below"
-                            @bind-SelectedOption:after="FiltrarPorCliente"
-                            Style="width: 300px; margin-right: 1em;" />
+        <FluentTextField Placeholder="Buscar por cliente o número..."
+                         Style="width: 300px; margin-right: 1em;"
+                         @bind-Value="TextoBusqueda"
+                         @bind-Value:after="FiltrarPedidos" />
 
-        <FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.FilterDismiss())" Disabled="!(ClienteSelect?.IdCliente > 0)" />
+        <FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.FilterDismiss())" Disabled="@(string.IsNullOrEmpty(TextoBusqueda))" />
     </div>
 }
 
@@ -66,28 +58,28 @@
     </FluentCard>
 }
 
-@if (!Hidden)
+@if (!HiddenPedido)
 {
-    <PedidoDiag Hidden="@Hidden"
+    <PedidoDiag HiddenPedido="@HiddenPedido"
                 Compra="PedidoSeleccionado"
                 Clientes="Clientes"
-                HiddenChanged="@(v => Hidden = v)"
+                HiddenPedidoChanged="@(v => HiddenPedido = v)"
                 DetCompras="ListDetCompras"
                 OnGuardar="GuardarPedido"
                 OnEliminar="EliminarPedido"/>
 }
 
 @code {
-    PaginationState pagination = new PaginationState { ItemsPerPage = 9 };
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
     private List<Compra>? pedidos = new();
     private List<Compra>? pedidosFiltrados = new();
-    bool Hidden = true;
+    bool HiddenPedido = true;
     private List<DetCompra>? ListDetCompras;
     bool IsFirstRender = true;
     private Compra? PedidoSeleccionado;
     private IQueryable<Compra>? ListPedidos;
     private List<Cliente> Clientes { get; set; } = new();
-    private Cliente? ClienteSelect { get; set; }
+    private string? TextoBusqueda;
 
     private bool IsLoading { get; set; } = false;
 
@@ -104,7 +96,6 @@
             StateHasChanged();
             pedidos = await CompraService.ObtenerPedidosAsync();
             pedidosFiltrados = new List<Compra>(pedidos);
-            Clientes = await ClienteService.ObtenerClienteAsync();
             ListPedidos = pedidosFiltrados.AsQueryable();
         }
         catch (Exception ex)
@@ -125,8 +116,9 @@
         IsLoading = true;
         StateHasChanged();
 
+        Clientes = await ClienteService.ObtenerClienteAsync();
         PedidoSeleccionado = null;
-        Hidden = false;
+        HiddenPedido = false;
 
         IsLoading = false;
         StateHasChanged();
@@ -137,7 +129,6 @@
         pedidos = await CompraService.ObtenerPedidosAsync();
         pedidosFiltrados = new List<Compra>(pedidos);
         ListPedidos = pedidosFiltrados.AsQueryable();
-        ClienteSelect = null;
         ToastService.ShowSuccess("Pedido guardado correctamente.");
     }
 
@@ -146,7 +137,6 @@
         pedidos = await CompraService.ObtenerPedidosAsync();
         pedidosFiltrados = new List<Compra>(pedidos);
         ListPedidos = pedidosFiltrados.AsQueryable();
-        ClienteSelect = null;
         ToastService.ShowSuccess("El pedido ha sido eliminado correctamente");
     }
 
@@ -158,36 +148,44 @@
         IsLoading = true;
         StateHasChanged();
 
+        Clientes = await ClienteService.ObtenerClienteAsync();
         ListDetCompras = await DetCompraService.ObtenerDetComprasAsync(compra.IdCompra);
         PedidoSeleccionado = compra;
 
-        Hidden = false;
+        HiddenPedido = false;
         IsLoading = false;
-        StateHasChanged();
-    }
-
-    private void FiltrarPorCliente()
-    {
-        if (pedidos == null) return;
-
-        if (ClienteSelect?.IdCliente > 0)
-        {
-            pedidosFiltrados = pedidos
-                .Where(c => c.Cliente?.IdCliente == ClienteSelect.IdCliente)
-                .ToList();
-        }
-        else
-        {
-            pedidosFiltrados = new List<Compra>(pedidos);
-        }
-
-        ListPedidos = pedidosFiltrados.AsQueryable();
         StateHasChanged();
     }
 
     private void LimpiarFiltro()
     {
-        ClienteSelect = null;
-        FiltrarPorCliente();
+        TextoBusqueda = null;
+        FiltrarPedidos();
+        //FiltrarPorCliente();
+    }
+
+    private void FiltrarPedidos()
+    {
+        if (pedidos == null)
+            return;
+
+        if (string.IsNullOrWhiteSpace(TextoBusqueda))
+        {
+            pedidosFiltrados = new List<Compra>(pedidos);
+        }
+        else
+        {
+            var texto = TextoBusqueda.Trim().ToLower();
+
+            pedidosFiltrados = pedidos
+                .Where(p =>
+                    (!string.IsNullOrEmpty(p.Numero) && p.Numero.ToLower().Contains(texto)) ||
+                    (!string.IsNullOrEmpty(p.Cliente?.Nombre) && p.Cliente.Nombre.ToLower().Contains(texto))
+                )
+                .ToList();
+        }
+
+        ListPedidos = pedidosFiltrados.AsQueryable();
+        StateHasChanged();
     }
 }

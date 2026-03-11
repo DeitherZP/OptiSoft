@@ -13,6 +13,7 @@ using OptiSoftBlazor.Shared.Data;
 using OptiSoftBlazor.Shared.Data.Tenant;
 using OptiSoftBlazor.Shared.Services;
 using OptiSoftBlazor.Web.Components;
+using OptiSoftBlazor.Web.Middleware;
 using OptiSoftBlazor.Web.Services;
 using System.Globalization;
 
@@ -94,6 +95,8 @@ app.UseAuthorization();
 
 app.UseAntiforgery();
 app.MapStaticAssets();
+
+//app.UseMiddleware<ForcePasswordMiddleware>();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()

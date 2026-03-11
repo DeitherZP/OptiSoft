@@ -10,13 +10,13 @@
 @inject ClienteService ClienteService
 
 <style>
-    .fluent-dialog-main {
+    .container-modal-pedido .fluent-dialog-main {
         --dialog-width: 850px !important;
         --dialog-max-height: 90vh !important;
     }
 
     @@media (max-width: 600px) {
-        .fluent-dialog-main {
+        .container-modal-pedido .fluent-dialog-main {
             --dialog-width: 90% !important;
             --dialog-max-height: 90vh !important;
         }
@@ -34,133 +34,135 @@
 
 <LoadingSpinner @bind-Visible="IsLoading" />
 
-<FluentDialog Modal="true" @bind-Hidden="Hidden">
-    <FluentHeader>
-        <h3>@(Compra == null ? "Nuevo Pedido" : "Editar Pedido")</h3>
-    </FluentHeader>
+<div class="container-modal-pedido">
+    <FluentDialog Modal="true" @bind-Hidden="HiddenPedido">
+        <FluentHeader>
+            <h3>@(Compra == null ? "Nuevo Pedido" : "Editar Pedido")</h3>
+        </FluentHeader>
 
-    <FluentDialogBody Style="overflow-y:auto; max-height: calc(80vh - 120px);">
-        <div style="padding: 0 1em;">
-            <div class="nueva-fila" style="margin-bottom: 0;">
-                <div class="columna-flex" style="padding-top: 1em;">
-                    <FluentTextField @bind-Value="Numero"
-                                     Label="Número"
-                                     Placeholder="Ingrese el número de pedido"
-                                     Style="width:100%" />
+        <FluentDialogBody Style="overflow-y:auto; max-height: calc(80vh - 120px);">
+            <div style="padding: 0 1em;">
+                <div class="nueva-fila" style="margin-bottom: 0;">
+                    <div class="columna-flex" style="padding-top: 1em;">
+                        <FluentTextField @bind-Value="Numero"
+                                         Label="Número"
+                                         Placeholder="Ingrese el número de pedido"
+                                         Style="width:100%" />
+                    </div>
                 </div>
-            </div>
-            <div class="nueva-fila" style="margin-bottom: 0;">
-                <div class="columna-flex" style="padding-top: 1em;">
-                    <FluentAutocomplete Label="Cliente"
-                                        Items="@Clientes"
-                                        TOption="Cliente"
-                                        Placeholder="Seleccione un cliente"
-                                        Class="autocomplete-opti"
-                                        @bind-SelectedOption="ClienteSelect"
-                                        OptionText="@(c => c.Nombre)"
-                                        Virtualize="true"
-                                        Multiple="false"
-                                        MaximumSelectedOptions="1"
-                                        MaximumOptionsSearch="int.MaxValue"
-                                        Position="SelectPosition.Below"
-                                        ReadOnly="@(ClienteConsulta != null)"/>
+                <div class="nueva-fila" style="margin-bottom: 0;">
+                    <div class="columna-flex" style="padding-top: 1em;">
+                        <FluentAutocomplete Label="Cliente"
+                                            Items="@Clientes"
+                                            TOption="Cliente"
+                                            Placeholder="Seleccione un cliente"
+                                            Class="autocomplete-opti"
+                                            @bind-SelectedOption="ClienteSelect"
+                                            OptionText="@(c => c.Nombre)"
+                                            Virtualize="true"
+                                            Multiple="false"
+                                            MaximumSelectedOptions="1"
+                                            MaximumOptionsSearch="int.MaxValue"
+                                            Position="SelectPosition.Below"
+                                            ReadOnly="@(ClienteConsulta != null)"/>
+                    </div>
                 </div>
-            </div>
-            <div class="fila-flex" style="margin-bottom: 0;">
-                <div class="columna-flex" style="padding-top: 1em;">
-                    <FluentDatePicker Label="Fecha"
-                                      @bind-Value="Fecha"
-                                      Style="width:100%" />
+                <div class="fila-flex" style="margin-bottom: 0;">
+                    <div class="columna-flex" style="padding-top: 1em;">
+                        <FluentDatePicker Label="Fecha"
+                                          @bind-Value="Fecha"
+                                          Style="width:100%" />
+                    </div>
+                    <div class="columna-flex" style="padding-top: 1em;">
+                        <FluentAutocomplete Label="Estado"
+                                            Items="Estados"
+                                            TOption="KeyValuePair<string, bool>"
+                                            Class="autocomplete-estado"
+                                            @bind-SelectedOption="EstadoSeleccionado"
+                                            OptionText="@(e => e.Key)"
+                                            Multiple="false"
+                                            MaximumSelectedOptions="1"
+                                            Style="width:100%" />
+                    </div>
                 </div>
-                <div class="columna-flex" style="padding-top: 1em;">
-                    <FluentAutocomplete Label="Estado"
-                                        Items="Estados"
-                                        TOption="KeyValuePair<string, bool>"
-                                        Class="autocomplete-estado"
-                                        @bind-SelectedOption="EstadoSeleccionado"
-                                        OptionText="@(e => e.Key)"
-                                        Multiple="false"
-                                        MaximumSelectedOptions="1"
+                <div class="fila-flex" style="margin-bottom: 0;">
+                    <div class="columna-flex" style="padding: 1em 0;">
+                        <FluentTextField Label="Laboratorio"
+                                        @bind-Value="Laboratorio"
+                                        Placeholder="Ingrese el laboratorio"
                                         Style="width:100%" />
+                    </div>
                 </div>
+                <FluentCard AreaRestricted="false" Class="data-grid-table" Style="margin-bottom: 1em; padding: 0.5em;">
+                    <div class="column-flex">
+                        <FluentButton Appearance="Appearance.Accent"
+                                      OnClick="AbrirArticulos"
+                                      IconStart="@(new Icons.Filled.Size20.AddCircle())"
+                                      Style="margin: 1em;">
+                            Agregar Artículo
+                        </FluentButton>
+                    </div>
+                    <div class="column-flex">
+                        <FluentDataGrid Items="ListDetCompras"
+                                        TGridItem="DetCompra"
+                                        AutoFit=false
+                                        ShowHover=true>
+                            <PropertyColumn Property="tbl => tbl.Cantidad" Title="Cantidad" Sortable="true" />
+                            <PropertyColumn Property="tbl => tbl.Articulo.Nombre" Title="Articulo" Sortable="true" IsDefaultSortColumn />
+                            <TemplateColumn Title="Acción">
+                                <ChildContent Context="det">
+                                    <div style="display:flex; justify-content:center; align-items:center; height:100%;">
+                                        <FluentButton Class="btn-delete-grid"
+                                                      Appearance="Appearance.Stealth"
+                                                      OnClick="@(() => EliminarDetalle(det))">
+                                            <FluentIcon Value="@(new Icons.Filled.Size20.Delete())" Color="Color.Error"/>
+                                        </FluentButton>
+                                    </div>
+                                </ChildContent>
+                            </TemplateColumn>
+                        </FluentDataGrid>
+                    </div>
+                </FluentCard>
             </div>
-            <div class="fila-flex" style="margin-bottom: 0;">
-                <div class="columna-flex" style="padding: 1em 0;">
-                    <FluentTextField Label="Laboratorio"
-                                    @bind-Value="Laboratorio"
-                                    Placeholder="Ingrese el laboratorio"
-                                    Style="width:100%" />
-                </div>
-            </div>
-            <FluentCard AreaRestricted="false" Class="data-grid-table" Style="margin-bottom: 1em; padding: 0.5em;">
-                <div class="column-flex">
-                    <FluentButton Appearance="Appearance.Accent"
-                                  OnClick="AbrirArticulos"
-                                  IconStart="@(new Icons.Filled.Size20.AddCircle())"
-                                  Style="margin: 1em;">
-                        Agregar Artículo
-                    </FluentButton>
-                </div>
-                <div class="column-flex">
-                    <FluentDataGrid Items="ListDetCompras"
-                                    TGridItem="DetCompra"
-                                    AutoFit=false
-                                    ShowHover=true>
-                        <PropertyColumn Property="tbl => tbl.Cantidad" Title="Cantidad" Sortable="true" />
-                        <PropertyColumn Property="tbl => tbl.Articulo.Nombre" Title="Articulo" Sortable="true" IsDefaultSortColumn />
-                        <TemplateColumn Title="Acción">
-                            <ChildContent Context="det">
-                                <div style="display:flex; justify-content:center; align-items:center; height:100%;">
-                                    <FluentButton Class="btn-delete-grid"
-                                                  Appearance="Appearance.Stealth"
-                                                  OnClick="@(() => EliminarDetalle(det))">
-                                        <FluentIcon Value="@(new Icons.Filled.Size20.Delete())" Color="Color.Error"/>
-                                    </FluentButton>
-                                </div>
-                            </ChildContent>
-                        </TemplateColumn>
-                    </FluentDataGrid>
-                </div>
-            </FluentCard>
-        </div>
-    </FluentDialogBody>
+        </FluentDialogBody>
 
-    <FluentFooter Style="gap:1em">
-        <FluentButton Appearance="Appearance.Stealth"
-                      OnClick="Cancelar"
-                      IconStart="@(new Icons.Filled.Size20.DismissCircle())">
-            Cancelar
-        </FluentButton>
-        
-        @if (Compra != null || Compra?.IdCompra > 0)
-        {
-            <FluentButton Class="btn-danger"
-                          Appearance="Appearance.Neutral"
-                          OnClick="Eliminar" >
-                <FluentIcon Value="@(new Icons.Filled.Size20.Delete())" Color="Color.Neutral" Slot="start" />
-                Eliminar
+        <FluentFooter Style="gap:1em">
+            <FluentButton Appearance="Appearance.Stealth"
+                          OnClick="Cancelar"
+                          IconStart="@(new Icons.Filled.Size20.DismissCircle())">
+                Cancelar
             </FluentButton>
-        }
+        
+            @if (Compra != null || Compra?.IdCompra > 0)
+            {
+                <FluentButton Class="btn-danger"
+                              Appearance="Appearance.Neutral"
+                              OnClick="Eliminar" >
+                    <FluentIcon Value="@(new Icons.Filled.Size20.Delete())" Color="Color.Neutral" Slot="start" />
+                    Eliminar
+                </FluentButton>
+            }
 
-        <FluentButton Appearance="Appearance.Accent"
-                      OnClick="Guardar"
-                      IconStart="@(new Icons.Filled.Size20.Save())">
-            Guardar
-        </FluentButton>
-    </FluentFooter>
-</FluentDialog>
+            <FluentButton Appearance="Appearance.Accent"
+                          OnClick="Guardar"
+                          IconStart="@(new Icons.Filled.Size20.Save())">
+                Guardar
+            </FluentButton>
+        </FluentFooter>
+    </FluentDialog>
+</div>
 
-@if (!HiddenArt)
+@if (!HiddenArticulo)
 {
-    <ArticuloDiag Hidden="@HiddenArt"
-                  HiddenChanged="@(v => HiddenArt = v)"
+    <ArticuloDiag HiddenArticulo="@HiddenArticulo"
+                  HiddenArticuloChanged="@(v => HiddenArticulo = v)"
                   Articulos="Articulos"
                   OnArticuloAgregado="ArticuloAgregado" />
 }
 
 @code {
-    [Parameter] public bool Hidden { get; set; }
-    [Parameter] public EventCallback<bool> HiddenChanged { get; set; }
+    [Parameter] public bool HiddenPedido { get; set; }
+    [Parameter] public EventCallback<bool> HiddenPedidoChanged { get; set; }
     [Parameter] public EventCallback<Compra> OnGuardar { get; set; }
     [Parameter] public EventCallback OnEliminar { get; set; }
     [Parameter] public Compra? Compra { get; set; }
@@ -177,7 +179,7 @@
     private List<DetCompra> _detalles = new(); 
     private List<Articulo> Articulos { get; set; } = new();
     private IQueryable<DetCompra>? ListDetCompras;
-    private bool HiddenArt = true;
+    private bool HiddenArticulo = true;
     private bool IsLoading = false;
 
     private Dictionary<string, bool> Estados = new()
@@ -277,8 +279,8 @@
     private async Task Cancelar()
     {
         Limpiar();
-        Hidden = true;
-        await HiddenChanged.InvokeAsync(Hidden);
+        HiddenPedido = true;
+        await HiddenPedidoChanged.InvokeAsync(HiddenPedido);
     }
 
     private async Task Eliminar()
@@ -326,7 +328,7 @@
             if (!Articulos.Any())
                 Articulos = await ArticuloService.ObtenerArticulosAsync();
 
-            HiddenArt = false;
+            HiddenArticulo = false;
             IsLoading = false;
             StateHasChanged();
         }

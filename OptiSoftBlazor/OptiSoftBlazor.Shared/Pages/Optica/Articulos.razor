@@ -16,7 +16,14 @@
 @if (!IsFirstRender)
 {
     <div class="nueva-fila">
-        <FluentButton Appearance="Appearance.Accent" OnClick="@AddArticulo" IconStart="@(new Icons.Filled.Size20.AddCircle())">Nuevo</FluentButton>
+        <FluentButton Appearance="Appearance.Accent" OnClick="@AddArticulo" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-right: 3em">Nuevo</FluentButton>
+
+        <FluentTextField Placeholder="Buscar por artículo o código..."
+                         Style="width: 300px; margin-right: 1em;"
+                         @bind-Value="TextoBusqueda"
+                         @bind-Value:after="FiltrarArticulos" />
+
+        <FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.FilterDismiss())" Disabled="@(string.IsNullOrEmpty(TextoBusqueda))" />
     </div>
 }
 
@@ -41,23 +48,25 @@
     </FluentCard>
 }
 
-@if (!Hidden)
+@if (!HiddenArtView)
 {
-    <ArticuloViewDiag Hidden="@Hidden"
+    <ArticuloViewDiag HiddenArtView="@HiddenArtView"
                       Articulo="@ArticuloSeleccionado"
-                      HiddenChanged="@(v => Hidden = v)"
+                      HiddenArtViewChanged="@(v => HiddenArtView = v)"
                       OnGuardar="GuardarArticulo"
                       OnEliminar="EliminarArticulo"/>
 }
 
 @code{
-    PaginationState pagination = new PaginationState { ItemsPerPage = 9 };
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
     private List<Articulo>? AuxArticulos = new();
+    private List<Articulo>? ArticulosFiltrados = new();
     private Articulo? ArticuloSeleccionado;
     private IQueryable<Articulo>? ListArt;
-    bool Hidden = true;
+    bool HiddenArtView = true;
     bool IsFirstRender = true;
     private bool IsLoading = false;
+    private string? TextoBusqueda;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -71,7 +80,8 @@
             IsLoading = true;
             StateHasChanged();
             AuxArticulos = await ArticuloService.ObtenerArticulosAsync();
-            ListArt = AuxArticulos.AsQueryable();
+            ArticulosFiltrados = new List<Articulo>(AuxArticulos);
+            ListArt = ArticulosFiltrados.AsQueryable();
         }
         catch (Exception ex)
         {
@@ -87,7 +97,7 @@
 
     private void AddArticulo()
     {
-        Hidden = false;
+        HiddenArtView = false;
         StateHasChanged();
     }
 
@@ -97,19 +107,54 @@
             return;
 
         ArticuloSeleccionado = articulo;
-        Hidden = false;
+        HiddenArtView = false;
         StateHasChanged();
     }
 
     private async Task GuardarArticulo(Articulo articulo)
     {
         AuxArticulos = await ArticuloService.ObtenerArticulosAsync();
+        ArticulosFiltrados = new List<Articulo>(AuxArticulos);
+        ListArt = ArticulosFiltrados.AsQueryable();
         ToastService.ShowSuccess("Pedido guardado correctamente");
     }
 
     private async Task EliminarArticulo()
     {
         AuxArticulos = await ArticuloService.ObtenerArticulosAsync();
+        ArticulosFiltrados = new List<Articulo>(AuxArticulos);
+        ListArt = ArticulosFiltrados.AsQueryable();
         ToastService.ShowSuccess("El pedido ha sido eliminado correctamente");
+    }
+
+    private void LimpiarFiltro()
+    {
+        TextoBusqueda = null;
+        FiltrarArticulos();
+    }
+
+    private void FiltrarArticulos()
+    {
+        if (AuxArticulos == null)
+            return;
+
+        if (string.IsNullOrWhiteSpace(TextoBusqueda))
+        {
+            ArticulosFiltrados = new List<Articulo>(AuxArticulos);
+        }
+        else
+        {
+            var texto = TextoBusqueda.Trim().ToLower();
+
+            ArticulosFiltrados = AuxArticulos
+                .Where(p =>
+                    (!string.IsNullOrEmpty(p.Nombre) && p.Nombre.ToLower().Contains(texto)) ||
+                    (!string.IsNullOrEmpty(p.Codigo) && p.Codigo.ToLower().Contains(texto))
+                )
+                .ToList();
+        }
+
+        ListArt = ArticulosFiltrados.AsQueryable();
+        StateHasChanged();
     }
 }

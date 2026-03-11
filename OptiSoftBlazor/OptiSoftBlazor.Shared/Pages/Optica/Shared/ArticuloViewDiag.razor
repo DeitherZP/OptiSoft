@@ -20,7 +20,7 @@
 <LoadingSpinner @bind-Visible="IsLoading" />
 
 <div class="container-view-articulo">
-    <FluentDialog Modal="true" @bind-Hidden="Hidden">
+    <FluentDialog Modal="true" @bind-Hidden="HiddenArtView">
         <FluentHeader>
             <h3>@(Articulo == null ? "Nueva Artículo" : "Editar Artículo")</h3>
         </FluentHeader>
@@ -75,8 +75,8 @@
 
 
 @code {
-    [Parameter] public bool Hidden { get; set; }
-    [Parameter] public EventCallback<bool> HiddenChanged { get; set; }
+    [Parameter] public bool HiddenArtView { get; set; }
+    [Parameter] public EventCallback<bool> HiddenArtViewChanged { get; set; }
     [Parameter] public EventCallback<Articulo> OnGuardar { get; set; }
     [Parameter] public EventCallback OnEliminar { get; set; }
     [Parameter] public Articulo? Articulo { get; set; }
@@ -109,8 +109,8 @@
     private async Task Cancelar()
     {
         Limpiar();
-        Hidden = true;
-        await HiddenChanged.InvokeAsync(Hidden);
+        HiddenArtView = true;
+        await HiddenArtViewChanged.InvokeAsync(HiddenArtView);
     }
 
     private async Task Guardar()

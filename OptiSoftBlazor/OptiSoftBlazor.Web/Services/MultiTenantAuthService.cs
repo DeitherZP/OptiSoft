@@ -12,30 +12,26 @@ namespace OptiSoftBlazor.Web.Services
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ITenantService _tenantService;
-        private readonly IDbContextFactory<OptiSoftDbContext> _contextFactory;
 
         public MultiTenantAuthService(
             SignInManager<IdentityUser> signInManager,
-            ITenantService tenantService,
-            IDbContextFactory<OptiSoftDbContext> contextFactory)
+            ITenantService tenantService)
         {
             _signInManager = signInManager;
             _tenantService = tenantService;
-            _contextFactory = contextFactory;
         }
 
         public async Task<bool> LoginAsync(string username, string password)
         {
             try
             {
-                // 1. Validar formato usuario@tenant
+                // Validar formato usuario@tenant
                 if (string.IsNullOrWhiteSpace(username) || !username.Contains("@"))
                 {
                     Console.WriteLine("Formato de usuario inválido. Debe ser: usuario@tenant");
                     return false;
                 }
 
-                // 2. Extraer usuario y tenant
                 var parts = username.Split('@');
                 if (parts.Length != 2)
                 {
@@ -43,12 +39,9 @@ namespace OptiSoftBlazor.Web.Services
                     return false;
                 }
 
-                var user = parts[0];
                 var tenantName = parts[1];
 
-                Console.WriteLine($"Buscando tenant: {tenantName}");
-
-                // 3. Buscar el tenant en la DB central
+                // Buscar el tenant en la DB central
                 var tenant = await _tenantService.GetTenantByNameAsync(tenantName);
                 if (tenant == null)
                 {
@@ -59,42 +52,31 @@ namespace OptiSoftBlazor.Web.Services
                 Console.WriteLine($"Tenant encontrado: {tenant.Name}");
                 Console.WriteLine($"Connection String: {tenant.ConnectionString?.Substring(0, Math.Min(50, tenant.ConnectionString.Length))}...");
 
-                // 4. Guardar el tenant actual en el servicio
-                //_tenantService.CurrentTenantName = tenant.Name;
-                //_tenantService.CurrentConnectionString = tenant.ConnectionString;
-
-                // 5. Crear un DbContext temporal para la DB del tenant
+                // Crear DbContext temporal para la DB del tenant
                 var optionsBuilder = new DbContextOptionsBuilder<OptiSoftDbContext>();
                 optionsBuilder.UseSqlServer(tenant.ConnectionString);
 
                 using var tenantContext = new OptiSoftDbContext(optionsBuilder.Options);
 
-                // 6. Crear UserManager temporal para la DB del tenant
-                var userStore = new Microsoft.AspNetCore.Identity.EntityFrameworkCore.UserStore<ApplicationUser>(tenantContext);
-                var userManager = new UserManager<ApplicationUser>(
-                    userStore,
-                    null,
-                    new PasswordHasher<ApplicationUser>(),
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null);
+                // Buscar usuario por NormalizedUserName
+                var normalizedUsername = username.ToUpper();
 
-                // 7. Buscar el usuario en la DB del tenant con el username completo (usuario@tenant)
-                var identityUser = await userManager.FindByNameAsync(username);
-                if (identityUser == null)
+                var user = await tenantContext.ApplicationUser
+                    .FirstOrDefaultAsync(u => u.UserName == username);
+
+                if (user == null)
                 {
                     Console.WriteLine($"Usuario '{username}' no encontrado en la base de datos del tenant");
                     return false;
                 }
 
-                Console.WriteLine($"Usuario encontrado: {identityUser.UserName}");
+                Console.WriteLine($"Usuario encontrado: {user.UserName}");
 
-                // 8. Verificar la contraseña
-                var passwordValid = await userManager.CheckPasswordAsync(identityUser, password);
-                if (!passwordValid)
+                // Verificar la contraseña
+                var passwordHasher = new PasswordHasher<ApplicationUser>();
+                var result = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+
+                if (result != PasswordVerificationResult.Success)
                 {
                     Console.WriteLine("Contraseña incorrecta");
                     return false;
@@ -102,11 +84,11 @@ namespace OptiSoftBlazor.Web.Services
 
                 Console.WriteLine("Contraseña válida");
 
-                // 9. SignIn manual (sin usar SignInManager que usa DB central)
+                // SignIn manual
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.NameIdentifier, identityUser.Id),
-                    new Claim(ClaimTypes.Name, identityUser.UserName!),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id),
+                    new Claim(ClaimTypes.Name, user.UserName!),
                     new Claim("TenantName", tenantName)
                 };
 
@@ -132,7 +114,6 @@ namespace OptiSoftBlazor.Web.Services
         public async Task LogoutAsync()
         {
             await _signInManager.SignOutAsync();
-
             Console.WriteLine("Logout exitoso");
         }
     }

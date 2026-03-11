@@ -29,27 +29,19 @@
     <div class="nueva-fila">
         <FluentButton Appearance="Appearance.Accent" OnClick="AddConsulta" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-right: 3em">Nuevo</FluentButton>
 
-        <FluentAutocomplete Items="Clientes"
-                            TOption="Cliente"
-                            Class="autocomplete-opti"
-                            @bind-SelectedOption="ClienteSelect"
-                            OptionText="@(c => c.Nombre)"
-                            Virtualize="true"
-                            Multiple="false"
-                            MaximumOptionsSearch="int.MaxValue"
-                            MaximumSelectedOptions="1"
-                            Position="SelectPosition.Below"
-                            @bind-SelectedOption:after="FiltrarPorCliente"
-                            Style="width: 300px; margin-right: 1em;" />
+        <FluentTextField Placeholder="Buscar por cliente, profesional o pedido..."
+                         Style="width: 300px; margin-right: 1em;"
+                         @bind-Value="TextoBusqueda"
+                         @bind-Value:after="FiltrarConsultas" />
 
-        <FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.FilterDismiss())" Disabled="!(ClienteSelect?.IdCliente > 0)" />
+        <FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.FilterDismiss())" Disabled="@(string.IsNullOrEmpty(TextoBusqueda))" />
     </div>
 }
 
-@if (!(ListConsultasFiltradas == null))
+@if (!(ListConsultas == null))
 {
     <FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 80vh; padding: 0.5em;">
-        <FluentDataGrid Items="ListConsultasFiltradas"
+        <FluentDataGrid Items="ListConsultas"
                         TGridItem="Consulta"
                         Pagination="@pagination"
                         AutoFit=true
@@ -61,18 +53,18 @@
             <PropertyColumn Property="tbl => tbl.PedidoNumero" Title="N° Pedido" Sortable="true" Align="Align.Center" />
             <PropertyColumn Property="tbl => tbl.Profesional!.Nombre" Title="Profesional" Sortable="true" Align="Align.Center" />
         </FluentDataGrid>
-        @if (ListConsultasFiltradas.Count() > pagination.ItemsPerPage)
+        @if (ListConsultas.Count() > pagination.ItemsPerPage)
         {
             <FluentPaginator State="pagination" Style="padding: 0.5em 2em;" />
         }
     </FluentCard>
 }
 
-@if (!Hidden)
+@if (!HiddenConsulta)
 {
-    <ConsultaDiag Hidden="@Hidden"
+    <ConsultaDiag HiddenConsulta="@HiddenConsulta"
                   Consulta="ConsultaSeleccionada"
-                  HiddenChanged="@(v => Hidden = v)"
+                  HiddenConsultaChanged="@(v => HiddenConsulta = v)"
                   Clientes="@Clientes"
                   Personales="@Personales"
                   Pedidos="@Pedidos"
@@ -81,18 +73,17 @@
 }
 
 @code {
-    PaginationState pagination = new PaginationState { ItemsPerPage = 9 };
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
     private List<Consulta>? consultas = new();
     private List<Consulta>? consultasFiltradas = new();
-    bool Hidden = true;
+    bool HiddenConsulta = true;
     private List<Cliente> Clientes = new();
     private List<Personal> Personales = new();
     private List<Compra> Pedidos = new();
     bool IsFirstRender = true;
     private Consulta? ConsultaSeleccionada;
-    private IQueryable<Consulta>? ListConsultasFiltradas;
-
-    private Cliente? ClienteSelect { get; set; }
+    private IQueryable<Consulta>? ListConsultas;
+    private string? TextoBusqueda;
 
     private bool IsLoading { get; set; } = false;
 
@@ -109,8 +100,8 @@
             StateHasChanged();
             consultas = await ConsultaService.ObtenerConsultasAsync();
             consultasFiltradas = new List<Consulta>(consultas);
-            Clientes = await ClienteService.ObtenerClienteAsync();
-            ListConsultasFiltradas = consultasFiltradas.AsQueryable();
+            Clientes = await ClienteService.ObtenerClienteAsync(); //Cambiar clientes para que no cargue al inicio, mejor al querer abrir la consulta
+            ListConsultas = consultasFiltradas.AsQueryable();
         }
         catch (Exception ex)
         {
@@ -127,19 +118,10 @@
 
     private async Task AddConsulta()
     {
-        IsLoading = true;
-        StateHasChanged();
-
-        if (!Pedidos.Any())
-            Pedidos = await CompraService.ObtenerPedidosAsync();
-
-        if (!Personales.Any())
-            Personales = await PersonalService.ObtenerPersonalAsync();
+        await CargarDatos();
 
         ConsultaSeleccionada = null; // Nueva consulta
-        Hidden = false;
-
-        IsLoading = false;
+        HiddenConsulta = false;
         StateHasChanged();
     }
 
@@ -147,8 +129,7 @@
     {
         consultas = await ConsultaService.ObtenerConsultasAsync();
         consultasFiltradas = new List<Consulta>(consultas);
-        ListConsultasFiltradas = consultasFiltradas.AsQueryable();
-        ClienteSelect = null; // Limpiar filtro después de guardar
+        ListConsultas = consultasFiltradas.AsQueryable();
         ToastService.ShowSuccess("Consulta guardada correctamente");
     }
 
@@ -156,8 +137,7 @@
     {
         consultas = await ConsultaService.ObtenerConsultasAsync();
         consultasFiltradas = new List<Consulta>(consultas);
-        ListConsultasFiltradas = consultasFiltradas.AsQueryable();
-        ClienteSelect = null; // Limpiar filtro después de eliminar
+        ListConsultas = consultasFiltradas.AsQueryable();
         ToastService.ShowSuccess("La consulta ha sido eliminada correctamente");
     }
 
@@ -166,44 +146,69 @@
         if (consulta.IdConsulta <= 0)
             return;
 
-        IsLoading = true;
-        StateHasChanged();
-
-        if (!Pedidos.Any())
-            Pedidos = await CompraService.ObtenerPedidosAsync();
-
-        if (!Personales.Any())
-            Personales = await PersonalService.ObtenerPersonalAsync();
+        await CargarDatos();
 
         ConsultaSeleccionada = consulta;
-        Hidden = false;
-
-        IsLoading = false;
+        HiddenConsulta = false;
         StateHasChanged();
     }
 
     private void LimpiarFiltro()
     {
-        ClienteSelect = null;
-        FiltrarPorCliente();
+        TextoBusqueda = null;
+        FiltrarConsultas();
     }
 
-    private void FiltrarPorCliente()
+    private void FiltrarConsultas()
     {
-        if (consultas == null) return;
+        if (consultas == null)
+            return;
 
-        if (ClienteSelect?.IdCliente > 0)
-        {
-            consultasFiltradas = consultas
-                .Where(c => c.Cliente?.IdCliente == ClienteSelect.IdCliente)
-                .ToList();
-        }
-        else
+        if (string.IsNullOrWhiteSpace(TextoBusqueda))
         {
             consultasFiltradas = new List<Consulta>(consultas);
         }
+        else
+        {
+            var texto = TextoBusqueda.Trim().ToLower();
 
-        ListConsultasFiltradas = consultasFiltradas.AsQueryable();
+            consultasFiltradas = consultas
+                .Where(p =>
+                    (!string.IsNullOrEmpty(p.Cliente?.Nombre) && p.Cliente.Nombre.ToLower().Contains(texto)) ||
+                    (!string.IsNullOrEmpty(p.Profesional?.Nombre) && p.Profesional.Nombre.ToLower().Contains(texto)) ||
+                    (!string.IsNullOrEmpty(p.PedidoNumero) && p.PedidoNumero.ToLower().Contains(texto))
+                )
+                .ToList();
+        }
+
+        ListConsultas = consultasFiltradas.AsQueryable();
         StateHasChanged();
+    }
+
+    private async Task CargarDatos()
+    {
+        try
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            if (!Clientes.Any())
+                Clientes = await ClienteService.ObtenerClienteAsync();
+
+            if (!Pedidos.Any())
+                Pedidos = await CompraService.ObtenerPedidosAsync();
+
+            if (!Personales.Any())
+                Personales = await PersonalService.ObtenerPersonalAsync();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al cargar datos: {ex.Message}", 5000);
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
+        }
     }
 }

@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using OptiSoftBlazor.Shared.Data;
 using OptiSoftBlazor.Shared.Data.Users;
+using OptiSoftBlazor.Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using OptiSoftBlazor.Shared.Helpers;
 
 namespace OptiSoftBlazor.Shared.Services
 {
@@ -42,6 +43,15 @@ namespace OptiSoftBlazor.Shared.Services
             if (string.IsNullOrWhiteSpace(user.UserName))
                 throw new ArgumentException("El nombre de usuario es obligatorio");
 
+            // Crear el hasher
+            var hasher = new PasswordHasher<ApplicationUser>();
+
+            // Solo hasheamos si la contraseña no está vacía
+            if (!string.IsNullOrWhiteSpace(user.PasswordHash))
+            {
+                user.PasswordHash = hasher.HashPassword(user, user.PasswordHash);
+            }
+
             var userDb = await db.ApplicationUser
                          .FirstOrDefaultAsync(a => a.Id == user.Id);
 
@@ -53,6 +63,7 @@ namespace OptiSoftBlazor.Shared.Services
             {
                 userDb.UserName = user.UserName;
                 userDb.ForcePasswordChange = user.ForcePasswordChange;
+                userDb.idPersonal = user.idPersonal;
 
                 if (!string.IsNullOrEmpty(user.PasswordHash))
                     userDb.PasswordHash = user.PasswordHash;
@@ -75,6 +86,25 @@ namespace OptiSoftBlazor.Shared.Services
 
             db.ApplicationUser.Remove(user);
             await db.SaveChangesAsync();
+        }
+
+        public async Task<bool> CambiarPasswordAsync(string username, string newPassword)
+        {
+            await using var db = await _contextFactory.CreateDbContextAsync();
+
+            var user = await db.ApplicationUser
+                .FirstOrDefaultAsync(a => a.UserName == username);
+
+            if (user == null) return false;
+
+            var hasher = new PasswordHasher<ApplicationUser>();
+            user.PasswordHash = hasher.HashPassword(user, newPassword);
+            user.ForcePasswordChange = false;
+
+            db.ApplicationUser.Update(user);
+            await db.SaveChangesAsync();
+
+            return true;
         }
     }
 }

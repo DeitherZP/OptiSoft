@@ -35,7 +35,7 @@
 
 <LoadingSpinner @bind-Visible="IsLoading" />
 
-<FluentDialog Modal="true" @bind-Hidden="Hidden">
+<FluentDialog Modal="true" @bind-Hidden="HiddenConsulta">
     <FluentHeader>
         <h3>@(Consulta == null ? "Nueva Consulta" : "Editar Consulta")</h3>
     </FluentHeader>
@@ -499,16 +499,16 @@
 
 @if (!HiddenPedido)
 {
-    <PedidoDiag Hidden="@HiddenPedido"
+    <PedidoDiag HiddenPedido="@HiddenPedido"
                 ClienteConsulta="ClienteSelect"
                 Clientes="Clientes"
-                HiddenChanged="@(v => HiddenPedido = v)"
+                HiddenPedidoChanged="@(v => HiddenPedido = v)"
                 OnGuardar="PedidoGuardado" />
 }
 
 @code {
-    [Parameter] public bool Hidden { get; set; }
-    [Parameter] public EventCallback<bool> HiddenChanged { get; set; }
+    [Parameter] public bool HiddenConsulta { get; set; }
+    [Parameter] public EventCallback<bool> HiddenConsultaChanged { get; set; }
     [Parameter] public List<Cliente> Clientes { get; set; } = new();
     [Parameter] public List<Personal> Personales { get; set; } = new();
     [Parameter] public List<Compra> Pedidos { get; set; } = new();
@@ -701,12 +701,12 @@
 
     private async Task Cancelar()
     {
-        Hidden = true;
+        HiddenConsulta = true;
         _consulta = new Consulta();
         ClienteSelect = null;
         ProfesionalSelect = null;
         PedidoSelect = null;
-        await HiddenChanged.InvokeAsync(Hidden);
+        await HiddenConsultaChanged.InvokeAsync(HiddenConsulta);
     }
 
     private async Task Eliminar()
