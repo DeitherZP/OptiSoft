@@ -1,5 +1,5 @@
 ﻿@page "/consulta"
-@attribute [Authorize]
+@attribute [Authorize(Policy = "RequirePasswordChanged")]
 @rendermode InteractiveServer
 
 @using OptiSoftBlazor.Shared.Data

@@ -5,15 +5,15 @@
 /( _ )\
  ^^ ^^
 */
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
 using OptiSoftBlazor.Shared.Data;
 using OptiSoftBlazor.Shared.Data.Tenant;
 using OptiSoftBlazor.Shared.Services;
+using OptiSoftBlazor.Web.Authorization;
 using OptiSoftBlazor.Web.Components;
-using OptiSoftBlazor.Web.Middleware;
 using OptiSoftBlazor.Web.Services;
 using System.Globalization;
 
@@ -61,6 +61,48 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Account/Login";
     options.AccessDeniedPath = "/Account/Login";
     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+
+    options.Events.OnRedirectToAccessDenied = context =>
+    {
+        var accept = context.Request.Headers["Accept"].ToString();
+        var isNavigationRequest = accept.Contains("text/html")
+            && !context.Request.Path.StartsWithSegments("/_blazor")
+            && context.Request.Headers["X-Requested-With"] != "XMLHttpRequest";
+
+        if (isNavigationRequest)
+        {
+            context.Response.Redirect("/Account/PasswordChanged");
+        }
+        else
+        {
+            // Petición interna de Blazor: solo 403, el circuito lo absorbe sin romperse
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        }
+
+        return Task.CompletedTask;
+    };
+});
+
+builder.Services.AddHttpContextAccessor();
+
+// Handler que evalúa ForcePasswordChange desde la DB del tenant
+builder.Services.AddScoped<IAuthorizationHandler, ForcePasswordChangeHandler>();
+
+// Política que protege todas las páginas que requieren password no forzado.
+// Se usa con [Authorize(Policy = "RequirePasswordChanged")] 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequirePasswordChanged", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.AddRequirements(new ForcePasswordChangeRequirement());
+    });
+
+    // Esto rompe el render de las paginas, solo usar [Authorize(Policy = "RequirePasswordChanged")]
+    //options.FallbackPolicy = new AuthorizationPolicyBuilder()
+    //    .RequireAuthenticatedUser()
+    //    .AddRequirements(new ForcePasswordChangeRequirement())
+    //    .Build();
 });
 
 builder.Services.AddScoped<ToastService>();
@@ -74,7 +116,6 @@ builder.Services.AddScoped<SeteoService>();
 builder.Services.AddScoped<ConfirmService>();
 builder.Services.AddScoped<UsuariosService>();
 builder.Services.AddScoped<SucursalService>();
-
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
 builder.Services.AddLocalization();
@@ -89,14 +130,10 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.UseAntiforgery();
 app.MapStaticAssets();
-
-//app.UseMiddleware<ForcePasswordMiddleware>();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()

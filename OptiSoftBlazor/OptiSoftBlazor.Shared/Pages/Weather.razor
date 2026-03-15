@@ -1,5 +1,5 @@
 ﻿@page "/weather"
-@attribute [Authorize]
+@attribute [Authorize(Policy = "RequirePasswordChanged")]
 
 <PageTitle>Weather</PageTitle>
 

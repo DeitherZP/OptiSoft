@@ -1,5 +1,5 @@
 ﻿@page "/counter"
-@attribute [Authorize]
+@attribute [Authorize(Policy = "RequirePasswordChanged")]
 
 <PageTitle>Counter</PageTitle>
 
