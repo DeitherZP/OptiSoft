@@ -72,7 +72,7 @@
                     <div class="fila-flex">
                         <div class="columna-flex" style="padding-top: 1em;">
                             <FluentAutocomplete Label="Cliente"
-                                                Items="@Clientes"
+                                                Items="@ClientesFiltrados"
                                                 TOption="Cliente"
                                                 Class="autocomplete-opti"
                                                 @bind-SelectedOption="ClienteSelect"
@@ -80,6 +80,7 @@
                                                 Multiple="false"
                                                 Virtualize="true"
                                                 MaximumSelectedOptions="1"
+                                                OnOptionsSearch="@OnBuscarCliente"
                                                 MaximumOptionsSearch="int.MaxValue"
                                                 @bind-SelectedOption:after="FiltrarPedidoCliente"
                                                 Position="SelectPosition.Below" />
@@ -88,7 +89,7 @@
                     <div class="fila-flex">
                         <div class="columna-flex" style="padding-top: 1em;">
                             <FluentAutocomplete Label="Profesional"
-                                                Items="@Personales"
+                                                Items="@PersonalesFiltrados"
                                                 TOption="Personal"
                                                 Class="autocomplete-opti"
                                                 @bind-SelectedOption="ProfesionalSelect"
@@ -96,6 +97,7 @@
                                                 Multiple="false"
                                                 Virtualize="true"
                                                 MaximumSelectedOptions="1"
+                                                OnOptionsSearch="@OnBuscarPersonal"
                                                 MaximumOptionsSearch="int.MaxValue"
                                                 Position="SelectPosition.Below" />
                         </div>
@@ -107,9 +109,9 @@
                         </div>
                         <div class="columna-flex" style="padding-top: 1em;">
                             <div class="fila-flex" style="gap: 0.5em;">
-                                <div class="columna-flex" style="min-width: 90%; max-width: 90%;">
+                                <div class="columna-flex" style="min-width:@(Permisos.CanEdit("/consulta") ? "90%" : "100%"); max-width:@(Permisos.CanEdit("/consulta") ? "90%" : "100%");">
                                     <FluentAutocomplete Label="Pedido"
-                                                        Items="@Pedidos"
+                                                        Items="@PedidosFiltrados"
                                                         TOption="Compra"
                                                         Class="autocomplete-pedido"
                                                         @bind-SelectedOption="PedidoSelect"
@@ -118,15 +120,19 @@
                                                         Virtualize="true"
                                                         ReadOnly="@(!activarPedido)"
                                                         MaximumSelectedOptions="1"
+                                                        OnOptionsSearch="@OnBuscarPedido"
                                                         MaximumOptionsSearch="int.MaxValue"
                                                         Position="SelectPosition.Below" />
                                 </div>
-                                <div class="columna-flex" style="margin-top: 1.7em; min-width: 8%; max-width: 8%;">
-                                    <FluentButton Appearance="Appearance.Accent"
-                                                  OnClick="AddPedido"
-                                                  Disabled="@(ClienteSelect == null)"
-                                                  IconStart="@(new Icons.Filled.Size20.Add())" />
-                                </div>
+                                @if (Permisos.CanEdit("/consulta"))
+                                {
+                                    <div class="columna-flex" style="margin-top: 1.7em; min-width: 8%; max-width: 8%;">
+                                        <FluentButton Appearance="Appearance.Accent"
+                                            OnClick="AddPedido"
+                                            Disabled="@(ClienteSelect == null)"
+                                            IconStart="@(new Icons.Filled.Size20.Add())" />
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -479,7 +485,7 @@
             Cancelar
         </FluentButton>
 
-        @if (Consulta != null && Consulta?.IdConsulta > 0)
+        @if ((Consulta != null && Consulta?.IdConsulta > 0) && Permisos.CanDelete("/consulta"))
         {
             <FluentButton Class="btn-danger" 
                           Appearance="Appearance.Neutral"
@@ -489,11 +495,14 @@
             </FluentButton>
         }
 
-        <FluentButton Appearance="Appearance.Accent"
-                      OnClick="Guardar"
-                      IconStart="@(new Icons.Filled.Size20.Save())">
-            Guardar
-        </FluentButton>
+        @if (Permisos.CanEdit("/consulta"))
+        {
+            <FluentButton Appearance="Appearance.Accent"
+                          OnClick="Guardar"
+                          IconStart="@(new Icons.Filled.Size20.Save())">
+                Guardar
+            </FluentButton>
+        }
     </FluentFooter>
 </FluentDialog>
 
@@ -524,10 +533,18 @@
     private bool activarPedido = false;
     private bool HiddenPedido = true;
 
+    private List<Cliente> ClientesFiltrados = new();
+    private List<Personal> PersonalesFiltrados = new();
+    private List<Compra> PedidosFiltrados = new();
+
     private bool IsLoading = false;
 
     protected override void OnParametersSet()
     {
+        ClientesFiltrados = Clientes?.ToList() ?? new List<Cliente>();
+        PersonalesFiltrados = Personales?.ToList() ?? new List<Personal>();
+        PedidosFiltrados = Pedidos?.ToList() ?? new List<Compra>();
+
         if (_pedidosOriginales.Count == 0 && Pedidos.Any())
         {
             _pedidosOriginales = Pedidos.ToList();
@@ -792,17 +809,17 @@
 
         if (ClienteSelect == null)
         {
-            Pedidos = new List<Compra>();
+            PedidosFiltrados = new List<Compra>();
             activarPedido = false;
             StateHasChanged();
             return;
         }
 
-        Pedidos = _pedidosOriginales
+        PedidosFiltrados = _pedidosOriginales
             .Where(p => p.IdCliente == ClienteSelect.IdCliente)
             .ToList();
 
-        if (Pedidos.Count == 0)
+        if (PedidosFiltrados.Count == 0)
         {
             ToastService.ShowInfo("El cliente seleccionado no tiene ningún pedido registrado.", 5000);
             activarPedido = false;
@@ -839,6 +856,96 @@
         {
             IsLoading = false;
             StateHasChanged();
+        }
+    }
+
+    private void OnBuscarCliente(OptionsSearchEventArgs<Cliente> e)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(e.Text))
+            {
+                e.Items = ClientesFiltrados; // mostrar todo si no escribe
+                return;
+            }
+
+            string texto = e.Text.Trim().ToLower();
+
+            // Primero coincidencias al inicio del nombre
+            var inicio = ClientesFiltrados
+                .Where(c => c.Nombre?.ToLower().StartsWith(texto) == true);
+
+            // Luego coincidencias en medio o final
+            var medio = ClientesFiltrados
+                .Where(c => c.Nombre?.ToLower().Contains(texto) == true
+                            && !c.Nombre.ToLower().StartsWith(texto));
+
+            e.Items = inicio.Concat(medio).ToList();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al buscar cliente: {ex.Message}", 5000);
+            e.Items = ClientesFiltrados; // fallback
+        }
+    }
+
+    private void OnBuscarPersonal(OptionsSearchEventArgs<Personal> e)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(e.Text))
+            {
+                e.Items = PersonalesFiltrados; // mostrar todo si no escribe
+                return;
+            }
+
+            string texto = e.Text.Trim().ToLower();
+
+            // Primero coincidencias al inicio del nombre
+            var inicio = PersonalesFiltrados
+                .Where(c => c.Nombre?.ToLower().StartsWith(texto) == true);
+
+            // Luego coincidencias en medio o final
+            var medio = PersonalesFiltrados
+                .Where(c => c.Nombre?.ToLower().Contains(texto) == true
+                            && !c.Nombre.ToLower().StartsWith(texto));
+
+            e.Items = inicio.Concat(medio).ToList();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al buscar cliente: {ex.Message}", 5000);
+            e.Items = PersonalesFiltrados; // fallback
+        }
+    }
+
+    private void OnBuscarPedido(OptionsSearchEventArgs<Compra> e)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(e.Text))
+            {
+                e.Items = PedidosFiltrados; // mostrar todo si no escribe
+                return;
+            }
+
+            string texto = e.Text.Trim().ToLower();
+
+            // Primero coincidencias al inicio del nombre
+            var inicio = PedidosFiltrados
+                .Where(c => c.Numero?.ToLower().StartsWith(texto) == true);
+
+            // Luego coincidencias en medio o final
+            var medio = PedidosFiltrados
+                .Where(c => c.Numero?.ToLower().Contains(texto) == true
+                            && !c.Numero.ToLower().StartsWith(texto));
+
+            e.Items = inicio.Concat(medio).ToList();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al buscar cliente: {ex.Message}", 5000);
+            e.Items = PedidosFiltrados; // fallback
         }
     }
 }

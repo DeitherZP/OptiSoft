@@ -3,33 +3,33 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OptiSoftBlazor.Shared.Services
+namespace OptiSoftBlazor.Shared.Helpers
 {
-    public class PermissionService
+    public static class Permisos
     {
-        private Dictionary<string, ScreenPermissionView> _permissions = new();
+        private static Dictionary<string, ScreenPermissionView> _permissions = new();
 
-        public void SetPermissions(List<ScreenPermissionView> permissions)
+        public static void SetPermissions(List<ScreenPermissionView> permissions)
         {
             _permissions = permissions.ToDictionary(p => p.ScreenName);
         }
 
-        public bool CanView(string screenName)
+        public static bool CanView(string screenName)
         {
             return _permissions.TryGetValue(screenName, out var p) && p.CanView;
         }
 
-        public bool CanCreate(string screenName)
+        public static bool CanCreate(string screenName)
         {
             return _permissions.TryGetValue(screenName, out var p) && p.CanCreate;
         }
 
-        public bool CanEdit(string screenName)
+        public static bool CanEdit(string screenName)
         {
             return _permissions.TryGetValue(screenName, out var p) && p.CanEdit;
         }
 
-        public bool CanDelete(string screenName)
+        public static bool CanDelete(string screenName)
         {
             return _permissions.TryGetValue(screenName, out var p) && p.CanDelete;
         }

@@ -1,10 +1,13 @@
 ﻿@using OptiSoftBlazor.Shared.Data
+@using OptiSoftBlazor.Shared.Data.RolePermission.Dto
 @using OptiSoftBlazor.Shared.Data.Users
 @using OptiSoftBlazor.Shared.Helpers
+@using OptiSoftBlazor.Shared.Pages.RolePermission.Shared
 @using OptiSoftBlazor.Shared.Pages.Shared
 
 @inject PersonalService PersonalService
 @inject UsuariosService UsuariosService
+@inject RolesService RolesService
 @inject IJSRuntime JS
 
 <style>
@@ -79,16 +82,38 @@
                 </div>
             </div>
 
-            @*<FluentCard AreaRestricted="false" Class="data-grid-table" Style="margin-top: 1.5em; padding: 0.5em;">
+            <FluentCard AreaRestricted="false" Class="data-grid-table" Style="margin-top: 1.5em; padding: 0.5em;">
                 <div class="column-flex">
-                    <FluentButton Appearance="Appearance.Accent"
-                                  OnClick="AgregarRol"
-                                  IconStart="@(new Icons.Filled.Size20.AddCircle())"
-                                  Style="margin: 1em;">
-                        Agregar Artículo
-                    </FluentButton>
+                    @if (Permisos.CanEdit("/usuarios"))
+		            {
+                        <FluentButton Appearance="Appearance.Accent"
+                                      OnClick="AgregarRol"
+                                      IconStart="@(new Icons.Filled.Size20.AddCircle())"
+                                      Style="margin: 1em;">
+                            Agregar Rol
+                        </FluentButton>
+                    }
                 </div>
-            </FluentCard>*@
+                <div class="column-flex">
+                    <FluentDataGrid Items="ListRoles"
+                                    TGridItem="RoleView"
+                                    AutoFit=false
+                                    ShowHover=true>
+                        <PropertyColumn Property="r => r.RoleName" Title="Rol" Align="Align.Center" Sortable="true" />
+                        <TemplateColumn Title="Acción" Align="Align.Center">
+                            <ChildContent Context="rol">
+                                <div style="display:flex; justify-content:center; align-items:center; height:100%;">
+                                    <FluentButton Class="btn-delete-grid"
+                                                  Appearance="Appearance.Stealth"
+                                                  OnClick="@(() => EliminarRol(rol))">
+                                        <FluentIcon Value="@(new Icons.Filled.Size20.Delete())" Color="Color.Error" />
+                                    </FluentButton>
+                                </div>
+                            </ChildContent>
+                        </TemplateColumn>
+                    </FluentDataGrid>
+                </div>
+            </FluentCard>
         </div>
     </FluentDialogBody>
 
@@ -99,7 +124,7 @@
             Cancelar
         </FluentButton>
 
-        @if (User != null || !string.IsNullOrWhiteSpace(User?.Id))
+        @if ((User != null && !string.IsNullOrWhiteSpace(User?.Id)) && Permisos.CanDelete("/usuarios"))
         {
             <FluentButton Class="btn-danger"
                           Appearance="Appearance.Neutral"
@@ -109,13 +134,24 @@
             </FluentButton>
         }
 
-        <FluentButton Appearance="Appearance.Accent"
-                      OnClick="Guardar"
-                      IconStart="@(new Icons.Filled.Size20.Save())">
-            Guardar
-        </FluentButton>
+        @if (Permisos.CanEdit("/usuarios"))
+		{
+            <FluentButton Appearance="Appearance.Accent"
+                          OnClick="Guardar"
+                          IconStart="@(new Icons.Filled.Size20.Save())">
+                Guardar
+            </FluentButton>
+        }
     </FluentFooter>
 </FluentDialog>
+
+@if (!HiddenRolSelector)
+{
+    <RolSelector HiddenRolSelector="@HiddenRolSelector"
+                 HiddenHiddenRolSelectorChanged="@(v => HiddenRolSelector = v)"
+                 Roles="auxRoles"
+                 OnRolSeleccionador="RolAgregado" />
+}
 
 @code {
     [Parameter] public ApplicationUser? User { get; set;}
@@ -124,6 +160,7 @@
     [Parameter] public List<Personal>? Personals { get; set; }
     [Parameter] public EventCallback OnGuardar { get; set; }
     [Parameter] public EventCallback OnEliminar { get; set; }
+    [Parameter] public List<RoleView>? Roles { get; set; }
 
     private bool IsLoading = false;
 
@@ -133,6 +170,11 @@
     private bool ForcePasswordChange = false;
     private bool DisabledForPassCh = false;
 
+    private bool HiddenRolSelector = true;
+    private IQueryable<RoleView>? ListRoles;
+    private List<RoleView> _roles = new();
+    private List<RoleView> auxRoles = new();
+
     protected override void OnParametersSet()
     {
         if (User != null)
@@ -141,6 +183,16 @@
             UserPersonal = Personals?
                 .FirstOrDefault(p => p.IdPersonal == User.idPersonal);
             ForcePasswordChange = User.ForcePasswordChange;
+
+            _roles = Roles != null
+                ? Roles.Select(r => new RoleView
+                {
+                    RoleId = r.RoleId,
+                    RoleName = r.RoleName
+                }).ToList()
+                : new List<RoleView>();
+
+            ListRoles = _roles.AsQueryable();
         }
         else
         {
@@ -183,7 +235,7 @@
             if (!isValido)
                 return;
 
-            await UsuariosService.GuardarUsuarioAsync(user);
+            await UsuariosService.GuardarUsuarioAsync(user, ListRoles.ToList() ?? new List<RoleView>());
 
             await OnGuardar.InvokeAsync();
             await Cancelar();
@@ -290,13 +342,29 @@
         Password = null;
         UserPersonal = null;
         User = null;
-        Personals = null;
+        //Personals = null;
         ForcePasswordChange = false;
+        _roles = null;
     }
 
-    private void AgregarRol()
+    private async Task AgregarRol()
     {
-        ToastService.ShowInfo("NO esta agregada la funcion para agregar rol", 5000);
+        try
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            if (!auxRoles.Any())
+                auxRoles = await RolesService.ObtenerRolesAsync();
+
+            HiddenRolSelector = false;
+            IsLoading = false;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al cargar artículos: {ex.Message}", 5000);
+        }
     }
 
     private void ValidarForPassCh()
@@ -306,5 +374,27 @@
 
         ForcePasswordChange = false;
         DisabledForPassCh = false;
+    }
+
+    private void RolAgregado(RoleView rol)
+    {
+        _roles.Add(new RoleView
+        {
+            RoleId = rol.RoleId,
+            RoleName = rol.RoleName
+        });
+
+        ListRoles = _roles.AsQueryable();
+
+        StateHasChanged();
+    }
+
+    private void EliminarRol(RoleView rol)
+    {
+        _roles.Remove(rol);
+
+        ListRoles = _roles.AsQueryable();
+
+        StateHasChanged();
     }
 }

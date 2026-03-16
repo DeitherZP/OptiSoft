@@ -53,7 +53,7 @@
                 <div class="nueva-fila" style="margin-bottom: 0;">
                     <div class="columna-flex" style="padding-top: 1em;">
                         <FluentAutocomplete Label="Cliente"
-                                            Items="@Clientes"
+                                            Items="@ClientesFiltrados"
                                             TOption="Cliente"
                                             Placeholder="Seleccione un cliente"
                                             Class="autocomplete-opti"
@@ -62,6 +62,7 @@
                                             Virtualize="true"
                                             Multiple="false"
                                             MaximumSelectedOptions="1"
+                                            OnOptionsSearch="@OnBuscarCliente"
                                             MaximumOptionsSearch="int.MaxValue"
                                             Position="SelectPosition.Below"
                                             ReadOnly="@(ClienteConsulta != null)"/>
@@ -94,14 +95,17 @@
                     </div>
                 </div>
                 <FluentCard AreaRestricted="false" Class="data-grid-table" Style="margin-bottom: 1em; padding: 0.5em;">
-                    <div class="column-flex">
-                        <FluentButton Appearance="Appearance.Accent"
-                                      OnClick="AbrirArticulos"
-                                      IconStart="@(new Icons.Filled.Size20.AddCircle())"
-                                      Style="margin: 1em;">
-                            Agregar Artículo
-                        </FluentButton>
-                    </div>
+                    @if (Permisos.CanEdit("/pedido"))
+                    {
+                        <div class="column-flex">
+                            <FluentButton Appearance="Appearance.Accent"
+                                          OnClick="AbrirArticulos"
+                                          IconStart="@(new Icons.Filled.Size20.AddCircle())"
+                                          Style="margin: 1em;">
+                                Agregar Artículo
+                            </FluentButton>
+                        </div>
+                    }
                     <div class="column-flex">
                         <FluentDataGrid Items="ListDetCompras"
                                         TGridItem="DetCompra"
@@ -133,7 +137,7 @@
                 Cancelar
             </FluentButton>
         
-            @if (Compra != null || Compra?.IdCompra > 0)
+            @if ((Compra != null && Compra?.IdCompra > 0) && Permisos.CanDelete("/pedido"))
             {
                 <FluentButton Class="btn-danger"
                               Appearance="Appearance.Neutral"
@@ -142,12 +146,14 @@
                     Eliminar
                 </FluentButton>
             }
-
-            <FluentButton Appearance="Appearance.Accent"
-                          OnClick="Guardar"
-                          IconStart="@(new Icons.Filled.Size20.Save())">
-                Guardar
-            </FluentButton>
+            @if (Permisos.CanEdit("/pedido"))
+            {
+                <FluentButton Appearance="Appearance.Accent"
+                    OnClick="Guardar"
+                    IconStart="@(new Icons.Filled.Size20.Save())">
+                        Guardar
+                    </FluentButton>
+            }
         </FluentFooter>
     </FluentDialog>
 </div>
@@ -182,6 +188,8 @@
     private bool HiddenArticulo = true;
     private bool IsLoading = false;
 
+    private List<Cliente> ClientesFiltrados = new();
+
     private Dictionary<string, bool> Estados = new()
     {
         { "Pendiente", false },
@@ -192,6 +200,8 @@
 
     protected override void OnParametersSet()
     {
+        ClientesFiltrados = Clientes?.ToList() ?? new List<Cliente>();
+
         if (Compra != null)
         {
             ClienteSelect = Clientes!.FirstOrDefault(c => c.IdCliente == Compra.IdCliente);
@@ -371,4 +381,35 @@
         _detalles = new List<DetCompra>();
         ListDetCompras = _detalles.AsQueryable();
     }
+
+    private void OnBuscarCliente(OptionsSearchEventArgs<Cliente> e)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(e.Text))
+            {
+                e.Items = ClientesFiltrados; // mostrar todo si no escribe
+                return;
+            }
+
+            string texto = e.Text.Trim().ToLower();
+
+            // Primero coincidencias al inicio del nombre
+            var inicio = ClientesFiltrados
+                .Where(c => c.Nombre?.ToLower().StartsWith(texto) == true);
+
+            // Luego coincidencias en medio o final
+            var medio = ClientesFiltrados
+                .Where(c => c.Nombre?.ToLower().Contains(texto) == true
+                            && !c.Nombre.ToLower().StartsWith(texto));
+
+            e.Items = inicio.Concat(medio).ToList();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al buscar cliente: {ex.Message}", 5000);
+            e.Items = ClientesFiltrados; // fallback
+        }
+    }
+
 }

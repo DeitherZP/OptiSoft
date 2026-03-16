@@ -16,17 +16,6 @@
             --dialog-max-height: 90vh !important;
         }
     }
-
-    .autocomplete-articulo fluent-anchored-region {
-        min-width: 555px;
-        max-width: 555px;
-        min-height: 100px !important;
-        max-height: 100px !important;
-    }
-
-        .autocomplete-articulo fluent-anchored-region fluent-option {
-        margin: 0 0.5em 0 0.2em;
-    }
 </style>
 
 <div class="container-modal-articulo">
@@ -42,17 +31,17 @@
                 </div>
                 <div class="columna-flex" style="padding: 0 1em; margin-right: 0;">
                     <FluentAutocomplete Label="Artículo"
-                                        Items="@Articulos"
+                                        Items="@ArticulosFiltrados"
                                         TOption="Articulo"
+                                        Placeholder="Seleccione un artículo"
                                         Class="autocomplete-articulo"
                                         @bind-SelectedOption="ArticuloSelect"
                                         OptionText="@(a => a.Nombre)"
-                                        Multiple="false"
                                         Virtualize="true"
-                                        MaximumOptionsSearch="int.MaxValue"
+                                        Multiple="false"
                                         MaximumSelectedOptions="1"
-                                        Placeholder="Seleccione un artículo"
-                                        MaxAutoHeight="100px"
+                                        OnOptionsSearch="@OnBuscarArticulo"
+                                        MaximumOptionsSearch="int.MaxValue"
                                         Position="SelectPosition.Below" />
                 </div>
             </div>
@@ -84,6 +73,8 @@
 
     int Cantidad { get; set; } = 1;
 
+    private List<Articulo> ArticulosFiltrados => Articulos ?? new List<Articulo>();
+
     private async Task Cerrar()
     {
         HiddenArticulo = true;
@@ -108,5 +99,35 @@
 
         await OnArticuloAgregado.InvokeAsync(articulo);
         await Cerrar();
+    }
+
+    private void OnBuscarArticulo(OptionsSearchEventArgs<Articulo> e)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(e.Text))
+            {
+                e.Items = ArticulosFiltrados; // mostrar todo si no escribe
+                return;
+            }
+
+            string texto = e.Text.Trim().ToLower();
+
+            // Primero coincidencias al inicio del nombre
+            var inicio = ArticulosFiltrados
+                .Where(c => c.Nombre?.ToLower().StartsWith(texto) == true);
+
+            // Luego coincidencias en medio o final
+            var medio = ArticulosFiltrados
+                .Where(c => c.Nombre?.ToLower().Contains(texto) == true
+                            && !c.Nombre.ToLower().StartsWith(texto));
+
+            e.Items = inicio.Concat(medio).ToList();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al buscar cliente: {ex.Message}", 5000);
+            e.Items = ArticulosFiltrados; // fallback
+        }
     }
 }

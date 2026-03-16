@@ -54,7 +54,7 @@
                 Cancelar
             </FluentButton>
 
-            @if (Articulo != null || Articulo?.IdArticulo > 0)
+            @if ((Articulo != null && Articulo?.IdArticulo > 0) && Permisos.CanDelete("/articulos"))
             {
                 <FluentButton Class="btn-danger"
                               Appearance="Appearance.Neutral"
@@ -64,11 +64,14 @@
                 </FluentButton>
             }
 
-            <FluentButton Appearance="Appearance.Accent"
-                          OnClick="Guardar"
-                          IconStart="@(new Icons.Filled.Size20.Save())">
-                Guardar
-            </FluentButton>
+            @if (Permisos.CanEdit("/articulos"))
+            {
+                <FluentButton Appearance="Appearance.Accent"
+                              OnClick="Guardar"
+                              IconStart="@(new Icons.Filled.Size20.Save())">
+                    Guardar
+                </FluentButton>
+            }
         </FluentFooter>
     </FluentDialog>
 </div>

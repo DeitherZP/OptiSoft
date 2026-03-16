@@ -3,6 +3,7 @@
 @rendermode InteractiveServer
 
 @using OptiSoftBlazor.Shared.Data
+@using OptiSoftBlazor.Shared.Helpers
 @using OptiSoftBlazor.Shared.Pages.Shared
 @using OptiSoftBlazor.Shared.Pages.Optica.Shared
 @using OptiSoftBlazor.Shared.Services
@@ -20,8 +21,11 @@
 @if (!IsFirstRender)
 {
     <div class="nueva-fila">
-        <FluentButton Appearance="Appearance.Accent" OnClick="@AddPedido" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-right: 3em">Nuevo</FluentButton>
-        
+        @if (Permisos.CanCreate("/pedido"))
+        {
+            <FluentButton Appearance="Appearance.Accent" OnClick="@AddPedido" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-right: 3em">Nuevo</FluentButton>
+        }
+
         <FluentTextField Placeholder="Buscar por cliente o número..."
                          Style="width: 300px; margin-right: 1em;"
                          @bind-Value="TextoBusqueda"
@@ -87,6 +91,9 @@
     {
         if (!firstRender)
             return;
+
+        if (!Permisos.CanView("/pedido"))
+            NavManager.NavigateTo("/noaccess");
 
         await JS.InvokeVoidAsync("translateFluentLabels");
 

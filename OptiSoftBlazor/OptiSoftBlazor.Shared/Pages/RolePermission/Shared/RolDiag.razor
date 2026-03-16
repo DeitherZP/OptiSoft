@@ -3,6 +3,8 @@
 @using OptiSoftBlazor.Shared.Data.RolePermission.Dto
 @using OptiSoftBlazor.Shared.Pages.Shared
 
+@inject RolesService RolesService
+
 <style>
     .container-modal-role .fluent-dialog-main {
         --dialog-width: 850px !important;
@@ -36,8 +38,8 @@
                 </div>
 
                 <FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: fit-content; padding: 0.5em;">
-                    <FluentDataGrid Items="Permisos"
-                                    TGridItem="RolePermissionView"
+                    <FluentDataGrid Items="AuxPermisos"
+                                    TGridItem="ScreenPermissionView"
                                     AutoFit="true" >
                         <PropertyColumn Property="s => s.ScreenName" Title="Pantalla" Align="Align.Center" />
                         <TemplateColumn Title="Crear" Align="Align.Center">
@@ -73,7 +75,7 @@
                 Cancelar
             </FluentButton>
 
-            @if (Role != null || string.IsNullOrEmpty(Role?.RoleId))
+            @if ((Role != null && !string.IsNullOrEmpty(Role?.RoleId)) && Permisos.CanDelete("/permisos"))
             {
                 <FluentButton Class="btn-danger"
                               Appearance="Appearance.Neutral"
@@ -83,11 +85,14 @@
                 </FluentButton>
             }
 
-            <FluentButton Appearance="Appearance.Accent"
-                          OnClick="Guardar"
-                          IconStart="@(new Icons.Filled.Size20.Save())">
-                Guardar
-            </FluentButton>
+            @if (Permisos.CanEdit("/permisos"))
+            {
+                <FluentButton Appearance="Appearance.Accent"
+                              OnClick="Guardar"
+                              IconStart="@(new Icons.Filled.Size20.Save())">
+                    Guardar
+                </FluentButton>
+            }
         </FluentFooter>
     </FluentDialog>
 </div>
@@ -97,37 +102,43 @@
     [Parameter] public EventCallback<bool> HiddenRoleChanged { get; set; }
     [Parameter] public EventCallback OnGuardar { get; set; }
     [Parameter] public EventCallback OnEliminar { get; set; }
-    [Parameter] public RolePermissionView? Role { get; set; }
-    [Parameter] public List<RolePermissionView>? Roles { get; set; }
+    [Parameter] public RoleView? Role { get; set; }
+    [Parameter] public List<ScreenPermissionView>? ListPermisos { get; set; }
     [Parameter] public List<AppScreen>? Screens { get; set; }
 
     private bool IsLoading = false;
 
     private string? RoleName;
-    private IQueryable<RolePermissionView>? Permisos { get; set; }
+    private IQueryable<ScreenPermissionView>? AuxPermisos => PermisosList.AsQueryable();
+    private List<ScreenPermissionView> PermisosList = new();
 
     protected override void OnParametersSet()
     {
         if (Role != null)
         {
             RoleName = Role?.RoleName;
+
+            PermisosList = ListPermisos?
+                .OrderBy(x => x.ScreenName)
+                .ToList() ?? new();
         }
         else
         {
             RoleName = string.Empty;
 
-            Permisos = Screens.Select(s => new RolePermissionView
-            {
-                ScreenId = s.Id,
-                ScreenName = s.CodePage,
-                CanView = false,
-                CanCreate = false,
-                CanEdit = false,
-                CanDelete = false
-            })
-            .Where(s => !string.IsNullOrEmpty(s.ScreenName))
-            .OrderBy(s => s.ScreenName)
-            .AsQueryable();
+            PermisosList = Screens?
+                .Select(s => new ScreenPermissionView
+                {
+                    ScreenId = s.Id,
+                    ScreenName = s.CodePage,
+                    CanView = false,
+                    CanCreate = false,
+                    CanEdit = false,
+                    CanDelete = false
+                })
+                .Where(s => !string.IsNullOrEmpty(s.ScreenName))
+                .OrderBy(s => s.ScreenName)
+                .ToList() ?? new();
         }
     }
 
@@ -138,14 +149,71 @@
         await HiddenRoleChanged.InvokeAsync(HiddenRole);
     }
 
-    private void Guardar()
+    private async Task Guardar()
     {
+        if (string.IsNullOrWhiteSpace(RoleName))
+        {
+            ToastService.ShowWarning("Debe ingresar un nombre para el rol.");
+            return;
+        }
 
+        IsLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            await RolesService.GuardarRolAsync(
+                Role?.RoleId,
+                RoleName,
+                PermisosList
+            );
+
+            await OnGuardar.InvokeAsync();
+
+            HiddenRole = true;
+            await HiddenRoleChanged.InvokeAsync(HiddenRole);
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al guardar: {ex.Message}");
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
+        }
     }
 
-    private void Eliminar()
+    private async Task Eliminar()
     {
+        if (Role == null || string.IsNullOrEmpty(Role.RoleId))
+            return;
 
+        var confirmado = await ConfirmService.ConfirmAsync($"¿Está seguro que desea eliminar el rol '{Role.RoleName}'?");
+
+        if (!confirmado)
+            return;
+
+        IsLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            await RolesService.EliminarRolAsync(Role.RoleId);
+            await OnEliminar.InvokeAsync();
+
+            HiddenRole = true;
+            await HiddenRoleChanged.InvokeAsync(HiddenRole);
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al eliminar el rol: {ex.Message}");
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
+        }
     }
 
     private void Limpiar()

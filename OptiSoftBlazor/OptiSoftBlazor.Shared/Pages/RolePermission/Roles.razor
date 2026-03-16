@@ -1,9 +1,10 @@
-﻿@page "/roles"
+﻿@page "/permisos"
 @rendermode InteractiveServer
 
 @using Microsoft.AspNetCore.Identity
 @using OptiSoftBlazor.Shared.Data.RolePermission
 @using OptiSoftBlazor.Shared.Data.RolePermission.Dto
+@using OptiSoftBlazor.Shared.Helpers
 @using OptiSoftBlazor.Shared.Pages.RolePermission.Shared
 @using OptiSoftBlazor.Shared.Pages.Shared
 
@@ -18,7 +19,10 @@
 @if (!IsFirstRender)
 {
 	<div class="nueva-fila">
-		<FluentButton Appearance="Appearance.Accent" OnClick="@AddRole" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-right: 3em">Nuevo</FluentButton>
+		@if (Permisos.CanCreate("/permisos"))
+		{
+			<FluentButton Appearance="Appearance.Accent" OnClick="@AddRole" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-right: 3em">Nuevo</FluentButton>
+		}
 
 		<FluentTextField Placeholder="Buscar por rol..."
 						 Style="width: 300px; margin-right: 1em;"
@@ -33,33 +37,13 @@
 {
 	<FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 80vh; padding: 0.5em;">
 		<FluentDataGrid Items="ListRoles"
-						TGridItem="RolePermissionView"
+						TGridItem="RoleView"
 						Pagination="@pagination"
 						AutoFit="true"
 						ShowHover="true"
 						DisplayMode="DataGridDisplayMode.Table"
-						OnRowClick="@(args => OnRowClicked(args?.Item ?? new RolePermissionView()))">
-			<PropertyColumn Property="r => r.RoleName" Title="Rol" Sortable="true" Align="Align.Center" IsDefaultSortColumn />
-			<TemplateColumn Title="Crear" Sortable="true" Align="Align.Center">
-				<ChildContent Context="r">
-					<FluentCheckbox Value="@r.CanCreate" ReadOnly="true" />
-				</ChildContent>
-			</TemplateColumn>
-			<TemplateColumn Title="Leer" Sortable="true" Align="Align.Center">
-				<ChildContent Context="r">
-					<FluentCheckbox Value="@r.CanView" ReadOnly="true" />
-				</ChildContent>
-			</TemplateColumn>	
-			<TemplateColumn Title="Editar" Sortable="true" Align="Align.Center">
-				<ChildContent Context="r">
-					<FluentCheckbox Value="@r.CanEdit" ReadOnly="true" />
-				</ChildContent>
-			</TemplateColumn>	
-			<TemplateColumn Title="Eliminar" Sortable="true" Align="Align.Center">
-				<ChildContent Context="r">
-					<FluentCheckbox Value="@r.CanDelete" ReadOnly="true" />
-				</ChildContent>
-			</TemplateColumn>
+						OnRowClick="@(args => OnRowClicked(args?.Item ?? new RoleView()))">
+			<PropertyColumn Property="r => r.RoleName" Title="Rol" Sortable="true" IsDefaultSortColumn />
 		</FluentDataGrid>
 		@if (ListRoles.Count() > pagination.ItemsPerPage)
 		{
@@ -72,9 +56,11 @@
 {
 	<RolDiag HiddenRole="@HiddenRole"
 			 Role="@RolSeleccionado"
+			 ListPermisos="@ListPermisos"
 			 HiddenRoleChanged="@(v => HiddenRole = v)"
 			 Screens="Screens"
-			 OnGuardar="GuardarRol" />
+			 OnGuardar="GuardarRol"
+			 OnEliminar="EliminarRol" />
 }
 
 @code {
@@ -83,19 +69,23 @@
 
 	PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
 
-	private IQueryable<RolePermissionView>? ListRoles;
-	private List<RolePermissionView>? roles = new();
-	private List<RolePermissionView>? rolesFiltrados = new();
+	private IQueryable<RoleView>? ListRoles;
+	private List<RoleView>? roles = new();
+	private List<RoleView>? rolesFiltrados = new();
 	private List<AppScreen>? Screens = new();
+	private List<ScreenPermissionView>? ListPermisos = new();
 	private string? TextoBusqueda;
 
 	private bool HiddenRole = true;
-	private RolePermissionView? RolSeleccionado;
+	private RoleView? RolSeleccionado;
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
 		if (!firstRender)
 			return;
+
+		if (!Permisos.CanView("/permisos"))
+			NavManager.NavigateTo("/noaccess");
 
 		await JS.InvokeVoidAsync("translateFluentLabels");
 
@@ -104,7 +94,7 @@
 			IsLoading = true;
 			StateHasChanged();
 			roles = await RolesService.ObtenerRolesAsync();
-			rolesFiltrados = new List<RolePermissionView>(roles);
+			rolesFiltrados = new List<RoleView>(roles);
 			ListRoles = rolesFiltrados.AsQueryable();
 		}
 		catch (Exception ex)
@@ -139,7 +129,7 @@
 
 		if (string.IsNullOrWhiteSpace(TextoBusqueda))
 		{
-			rolesFiltrados = new List<RolePermissionView>(roles);
+			rolesFiltrados = new List<RoleView>(roles);
 		}
 		else
 		{
@@ -165,12 +155,20 @@
 	private async Task GuardarRol()
 	{
 		roles = await RolesService.ObtenerRolesAsync();
-		rolesFiltrados = new List<RolePermissionView>(roles);
+		rolesFiltrados = new List<RoleView>(roles);
 		ListRoles = rolesFiltrados.AsQueryable();
-		StateHasChanged();
+		ToastService.ShowSuccess("Rol guardado correctamente.");
 	}
 
-	private async Task OnRowClicked(RolePermissionView role)
+	private async Task EliminarRol()
+	{
+		roles = await RolesService.ObtenerRolesAsync();
+		rolesFiltrados = new List<RoleView>(roles);
+		ListRoles = rolesFiltrados.AsQueryable();
+		ToastService.ShowSuccess("Rol eliminado correctamente.");
+	}
+
+	private async Task OnRowClicked(RoleView role)
 	{
 		if (string.IsNullOrEmpty(role.RoleId))
 			return;
@@ -179,6 +177,7 @@
 		StateHasChanged();
 
 		Screens = await ScreenService.ObtenerScreensAsync();
+		ListPermisos = await RolesService.ObtenerPermisosRolAsync(role.RoleId);
 		RolSeleccionado = role;
 
         HiddenRole = false;

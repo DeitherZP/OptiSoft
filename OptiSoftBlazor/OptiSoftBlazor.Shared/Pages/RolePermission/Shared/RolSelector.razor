@@ -1,0 +1,104 @@
+﻿@using OptiSoftBlazor.Shared.Data
+@using OptiSoftBlazor.Shared.Data.DTO
+@using OptiSoftBlazor.Shared.Data.RolePermission.Dto
+@using OptiSoftBlazor.Shared.Services
+
+@inject ArticuloService ArticuloService;
+
+<style>
+    .container-modal-rol-selector .fluent-dialog-main {
+        --dialog-width: 650px !important;
+        --dialog-max-height: 90vh !important;
+    }
+
+    @@media (max-width: 600px) {
+        .container-modal-rol-selector .fluent-dialog-main {
+            --dialog-width: 90% !important;
+            --dialog-max-height: 90vh !important;
+        }
+    }
+
+    .autocomplete-rol-selector fluent-anchored-region {
+        min-width: 555px;
+        max-width: 555px;
+        min-height: 100px !important;
+        max-height: 100px !important;
+    }
+
+        .autocomplete-rol-selector fluent-anchored-region fluent-option {
+        margin: 0 0.5em 0 0.2em;
+    }
+</style>
+
+<div class="container-modal-rol-selector">
+    <FluentDialog Modal="true" @bind-Hidden="HiddenRolSelector">
+        <FluentHeader>Seleccione un artículo</FluentHeader>
+
+        <FluentDialogBody Style="overflow: visible;">
+            <div style="padding: 0.5em;">
+                <div class="columna-flex" style="padding: 0 1em; margin-right: 0;">
+                    <FluentAutocomplete Label="Rol"
+                                        Items="@Roles"
+                                        TOption="RoleView"
+                                        Class="autocomplete-rol-selector"
+                                        @bind-SelectedOption="RolSelect"
+                                        OptionText="@(a => a.RoleName)"
+                                        Multiple="false"
+                                        Virtualize="true"
+                                        MaximumOptionsSearch="int.MaxValue"
+                                        MaximumSelectedOptions="1"
+                                        Placeholder="Seleccione el rol"
+                                        MaxAutoHeight="100px"
+                                        Position="SelectPosition.Below" />
+                </div>
+            </div>
+        </FluentDialogBody>
+
+        <FluentFooter Style="gap: 1em;">
+            <FluentButton Appearance="Appearance.Stealth"
+                          OnClick="Cerrar"
+                          IconStart="@(new Icons.Filled.Size20.DismissCircle())">
+                Cerrar
+            </FluentButton>
+
+            <FluentButton Appearance="Appearance.Accent"
+                          OnClick="Agregar"
+                          IconStart="@(new Icons.Filled.Size20.AddCircle())">
+                Agregar
+            </FluentButton>
+        </FluentFooter>
+    </FluentDialog>
+</div>
+
+@code {
+    [Parameter] public bool HiddenRolSelector { get; set; }
+    [Parameter] public EventCallback<bool> HiddenHiddenRolSelectorChanged { get; set; }
+    [Parameter] public List<RoleView> Roles { get; set; } = new();
+    [Parameter] public EventCallback<RoleView> OnGuardar { get; set; }
+    [Parameter] public RoleView? RolSelect { get; set; }
+    [Parameter] public EventCallback<RoleView> OnRolSeleccionador { get; set; }
+
+    int Cantidad { get; set; } = 1;
+
+    private async Task Cerrar()
+    {
+        HiddenRolSelector = true;
+        RolSelect = null;
+        Cantidad = 1;
+        await HiddenHiddenRolSelectorChanged.InvokeAsync(HiddenRolSelector);
+    }
+
+    private async Task Agregar()
+    {
+        if (RolSelect == null)
+        {
+            ToastService.ShowWarning("Debe seleccionar un rol", 5000);
+            return;
+        }
+
+        var rol = RolSelect;
+
+        await OnRolSeleccionador.InvokeAsync(rol);
+        await Cerrar();
+    }
+}

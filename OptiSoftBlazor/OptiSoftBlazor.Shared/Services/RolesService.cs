@@ -17,69 +17,129 @@ namespace OptiSoftBlazor.Shared.Services
             _contextFactory = contextFactory;
         }
 
-        public async Task<List<RolePermissionView>> ObtenerRolesAsync()
+        public async Task<List<RoleView>> ObtenerRolesAsync()
         {
             using var db = await _contextFactory.CreateDbContextAsync();
 
-            var roles = await db.Roles
-                                .AsNoTracking()
-                                .ToListAsync();
-
-            var permisos = await db.RoleScreenPermission
-                                   .AsNoTracking()
-                                   .ToListAsync();
-
-            var result = roles.Select(r =>
-            {
-                var p = permisos.FirstOrDefault(x => x.RoleId == r.Id);
-
-                return new RolePermissionView
+            return await db.Roles
+                .AsNoTracking()
+                .Select(r => new RoleView
                 {
                     RoleId = r.Id,
-                    RoleName = r.Name ?? "",
+                    RoleName = r.Name ?? ""
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<ScreenPermissionView>> ObtenerPermisosRolAsync(string roleId)
+        {
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            var screens = await db.AppScreen
+                                  .Where(a => !string.IsNullOrEmpty(a.CodePage))
+                                  .ToListAsync();
+
+            var permisos = await db.RoleScreenPermission
+                                   .Where(x => x.RoleId == roleId)
+                                   .ToListAsync();
+
+            return screens.Select(s =>
+            {
+                var p = permisos.FirstOrDefault(x => x.ScreenId == s.Id);
+
+                return new ScreenPermissionView
+                {
+                    ScreenId = s.Id,
+                    ScreenName = s.CodePage,
                     CanView = p?.CanView ?? false,
                     CanCreate = p?.CanCreate ?? false,
                     CanEdit = p?.CanEdit ?? false,
                     CanDelete = p?.CanDelete ?? false
                 };
             }).ToList();
-
-            return result;
         }
 
-        public async Task<List<RolePermissionView>> ObtenerPermisosRolAsync(string roleId)
+        public async Task GuardarRolAsync(string? roleId, string roleName, List<ScreenPermissionView> permisos)
         {
             using var db = await _contextFactory.CreateDbContextAsync();
 
-            var screens = await db.AppScreen
-                .AsNoTracking()
-                .ToListAsync();
+            IdentityRole role;
 
-            var permisosRol = await db.RoleScreenPermission
-                .Where(r => r.RoleId == roleId)
-                .AsNoTracking()
-                .ToListAsync();
-
-            var resultado = screens.Select(s =>
+            if (string.IsNullOrEmpty(roleId))
             {
-                var permiso = permisosRol.FirstOrDefault(p => p.ScreenId == s.Id);
-
-                return new RolePermissionView
+                role = new IdentityRole
                 {
-                    RoleId = roleId,
-                    ScreenId = s.Id,
-                    ScreenName = s.CodePage,
-
-                    CanView = permiso?.CanView ?? false,
-                    CanCreate = permiso?.CanCreate ?? false,
-                    CanEdit = permiso?.CanEdit ?? false,
-                    CanDelete = permiso?.CanDelete ?? false
+                    Name = roleName
                 };
-            })
-            .OrderBy(x => x.ScreenName)
-            .ToList();
 
-            return resultado;
+                db.Roles.Add(role);
+                await db.SaveChangesAsync();
+            }
+            else
+            {
+                role = await db.Roles.FirstAsync(r => r.Id == roleId);
+                role.Name = roleName;
+
+                db.Roles.Update(role);
+                await db.SaveChangesAsync();
+            }
+
+            var roleIdFinal = role.Id;
+
+            var permisosExistentes = await db.RoleScreenPermission
+                .Where(x => x.RoleId == roleIdFinal)
+                .ToListAsync();
+
+            foreach (var p in permisos)
+            {
+                var existente = permisosExistentes
+                    .FirstOrDefault(x => x.ScreenId == p.ScreenId);
+
+                if (existente == null)
+                {
+                    db.RoleScreenPermission.Add(new RoleScreenPermission
+                    {
+                        RoleId = roleIdFinal,
+                        ScreenId = p.ScreenId,
+                        CanView = p.CanView,
+                        CanCreate = p.CanCreate,
+                        CanEdit = p.CanEdit,
+                        CanDelete = p.CanDelete
+                    });
+                }
+                else
+                {
+                    existente.CanView = p.CanView;
+                    existente.CanCreate = p.CanCreate;
+                    existente.CanEdit = p.CanEdit;
+                    existente.CanDelete = p.CanDelete;
+
+                    db.RoleScreenPermission.Update(existente);
+                }
+            }
+
+            await db.SaveChangesAsync();
+        }
+
+        public async Task EliminarRolAsync(string roleId)
+        {
+            using var db = await _contextFactory.CreateDbContextAsync();
+
+            var role = await db.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
+
+            if (role == null)
+                throw new Exception("El rol no existe.");
+
+            var permisos = await db.RoleScreenPermission
+                .Where(x => x.RoleId == roleId)
+                .ToListAsync();
+
+            if (permisos.Any())
+                db.RoleScreenPermission.RemoveRange(permisos);
+
+            db.Roles.Remove(role);
+
+            await db.SaveChangesAsync();
         }
     }
 }

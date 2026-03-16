@@ -1,9 +1,11 @@
-﻿@page "/users"
+﻿@page "/usuarios"
 @attribute [Authorize(Policy = "RequirePasswordChanged")]
 @rendermode InteractiveServer
 
 @using OptiSoftBlazor.Shared.Data
+@using OptiSoftBlazor.Shared.Data.RolePermission.Dto
 @using OptiSoftBlazor.Shared.Data.Users
+@using OptiSoftBlazor.Shared.Helpers
 @using OptiSoftBlazor.Shared.Pages.Shared
 @using OptiSoftBlazor.Shared.Pages.Users.Shared
 
@@ -18,7 +20,10 @@
 @if (!IsFirstRender)
 {
 	<div class="nueva-fila">
-		<FluentButton Appearance="Appearance.Accent" OnClick="@AddUser" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-right: 3em">Nuevo</FluentButton>
+		@if (Permisos.CanCreate("/usuarios"))
+		{
+			<FluentButton Appearance="Appearance.Accent" OnClick="@AddUser" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-right: 3em">Nuevo</FluentButton>
+		}
 
 		<FluentTextField Placeholder="Buscar por usuario, personal o sucursal..."
 						 Style="width: 300px; margin-right: 1em;"
@@ -62,7 +67,8 @@
 			  User="UserSeleccionado"
 			  Personals="Personals"
 			  OnGuardar="GuardarUsuario"
-			  OnEliminar="EliminarUsuario" />
+			  OnEliminar="EliminarUsuario"
+			  Roles="Roles" />
 }
 
 @code {
@@ -77,6 +83,7 @@
 	private List<ApplicationUser>? UsersFiltrados = new();
 	private ApplicationUser? UserSeleccionado;
 	private List<Personal>? Personals = new();
+    private List<RoleView>? Roles = new();
 	private string? TextoBusqueda;
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -84,7 +91,7 @@
 		if (!firstRender)
 			return;
 
-		if (!PermissionService.CanView("users"))
+		if (!Permisos.CanView("/usuarios"))
             NavManager.NavigateTo("/noaccess");
 
 		await JS.InvokeVoidAsync("translateFluentLabels");
@@ -146,6 +153,7 @@
 			return;
 
 		await CargarPersonal();
+		Roles = await UsuariosService.ObtenerRolesUsuarioAsync(user.Id);
 		UserSeleccionado = user;
 		HiddenUser = false;
 		StateHasChanged();

@@ -17,11 +17,26 @@
             <FluentNavLink Href="/" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Home())" IconColor="Color.Accent">Home</FluentNavLink>
             @* <FluentNavLink Href="counter" Icon="@(new Icons.Regular.Size20.NumberSymbolSquare())" IconColor="Color.Accent">Counter</FluentNavLink>
             <FluentNavLink Href="weather" Icon="@(new Icons.Regular.Size20.WeatherPartlyCloudyDay())" IconColor="Color.Accent">Weather</FluentNavLink> *@
-            <FluentNavLink Href="consulta" Icon="@(new Icons.Regular.Size20.NotebookEye())" IconColor="Color.Accent">Consulta</FluentNavLink>
-            <FluentNavLink Href="pedido" Icon="@(new Icons.Regular.Size20.Cart())" IconColor="Color.Accent">Pedido</FluentNavLink>
-            <FluentNavLink Href="articulos" Icon="@(new Icons.Regular.Size20.Box())" IconColor="Color.Accent">Artículo</FluentNavLink>
-            <FluentNavLink Href="users" Icon="@(new Icons.Regular.Size20.PersonAccounts())" IconColor="Color.Accent">Usuarios</FluentNavLink>
-            <FluentNavLink Href="roles" Icon="@(new Icons.Regular.Size20.PeopleLock())" IconColor="Color.Accent">Roles</FluentNavLink>
+            @if (Permisos.CanView("/consulta"))
+            {
+                <FluentNavLink Href="consulta" Icon="@(new Icons.Regular.Size20.NotebookEye())" IconColor="Color.Accent">Consulta</FluentNavLink>
+            }
+            @if (Permisos.CanView("/pedido"))
+            {
+                <FluentNavLink Href="pedido" Icon="@(new Icons.Regular.Size20.Cart())" IconColor="Color.Accent">Pedido</FluentNavLink>
+            }
+            @if (Permisos.CanView("/articulos"))
+            {
+                <FluentNavLink Href="articulos" Icon="@(new Icons.Regular.Size20.Box())" IconColor="Color.Accent">Artículo</FluentNavLink>
+            }
+            @if (Permisos.CanView("/usuarios"))
+            {
+                <FluentNavLink Href="usuarios" Icon="@(new Icons.Regular.Size20.PersonAccounts())" IconColor="Color.Accent">Usuarios</FluentNavLink>
+            }
+            @if (Permisos.CanView("/permisos"))
+            {
+                <FluentNavLink Href="permisos" Icon="@(new Icons.Regular.Size20.PeopleLock())" IconColor="Color.Accent">Roles</FluentNavLink>
+            }
         </FluentNavMenu>
     </nav>
 </div>

@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OptiSoftBlazor.Shared.Data;
+using OptiSoftBlazor.Shared.Data.RolePermission.Dto;
 using OptiSoftBlazor.Shared.Data.Users;
+using OptiSoftBlazor.Shared.Helpers;
 using OptiSoftBlazor.Shared.Services;
 using System.Security.Claims;
 
@@ -99,6 +101,33 @@ namespace OptiSoftBlazor.Web.Services
                     IdentityConstants.ApplicationScheme,
                     principal,
                     new AuthenticationProperties { IsPersistent = true });
+
+                var roleIds = await tenantContext.UserRoles
+                    .Where(ur => ur.UserId == user.Id)
+                    .Select(ur => ur.RoleId)
+                    .ToListAsync();
+
+                var permisos = await tenantContext.RoleScreenPermission
+                    .Where(rp => roleIds.Contains(rp.RoleId))
+                    .Include(rp => rp.AppScreen)
+                    .Select(rp => new ScreenPermissionView
+                    {
+                        ScreenName = rp.AppScreen.Route,
+                        CanView = rp.CanView,
+                        CanCreate = rp.CanCreate,
+                        CanEdit = rp.CanEdit,
+                        CanDelete = rp.CanDelete
+                    })
+                    .ToListAsync();
+
+                // --- Llenamos el PermissionService ---
+                Permisos.SetPermissions(permisos);
+
+                if (permisos != null)
+                    Console.WriteLine($"Permisos cargados correctamente.");
+                else
+                    Console.WriteLine($"No se encontraron permisos para el usuario.");
+
 
                 Console.WriteLine($"Login exitoso para {username} en tenant {tenantName}");
                 return true;
