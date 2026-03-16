@@ -1,0 +1,157 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using OptiSoftBlazor.Shared.Data.RolePermission
+@using OptiSoftBlazor.Shared.Data.RolePermission.Dto
+@using OptiSoftBlazor.Shared.Pages.Shared
+
+<style>
+    .container-modal-role .fluent-dialog-main {
+        --dialog-width: 850px !important;
+        --dialog-max-height: 90vh !important;
+    }
+
+    @@media (max-width: 600px) {
+        .container-modal-role .fluent-dialog-main {
+            --dialog-width: 90% !important;
+            --dialog-max-height: 90vh !important;
+        }
+    }
+</style>
+
+<LoadingSpinner @bind-Visible="IsLoading" />
+
+<div class="container-modal-role">
+    <FluentDialog Modal="true" @bind-Hidden="HiddenRole">
+        <FluentHeader>
+            <h3>@(Role == null ? "Nuevo Rol" : "Editar Rol")</h3>
+        </FluentHeader>
+
+        <FluentDialogBody Style="overflow-y:auto; max-height: calc(80vh - 120px);">
+            <div style="padding: 1em;">
+                <div class="nueva-fila" style="margin-bottom: 1em;">
+                    <div class="columna-flex">
+                        <FluentTextField @bind-Value="RoleName"
+                                         Label="Nombre del Rol"
+                                         Placeholder="Ingrese el nombre del rol" />
+                    </div>
+                </div>
+
+                <FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: fit-content; padding: 0.5em;">
+                    <FluentDataGrid Items="Permisos"
+                                    TGridItem="RolePermissionView"
+                                    AutoFit="true" >
+                        <PropertyColumn Property="s => s.ScreenName" Title="Pantalla" Align="Align.Center" />
+                        <TemplateColumn Title="Crear" Align="Align.Center">
+                            <ChildContent Context="s">
+                                <FluentCheckbox @bind-Value="s.CanCreate" />
+                            </ChildContent>
+                        </TemplateColumn>
+                        <TemplateColumn Title="Ver" Align="Align.Center">
+                            <ChildContent Context="s">
+                                <FluentCheckbox @bind-Value="s.CanView" />
+                            </ChildContent>
+                        </TemplateColumn>
+                        <TemplateColumn Title="Editar" Align="Align.Center">
+                            <ChildContent Context="s">
+                                <FluentCheckbox @bind-Value="s.CanEdit" />
+                            </ChildContent>
+                        </TemplateColumn>
+                        <TemplateColumn Title="Eliminar" Align="Align.Center">
+                            <ChildContent Context="s">
+                                <FluentCheckbox @bind-Value="s.CanDelete" />
+                            </ChildContent>
+                        </TemplateColumn>
+
+                    </FluentDataGrid>
+                </FluentCard>
+            </div>
+        </FluentDialogBody>
+
+        <FluentFooter Style="gap:1em">
+            <FluentButton Appearance="Appearance.Stealth"
+                          OnClick="Cancelar"
+                          IconStart="@(new Icons.Filled.Size20.DismissCircle())">
+                Cancelar
+            </FluentButton>
+
+            @if (Role != null || string.IsNullOrEmpty(Role?.RoleId))
+            {
+                <FluentButton Class="btn-danger"
+                              Appearance="Appearance.Neutral"
+                              OnClick="Eliminar">
+                    <FluentIcon Value="@(new Icons.Filled.Size20.Delete())" Color="Color.Neutral" Slot="start" />
+                    Eliminar
+                </FluentButton>
+            }
+
+            <FluentButton Appearance="Appearance.Accent"
+                          OnClick="Guardar"
+                          IconStart="@(new Icons.Filled.Size20.Save())">
+                Guardar
+            </FluentButton>
+        </FluentFooter>
+    </FluentDialog>
+</div>
+
+@code {
+    [Parameter] public bool HiddenRole { get; set; } = true;
+    [Parameter] public EventCallback<bool> HiddenRoleChanged { get; set; }
+    [Parameter] public EventCallback OnGuardar { get; set; }
+    [Parameter] public EventCallback OnEliminar { get; set; }
+    [Parameter] public RolePermissionView? Role { get; set; }
+    [Parameter] public List<RolePermissionView>? Roles { get; set; }
+    [Parameter] public List<AppScreen>? Screens { get; set; }
+
+    private bool IsLoading = false;
+
+    private string? RoleName;
+    private IQueryable<RolePermissionView>? Permisos { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (Role != null)
+        {
+            RoleName = Role?.RoleName;
+        }
+        else
+        {
+            RoleName = string.Empty;
+
+            Permisos = Screens.Select(s => new RolePermissionView
+            {
+                ScreenId = s.Id,
+                ScreenName = s.CodePage,
+                CanView = false,
+                CanCreate = false,
+                CanEdit = false,
+                CanDelete = false
+            })
+            .Where(s => !string.IsNullOrEmpty(s.ScreenName))
+            .OrderBy(s => s.ScreenName)
+            .AsQueryable();
+        }
+    }
+
+    private async Task Cancelar()
+    {
+        Limpiar();
+        HiddenRole = true;
+        await HiddenRoleChanged.InvokeAsync(HiddenRole);
+    }
+
+    private void Guardar()
+    {
+
+    }
+
+    private void Eliminar()
+    {
+
+    }
+
+    private void Limpiar()
+    {
+        RoleName = null;
+        Role = null;
+        Screens = null;
+    }
+}

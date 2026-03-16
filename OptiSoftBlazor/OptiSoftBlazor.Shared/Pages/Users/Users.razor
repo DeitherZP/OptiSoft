@@ -44,7 +44,7 @@
 			<PropertyColumn Property="a => a.NombreSucursal" Title="Sucursal" Sortable="true" Align="Align.Center" />
 			<TemplateColumn Title="Cambiar Contraseña" Sortable="true" Align="Align.Center">
 				<ChildContent Context="tbl">
-					<FluentCheckbox Checked="@tbl.ForcePasswordChange" ReadOnly="true" />
+					<FluentCheckbox Value="@tbl.ForcePasswordChange" ReadOnly="true" />
 				</ChildContent>
 			</TemplateColumn>
 		</FluentDataGrid>
@@ -83,6 +83,9 @@
 	{
 		if (!firstRender)
 			return;
+
+		if (!PermissionService.CanView("users"))
+            NavManager.NavigateTo("/noaccess");
 
 		await JS.InvokeVoidAsync("translateFluentLabels");
 

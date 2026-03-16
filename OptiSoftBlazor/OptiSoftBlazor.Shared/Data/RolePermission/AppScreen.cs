@@ -1,11 +1,10 @@
-﻿using OptiSoftBlazor.Shared.Data.PermissionRoles;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace OptiSoftBlazor.Shared.Data.Permission
+namespace OptiSoftBlazor.Shared.Data.RolePermission
 {
     public class AppScreen
     {
@@ -15,6 +14,8 @@ namespace OptiSoftBlazor.Shared.Data.Permission
 
         public string Route { get; set; } = string.Empty;
 
-        public ICollection<RoleScreenPermission>? RoleScreenPermission { get; set; }
+        public string CodePage { get; set; } = string.Empty;
+
+        public ICollection<RoleScreenPermission>? RolePermissions { get; set; }
     }
 }

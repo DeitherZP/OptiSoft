@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.Extensions.Options;
 using OptiSoftBlazor.Shared.Data.Aditionals;
+using OptiSoftBlazor.Shared.Data.RolePermission;
 using OptiSoftBlazor.Shared.Data.Users;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,8 @@ namespace OptiSoftBlazor.Shared.Data
         public DbSet<Seteo> Seteo { get; set; }
         public DbSet<RolSucursal> RolSucursal { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
+        public DbSet<AppScreen> AppScreen { get; set; }
+        public DbSet<RoleScreenPermission> RoleScreenPermission { get; set; }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {

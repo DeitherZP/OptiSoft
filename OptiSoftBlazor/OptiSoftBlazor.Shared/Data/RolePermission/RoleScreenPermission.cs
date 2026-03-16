@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using OptiSoftBlazor.Shared.Data.Permission;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace OptiSoftBlazor.Shared.Data.PermissionRoles
+namespace OptiSoftBlazor.Shared.Data.RolePermission
 {
     public class RoleScreenPermission
     {
@@ -24,8 +23,12 @@ namespace OptiSoftBlazor.Shared.Data.PermissionRoles
         [ForeignKey(nameof(ScreenId))]
         public AppScreen? AppScreen { get; set; }
 
-        public bool CanView { get; set; } = true;
+        public bool CanView { get; set; } = false;
+
+        public bool CanCreate { get; set; } = false;
+
         public bool CanEdit { get; set; } = false;
+
         public bool CanDelete { get; set; } = false;
     }
 }

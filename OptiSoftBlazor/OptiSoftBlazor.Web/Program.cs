@@ -116,6 +116,9 @@ builder.Services.AddScoped<SeteoService>();
 builder.Services.AddScoped<ConfirmService>();
 builder.Services.AddScoped<UsuariosService>();
 builder.Services.AddScoped<SucursalService>();
+builder.Services.AddScoped<PermissionService>();
+builder.Services.AddScoped<RolesService>();
+builder.Services.AddScoped<ScreenService>();
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 
 builder.Services.AddLocalization();

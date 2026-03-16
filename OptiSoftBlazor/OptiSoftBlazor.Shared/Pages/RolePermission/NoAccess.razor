@@ -1,0 +1,43 @@
+﻿@page "/noaccess"
+@rendermode InteractiveServer
+@layout MinimalLayout
+
+<FluentStack Style="height:100vh;"
+             HorizontalAlignment="HorizontalAlignment.Center"
+             VerticalAlignment="VerticalAlignment.Center">
+
+    <FluentStack Orientation="Orientation.Vertical"
+                 HorizontalAlignment="HorizontalAlignment.Center"
+                 Style="text-align:center; gap:32px;">
+
+        <FluentIcon Value="@(new Icons.Regular.Size48.LockClosed())"
+                    Color="Color.Error"
+                    Style="transform:scale(2); margin-bottom: 1em;" />
+
+        <FluentLabel Style="font-size:56px; font-weight:700;">
+            Acceso denegado
+        </FluentLabel>
+
+        <FluentLabel Style="font-size:22px; opacity:0.75;">
+            No tienes permisos para acceder a esta página
+        </FluentLabel>
+
+        <FluentButton Appearance="Appearance.Accent"
+                      IconStart="@(new Icons.Regular.Size20.ArrowExportRtl())"
+                      Style="transform:scale(1.2);"
+                      OnClick="GoHome">
+            Regresar
+        </FluentButton>
+
+    </FluentStack>
+
+</FluentStack>
+
+@code {
+
+    void GoHome()
+    {
+        NavManager.NavigateTo("/");
+    }
+
+}
