@@ -9,54 +9,492 @@
 @inject IAuthService IAuthService
 @inject IHttpContextAccessor Http
 
-<PageTitle>Iniciar Sesión</PageTitle>
+<PageTitle>Iniciar Sesión — ÓpticaPro</PageTitle>
 
-<FluentCard Style="width: 450px; padding: 2em;">
-    <form method="get" action="/Account/Login">
+<style>
+    /* ===== FONDO GLASSMORPHISM (mismo gradiente del dashboard) ===== */
+    .login-bg {
+        min-height: 100vh;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #c8e6e0 0%, #d4dff5 50%, #e2d4f0 100%);
+        background-attachment: fixed;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        position: relative;
+    }
 
-        <FluentStack Orientation="Orientation.Vertical" VerticalGap="16">
 
-            <div style="width: 100%; text-align: center; margin-bottom: 1em;">
-                <h1 style="margin: 0.5em 0;">OptiSoft</h1>
-                <p style="margin: 0;">Use sus credenciales para ingresar al sistema</p>
+    /* ===== LINK VOLVER ===== */
+    .login-back {
+        position: absolute;
+        top: 28px;
+        left: 32px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #1a1a2e;
+        text-decoration: none;
+        opacity: 0.6;
+        transition: opacity 0.15s;
+        z-index: 10;
+    }
+
+        .login-back:hover {
+            opacity: 1;
+        }
+
+        .login-back svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+    /* ===== LOGO SUPERIOR ===== */
+    .login-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 28px;
+        z-index: 1;
+    }
+
+    .login-logo-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+        background: linear-gradient(135deg, #1b9e82, #1682c4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 14px rgba(27, 158, 130, 0.35);
+    }
+
+        .login-logo-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: #fff;
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+    .login-logo-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a1a2e;
+        letter-spacing: 0.04em;
+    }
+
+        .login-logo-name span {
+            color: #1b9e82;
+        }
+
+    /* ===== CARD PRINCIPAL ===== */
+    .login-card {
+        width: 100%;
+        max-width: 440px;
+        background: rgba(255, 255, 255, 0.62);
+        border: 1px solid rgba(255, 255, 255, 0.88);
+        border-radius: 22px;
+        padding: 40px 40px 36px;
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        box-shadow: 0 8px 40px rgba(27, 130, 196, 0.10), 0 2px 8px rgba(0,0,0,0.06);
+        z-index: 1;
+        animation: fadeUp 0.35s ease both;
+    }
+
+    @@keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(14px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ===== ENCABEZADO CARD ===== */
+    .login-card-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #1a1a2e;
+        letter-spacing: -0.03em;
+        text-align: center;
+        margin: 0 0 6px;
+    }
+
+    .login-card-sub {
+        font-size: 12px;
+        color: #a0aec0;
+        text-align: center;
+        margin: 0 0 30px;
+        font-weight: 400;
+    }
+
+    /* ===== CAMPOS ===== */
+    .login-field {
+        margin-bottom: 16px;
+    }
+
+    .login-label {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: #6b7a99;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-bottom: 7px;
+    }
+
+    .login-input-wrap {
+        position: relative;
+    }
+
+    .login-input {
+        width: 100%;
+        height: 46px;
+        background: rgba(255, 255, 255, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.95);
+        border-radius: 12px;
+        padding: 0 44px 0 16px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13px;
+        color: #1a1a2e;
+        outline: none;
+        transition: border-color 0.18s, box-shadow 0.18s;
+        box-sizing: border-box;
+    }
+
+        .login-input::placeholder {
+            color: #b0bccc;
+        }
+
+        .login-input:focus {
+            border-color: rgba(27, 158, 130, 0.5);
+            box-shadow: 0 0 0 3px rgba(27, 158, 130, 0.12);
+            background: rgba(255, 255, 255, 0.92);
+        }
+
+    .login-input-icon {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 18px;
+        height: 18px;
+        color: #b0bccc;
+        pointer-events: none;
+    }
+
+        .login-input-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+    /* ===== FILA RECORDAR / OLVIDÉ ===== */
+    .login-options {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 6px 0 24px;
+    }
+
+    .login-remember {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 12px;
+        color: #6b7a99;
+        cursor: pointer;
+        user-select: none;
+    }
+
+        .login-remember input[type="checkbox"] {
+            width: 15px;
+            height: 15px;
+            border-radius: 4px;
+            accent-color: #1b9e82;
+            cursor: pointer;
+        }
+
+    .login-forgot {
+        font-size: 12px;
+        font-weight: 600;
+        color: #1b9e82;
+        text-decoration: none;
+        transition: opacity 0.15s;
+    }
+
+        .login-forgot:hover {
+            opacity: 0.7;
+        }
+
+    /* ===== BOTÓN PRINCIPAL ===== */
+    .login-btn-primary {
+        width: 100%;
+        height: 48px;
+        background: linear-gradient(135deg, #1b9e82, #1682c4);
+        border: none;
+        border-radius: 13px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: #fff;
+        cursor: pointer;
+        letter-spacing: 0.01em;
+        box-shadow: 0 4px 18px rgba(27, 158, 130, 0.35);
+        transition: opacity 0.15s, transform 0.12s;
+        margin-bottom: 12px;
+    }
+
+        .login-btn-primary:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+        }
+
+        .login-btn-primary:active {
+            transform: scale(0.98);
+        }
+
+    /* ===== DIVISOR ===== */
+    .login-divider {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 4px 0 12px;
+    }
+
+    .login-divider-line {
+        flex: 1;
+        height: 1px;
+        background: rgba(0, 0, 0, 0.08);
+    }
+
+    .login-divider-text {
+        font-size: 11px;
+        color: #b0bccc;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    /* ===== BOTÓN GOOGLE ===== */
+    .login-btn-google {
+        width: 100%;
+        height: 46px;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.95);
+        border-radius: 13px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        color: #1a1a2e;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: background 0.15s, box-shadow 0.15s;
+        margin-bottom: 24px;
+    }
+
+        .login-btn-google:hover {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+    .google-icon {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* ===== REGISTRO ===== */
+    .login-register {
+        text-align: center;
+        font-size: 12px;
+        color: #a0aec0;
+    }
+
+        .login-register a {
+            color: #1b9e82;
+            font-weight: 700;
+            text-decoration: none;
+            transition: opacity 0.15s;
+        }
+
+            .login-register a:hover {
+                opacity: 0.75;
+            }
+
+    /* ===== ALERTA DE ERROR ===== */
+    .login-error {
+        background: rgba(254, 226, 226, 0.8);
+        border: 1px solid rgba(254, 202, 202, 0.9);
+        border-radius: 10px;
+        padding: 10px 14px;
+        font-size: 12px;
+        color: #991b1b;
+        font-weight: 500;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .login-error svg {
+            width: 15px;
+            height: 15px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            flex-shrink: 0;
+        }
+
+
+    /* ===== GOOGLE FONTS ===== */
+    @@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+</style>
+
+<div class="login-bg">
+
+    <!-- Volver -->
+    <a class="login-back" href="/">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" /></svg>
+        Página principal
+    </a>
+
+    <!-- Logo -->
+    <div class="login-logo">
+        <div class="login-logo-icon">
+            <svg viewBox="0 0 24 24">
+                <ellipse cx="12" cy="12" rx="9" ry="5.5" />
+                <circle cx="12" cy="12" r="2.5" fill="white" stroke="none" />
+            </svg>
+        </div>
+        <div class="login-logo-name"><span>Óptica</span>Pro</div>
+    </div>
+
+    <!-- Card -->
+    <div class="login-card">
+
+        <h1 class="login-card-title">¡Bienvenido de vuelta!</h1>
+        <p class="login-card-sub">Ingresa tus credenciales para acceder al sistema</p>
+
+        <!-- Mensaje de error -->
+        @if (showError)
+        {
+            <div class="login-error">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                Usuario o contraseña incorrectos. Por favor intenta de nuevo.
             </div>
+        }
 
-            <div class="fila-flex" style="margin-bottom: 1em;">
-                <div class="columna-flex">
-                    <FluentTextField Name="username"
-                                     Label="Usuario"
-                                     Required
-                                     Style="width: 100%"/>
+        <form method="get" action="/Account/Login">
+
+            <!-- Usuario -->
+            <div class="login-field">
+                <label class="login-label" for="username">Usuario</label>
+                <div class="login-input-wrap">
+                    <input class="login-input"
+                           id="username"
+                           name="username"
+                           type="text"
+                           placeholder="Ingresa tu usuario"
+                           required
+                           autocomplete="username" />
+                    <span class="login-input-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" /></svg>
+                    </span>
                 </div>
             </div>
-            
-            <div class="fila-flex" style="margin-bottom: 1em;">
-                <div class="columna-flex">
-                    <FluentTextField Name="password"
-                                     Label="Contraseña"
-                                     TextFieldType="TextFieldType.Password"
-                                     Required
-                                             Style="width: 100%" />
-                </div>
-            </div>
-            
-            <div class="fila-flex">
-                <div class="columna-flex">
-                    <FluentButton Type="ButtonType.Submit"
-                                  Appearance="Appearance.Accent"
-                                  Style="width:100%;">
-                        Iniciar sesión
-                            </FluentButton>
+
+            <!-- Contraseña -->
+            <div class="login-field">
+                <label class="login-label" for="password">Contraseña</label>
+                <div class="login-input-wrap">
+                    <input class="login-input"
+                           id="password"
+                           name="password"
+                           type="password"
+                           placeholder="Ingresa tu contraseña"
+                           required
+                           autocomplete="current-password" />
+                    <span class="login-input-icon">
+                        <svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
+                    </span>
                 </div>
             </div>
 
-        </FluentStack>
-    </form>
-</FluentCard>
+            <!-- Recordar / Olvidé -->
+            <div class="login-options">
+                <label class="login-remember">
+                    <input type="checkbox" name="rememberMe" />
+                    Recuérdame
+                </label>
+                <a class="login-forgot" href="/Account/ForgotPassword">¿Olvidaste tu contraseña?</a>
+            </div>
+
+            <!-- Botón principal -->
+            <button class="login-btn-primary" type="submit">
+                Iniciar sesión
+            </button>
+
+        </form>
+
+        <!-- Divisor -->
+        <div class="login-divider">
+            <div class="login-divider-line"></div>
+            <span class="login-divider-text">o continúa con</span>
+            <div class="login-divider-line"></div>
+        </div>
+
+        <!-- Google -->
+        <button class="login-btn-google" type="button">
+            <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+            </svg>
+            Iniciar sesión con Google
+        </button>
+
+        <!-- Registro -->
+        <p class="login-register">
+            ¿No tienes una cuenta? <a href="/Account/Register">Regístrate</a>
+        </p>
+
+    </div>
+
+
+</div>
 
 @code {
     [SupplyParameterFromQuery] public string? username { get; set; }
     [SupplyParameterFromQuery] public string? password { get; set; }
+
+    private bool showError = false;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -69,6 +507,9 @@
                 Http.HttpContext!.Response.Redirect("/");
                 return;
             }
+
+            // Mostrar error si las credenciales son incorrectas
+            showError = true;
         }
     }
 }
