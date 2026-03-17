@@ -545,12 +545,10 @@
         PersonalesFiltrados = Personales?.ToList() ?? new List<Personal>();
         PedidosFiltrados = Pedidos?.ToList() ?? new List<Compra>();
 
-        if (_pedidosOriginales.Count == 0 && Pedidos.Any())
+        if (Pedidos?.Any() == true)
         {
             _pedidosOriginales = Pedidos.ToList();
         }
-
-        FiltrarPedidoCliente();
 
         if (Consulta != null)
         {
@@ -638,6 +636,7 @@
 
             ClienteSelect = Clientes.FirstOrDefault(c => c.IdCliente == Consulta.IdCliente);
             ProfesionalSelect = Personales.FirstOrDefault(p => p.IdPersonal == Consulta.IdProfesional);
+            FiltrarPedidoCliente();
             PedidoSelect = Pedidos.FirstOrDefault(p => p.IdCompra == Consulta.IdPedido);
         }
         else
@@ -810,7 +809,6 @@
         if (ClienteSelect == null)
         {
             PedidosFiltrados = new List<Compra>();
-            activarPedido = false;
             StateHasChanged();
             return;
         }
@@ -822,12 +820,10 @@
         if (PedidosFiltrados.Count == 0)
         {
             ToastService.ShowInfo("El cliente seleccionado no tiene ningún pedido registrado.", 5000);
-            activarPedido = false;
             StateHasChanged();
             return;
         }
 
-        activarPedido = true;
         StateHasChanged();
     }
 
