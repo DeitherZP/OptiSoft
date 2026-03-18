@@ -40,6 +40,7 @@
                     <FluentAutocomplete Label="Rol"
                                         Items="@Roles"
                                         TOption="RoleView"
+                                        AutoComplete="off"
                                         Class="autocomplete-rol-selector"
                                         @bind-SelectedOption="RolSelect"
                                         OptionText="@(a => a.RoleName)"

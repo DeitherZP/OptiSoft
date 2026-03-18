@@ -35,6 +35,7 @@
 
         <FluentTextField Placeholder="Buscar por cliente, profesional o pedido..."
                          Style="width: 300px; margin-right: 1em;"
+                         AutoComplete="off"
                          @bind-Value="TextoBusqueda"
                          @bind-Value:after="FiltrarConsultas" />
 

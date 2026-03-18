@@ -28,6 +28,7 @@
 
         <FluentTextField Placeholder="Buscar por cliente o número..."
                          Style="width: 300px; margin-right: 1em;"
+                         AutoComplete="off"
                          @bind-Value="TextoBusqueda"
                          @bind-Value:after="FiltrarPedidos" />
 
