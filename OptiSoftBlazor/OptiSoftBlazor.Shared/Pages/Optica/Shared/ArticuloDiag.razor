@@ -16,6 +16,15 @@
             --dialog-max-height: 90vh !important;
         }
     }
+
+    .autocomplete-articulo fluent-anchored-region {
+        min-width: 555px;
+        max-width: 555px;
+    }
+
+    .autocomplete-articulo fluent-anchored-region fluent-option {
+        margin: 0 0.5em 0 0.2em;
+    }
 </style>
 
 <div class="container-modal-articulo">
@@ -27,6 +36,7 @@
                 <div class="columna-flex" style="padding: 0 1em; margin-right: 0; margin-bottom: 1.5em;">
                     <FluentNumberField @bind-Value="Cantidad"
                                        Label="Cantidad"
+                                       Autofocus="false"
                                        Placeholder="Ingrese la cantidad"/>
                 </div>
                 <div class="columna-flex" style="padding: 0 1em; margin-right: 0;">
@@ -72,7 +82,7 @@
     [Parameter] public Articulo? ArticuloSelect { get; set; }
     [Parameter] public EventCallback<ArticuloAgregadoEvent> OnArticuloAgregado { get; set; }
 
-    int Cantidad { get; set; } = 1;
+    private int Cantidad { get; set; } = 1;
 
     private List<Articulo> ArticulosFiltrados => Articulos ?? new List<Articulo>();
 

@@ -1,4 +1,4 @@
-﻿@page "/articulos"
+@page "/articulos"
 @attribute [Authorize(Policy = "RequirePasswordChanged")]
 @rendermode InteractiveServer
 
@@ -14,44 +14,127 @@
 
 <LoadingSpinner @bind-Visible="IsLoading" />
 
-@if (!IsFirstRender)
-{
-    <div class="nueva-fila">
-        @if (Permisos.CanCreate("/articulos"))
-        {
-            <FluentButton Appearance="Appearance.Accent" OnClick="@AddArticulo" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-right: 3em">Nuevo</FluentButton>
-        }
+<div class="op-page">
 
-        <FluentTextField Placeholder="Buscar por artículo o código..."
-                         Style="width: 300px; margin-right: 1em;"
-                         AutoComplete="off"
-                         @bind-Value="TextoBusqueda"
-                         @bind-Value:after="FiltrarArticulos" />
+    @if (!IsFirstRender)
+    {
+        <!-- Topbar -->
+        <div class="op-topbar">
+            <div class="op-topbar-left">
+                <div class="op-greet">📦 Control de stock</div>
+                <div class="op-title">Artículos</div>
+            </div>
+            <div class="op-topbar-right">
 
-        <FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.FilterDismiss())" Disabled="@(string.IsNullOrEmpty(TextoBusqueda))" />
-    </div>
-}
+                @if (ListArt != null)
+                {
+                    <div class="op-stat-chip">
+                        Total: <strong>@ListArt.Count()</strong>
+                    </div>
+                }
 
-@if (!(ListArt == null))
-{
-    <FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 80vh; padding: 0.5em;">
-        <FluentDataGrid Items="ListArt"
-                        TGridItem="Articulo"
-                        Pagination="@pagination"
-                        AutoFit="true"
-                        ShowHover="true"
-                        DisplayMode="DataGridDisplayMode.Table"
-                        OnRowClick="@(args => OnRowClicked(args?.Item ?? new Articulo()))">
-            <PropertyColumn Property="art => art.Codigo" Title="Código" Sortable="true" Align="Align.Center" />
-            <PropertyColumn Property="art => art.Nombre" Title="Artículo" Sortable="true" Align="Align.Center" IsDefaultSortColumn />
-            <PropertyColumn Property="art => art.Precio2" Title="Precio" Sortable="true" Align="Align.Center" />
-        </FluentDataGrid>
-        @if (ListArt.Count() > pagination.ItemsPerPage)
-        {
-            <FluentPaginator State="pagination" Style="padding: 0.5em 2em;" />
-        }
-    </FluentCard>
-}
+                <div class="op-search">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8a9ab5" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+                    </svg>
+                    <input placeholder="Buscar por artículo o código..."
+                           value="@TextoBusqueda"
+                           @oninput="OnSearchInput" />
+                </div>
+
+                <button class="op-btn op-btn-ghost"
+                        @onclick="LimpiarFiltro"
+                        disabled="@(string.IsNullOrEmpty(TextoBusqueda))"
+                        title="Limpiar filtro">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+
+                @if (Permisos.CanCreate("/articulos"))
+                {
+                    <button class="op-btn" @onclick="AddArticulo">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" />
+                        </svg>
+                        Nuevo artículo
+                    </button>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Table card -->
+    @if (ListArt != null)
+    {
+        <div class="op-card">
+            <div class="op-card-header">
+                <span class="op-card-title">Listado de artículos</span>
+                @if (!string.IsNullOrWhiteSpace(TextoBusqueda))
+                {
+                    <span class="op-card-count">@ListArt.Count() resultado(s) para "@TextoBusqueda"</span>
+                }
+            </div>
+
+            @{
+                var paginados = ListArt.Skip(PaginaActual * ItemsPorPagina).Take(ItemsPorPagina).ToList();
+                var totalPaginas = (int)Math.Ceiling(ListArt.Count() / (double)ItemsPorPagina);
+            }
+
+            @if (!paginados.Any())
+            {
+                <div class="op-empty">
+                    <span class="op-empty-icon">🔍</span>
+                    No se encontraron artículos con ese criterio.
+                </div>
+            }
+            else
+            {
+                <table class="op-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Artículo</th>
+                            <th style="text-align:right;">Precio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var art in paginados)
+                        {
+                            <tr @onclick="@(() => OnRowClicked(art))">
+                                <td class="td-code">@art.Codigo</td>
+                                <td class="td-name">@art.Nombre</td>
+                                <td class="td-price" style="text-align:right;">
+                                    @art.Precio2.ToString("C")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                @if (totalPaginas > 1)
+                {
+                    <div class="op-pagination">
+                        <span class="op-page-info">
+                            Página @(PaginaActual + 1) de @totalPaginas
+                        </span>
+                        <button class="op-page-btn"
+                                disabled="@(PaginaActual == 0)"
+                                @onclick="() => CambiarPagina(PaginaActual - 1)">
+                            ‹
+                        </button>
+                        <button class="op-page-btn"
+                                disabled="@(PaginaActual >= totalPaginas - 1)"
+                                @onclick="() => CambiarPagina(PaginaActual + 1)">
+                            ›
+                        </button>
+                    </div>
+                }
+            }
+        </div>
+    }
+
+</div>
 
 @if (!HiddenArtView)
 {
@@ -59,19 +142,23 @@
                       Articulo="@ArticuloSeleccionado"
                       HiddenArtViewChanged="@(v => HiddenArtView = v)"
                       OnGuardar="GuardarArticulo"
-                      OnEliminar="EliminarArticulo"/>
+                      OnEliminar="EliminarArticulo" />
 }
 
-@code{
-    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+@code {
     private List<Articulo>? AuxArticulos = new();
     private List<Articulo>? ArticulosFiltrados = new();
     private Articulo? ArticuloSeleccionado;
     private IQueryable<Articulo>? ListArt;
+
     bool HiddenArtView = true;
     bool IsFirstRender = true;
     private bool IsLoading = false;
     private string? TextoBusqueda;
+
+    // Paginación propia (reemplaza FluentPaginator)
+    private int PaginaActual = 0;
+    private int ItemsPorPagina = 10;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -105,6 +192,7 @@
 
     private void AddArticulo()
     {
+        ArticuloSeleccionado = null;
         HiddenArtView = false;
         StateHasChanged();
     }
@@ -124,7 +212,7 @@
         AuxArticulos = await ArticuloService.ObtenerArticulosAsync();
         ArticulosFiltrados = new List<Articulo>(AuxArticulos);
         ListArt = ArticulosFiltrados.AsQueryable();
-        ToastService.ShowSuccess("Pedido guardado correctamente");
+        ToastService.ShowSuccess("Artículo guardado correctamente");
     }
 
     private async Task EliminarArticulo()
@@ -132,12 +220,20 @@
         AuxArticulos = await ArticuloService.ObtenerArticulosAsync();
         ArticulosFiltrados = new List<Articulo>(AuxArticulos);
         ListArt = ArticulosFiltrados.AsQueryable();
-        ToastService.ShowSuccess("El pedido ha sido eliminado correctamente");
+        ToastService.ShowSuccess("El artículo ha sido eliminado correctamente");
     }
 
     private void LimpiarFiltro()
     {
         TextoBusqueda = null;
+        PaginaActual = 0;
+        FiltrarArticulos();
+    }
+
+    private void OnSearchInput(ChangeEventArgs e)
+    {
+        TextoBusqueda = e.Value?.ToString();
+        PaginaActual = 0;
         FiltrarArticulos();
     }
 
@@ -153,16 +249,20 @@
         else
         {
             var texto = TextoBusqueda.Trim().ToLower();
-
             ArticulosFiltrados = AuxArticulos
                 .Where(p =>
                     (!string.IsNullOrEmpty(p.Nombre) && p.Nombre.ToLower().Contains(texto)) ||
-                    (!string.IsNullOrEmpty(p.Codigo) && p.Codigo.ToLower().Contains(texto))
-                )
+                    (!string.IsNullOrEmpty(p.Codigo) && p.Codigo.ToLower().Contains(texto)))
                 .ToList();
         }
 
         ListArt = ArticulosFiltrados.AsQueryable();
+        StateHasChanged();
+    }
+
+    private void CambiarPagina(int nuevaPagina)
+    {
+        PaginaActual = nuevaPagina;
         StateHasChanged();
     }
 }
