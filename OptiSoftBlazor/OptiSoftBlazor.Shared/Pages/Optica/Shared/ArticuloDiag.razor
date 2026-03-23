@@ -1,4 +1,4 @@
-﻿@using OptiSoftBlazor.Shared.Data
+@using OptiSoftBlazor.Shared.Data
 @using OptiSoftBlazor.Shared.Data.DTO
 @using OptiSoftBlazor.Shared.Services
 
@@ -29,31 +29,37 @@
 
 <div class="container-modal-articulo">
     <FluentDialog Modal="true" @bind-Hidden="HiddenArticulo">
-        <FluentHeader>Seleccione un artículo</FluentHeader>
+        <FluentHeader>
+            Seleccione un artículo
+        </FluentHeader>
 
-        <FluentDialogBody Style="overflow: visible;">
-            <div style="padding: 0.5em;">
-                <div class="columna-flex" style="padding: 0 1em; margin-right: 0; margin-bottom: 1.5em;">
-                    <FluentNumberField @bind-Value="Cantidad"
-                                       Label="Cantidad"
-                                       Autofocus="false"
-                                       Placeholder="Ingrese la cantidad"/>
+        <FluentDialogBody>
+            <div style="padding: 1em 0;">
+                <div class="fila-flex" style="margin-bottom: 1em;">
+                    <div class="columna-flex" style="padding: 0 1em; margin-right: 0;">
+                        <FluentNumberField @bind-Value="Cantidad"
+                                           Label="Cantidad"
+                                           Placeholder="Ingrese la cantidad"/>
+                    </div>
                 </div>
-                <div class="columna-flex" style="padding: 0 1em; margin-right: 0;">
-                    <FluentAutocomplete Label="Artículo"
-                                        Items="@ArticulosFiltrados"
-                                        TOption="Articulo"
-                                        AutoComplete="off"
-                                        Placeholder="Seleccione un artículo"
-                                        Class="autocomplete-articulo"
-                                        @bind-SelectedOption="ArticuloSelect"
-                                        OptionText="@(a => a.Nombre)"
-                                        Virtualize="true"
-                                        Multiple="false"
-                                        MaximumSelectedOptions="1"
-                                        OnOptionsSearch="@OnBuscarArticulo"
-                                        MaximumOptionsSearch="int.MaxValue"
-                                        Position="SelectPosition.Below" />
+
+                <div class="fila-flex">
+                    <div class="columna-flex" style="padding: 0 1em; margin-right: 0;">
+                        <FluentAutocomplete Label="Artículo"
+                                            Items="@ArticulosFiltrados"
+                                            TOption="Articulo"
+                                            AutoComplete="off"
+                                            Placeholder="Seleccione un artículo"
+                                            Class="autocomplete-articulo"
+                                            @bind-SelectedOption="ArticuloSelect"
+                                            OptionText="@(a => a.Nombre)"
+                                            Virtualize="true"
+                                            Multiple="false"
+                                            MaximumSelectedOptions="1"
+                                            OnOptionsSearch="@OnBuscarArticulo"
+                                            MaximumOptionsSearch="int.MaxValue"
+                                            Position="SelectPosition.Below"/>
+                    </div>
                 </div>
             </div>
         </FluentDialogBody>
@@ -62,7 +68,7 @@
             <FluentButton Appearance="Appearance.Stealth"
                           OnClick="Cerrar"
                           IconStart="@(new Icons.Filled.Size20.DismissCircle())">
-                Cerrar
+                Cerrar  
             </FluentButton>
 
             <FluentButton Appearance="Appearance.Accent"

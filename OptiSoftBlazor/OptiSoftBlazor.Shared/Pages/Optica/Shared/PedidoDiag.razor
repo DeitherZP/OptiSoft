@@ -1,4 +1,4 @@
-﻿@using OptiSoftBlazor.Shared.Data
+@using OptiSoftBlazor.Shared.Data
 @using OptiSoftBlazor.Shared.Data.DTO
 @using OptiSoftBlazor.Shared.Pages.Shared
 @using OptiSoftBlazor.Shared.Services
@@ -113,9 +113,12 @@
                                         TGridItem="DetCompra"
                                         AutoFit=false
                                         ShowHover=true>
-                            <PropertyColumn Property="tbl => tbl.Cantidad" Title="Cantidad" Sortable="true" />
-                            <PropertyColumn Property="tbl => tbl.Articulo.Nombre" Title="Articulo" Sortable="true" IsDefaultSortColumn />
-                            <TemplateColumn Title="Acción">
+                            <PropertyColumn Property="tbl => tbl.Cantidad" Title="Cantidad" Sortable="true" Align="Align.Center" />
+                            <PropertyColumn Property="tbl => tbl.Articulo.Nombre" Title="Articulo" Sortable="true" IsDefaultSortColumn Align="Align.Center" />
+                            <PropertyColumn Property="tbl => tbl.Articulo.Precio2" Title="Precio" Sortable="true" Align="Align.Center" />
+                            <PropertyColumn Property="tbl => tbl.Articulo.Iva" Title="I.V.A" Sortable="true" Align="Align.Center" />
+                            <PropertyColumn Property="tbl => tbl.Cantidad * tbl.Articulo.Precio2" Title="Total" Sortable="true" Align="Align.Center" />
+                            <TemplateColumn Title="Acción" Align="Align.Center">
                                 <ChildContent Context="det">
                                     <div style="display:flex; justify-content:center; align-items:center; height:100%;">
                                         <FluentButton Class="btn-delete-grid"
@@ -189,6 +192,7 @@
     private IQueryable<DetCompra>? ListDetCompras;
     private bool HiddenArticulo = true;
     private bool IsLoading = false;
+    private float Total = 0;
 
     private List<Cliente> ClientesFiltrados = new();
 
