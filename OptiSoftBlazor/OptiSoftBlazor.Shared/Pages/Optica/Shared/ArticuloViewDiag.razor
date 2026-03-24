@@ -1,21 +1,7 @@
-﻿@using OptiSoftBlazor.Shared.Data
+@using OptiSoftBlazor.Shared.Data
 @using OptiSoftBlazor.Shared.Pages.Shared
 
 @inject ArticuloService ArticuloService
-
-<style>
-    .container-view-articulo .fluent-dialog-main {
-        --dialog-width: 700px !important;
-        --dialog-max-height: 90vh !important;
-    }
-
-    @@media (max-width: 600px) {
-        .container-view-articulo .fluent-dialog-main {
-            --dialog-width: 90% !important;
-            --dialog-max-height: 90vh !important;
-        }
-    }
-</style>
 
 <LoadingSpinner @bind-Visible="IsLoading" />
 
@@ -47,6 +33,7 @@
                 </div>
             </div>
         </FluentDialogBody>
+
         <FluentFooter Style="gap:1em">
             <FluentButton Appearance="Appearance.Stealth"
                           OnClick="Cancelar"
@@ -154,7 +141,6 @@
         catch (Exception ex)
         {
             ToastService.ShowError($"Error al guardar el artículo: {ex.Message}");
-
         }
         finally
         {

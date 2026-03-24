@@ -7,28 +7,28 @@
 :root {
     --op-font: 'Plus Jakarta Sans', 'Segoe UI Variable', 'Segoe UI', sans-serif;
     /* Colores primarios */
-    --op-teal: #1b9e82;
-    --op-blue: #1682c4;
-    --op-gradient: linear-gradient(135deg, #1b9e82, #1682c4);
+    --op-teal: #c77ad3;
+    --op-blue: #090979;
+    --op-gradient: linear-gradient(135deg, #c77ad3, #090979);
     /* Fondo general */
-    --op-bg: linear-gradient(135deg, #c8e6e0 0%, #d4dff5 50%, #e2d4f0 100%);
+    --op-bg: linear-gradient(135deg, #e8d6f5 0%, #d4d8f8 50%, #c8d9ff 100%);
     /* Superficies glass */
     --op-surface: rgba(255, 255, 255, 0.55);
     --op-surface-card: rgba(255, 255, 255, 0.62);
     --op-surface-input: rgba(255, 255, 255, 0.70);
     --op-border: rgba(255, 255, 255, 0.85);
     /* Tipografía */
-    --op-ink-1: #1a1a2e;
-    --op-ink-2: #6b7a99;
-    --op-ink-3: #8a9ab5;
-    --op-ink-4: #a0aec0;
+    --op-ink-1: #090979;
+    --op-ink-2: #5a5a9a;
+    --op-ink-3: #8a8fbf;
+    --op-ink-4: #b0b8d8;
     /* Radios */
     --op-radius-lg: 16px;
     --op-radius-md: 14px;
     --op-radius-sm: 10px;
     --op-radius-xs: 8px;
     /* Sombra */
-    --op-shadow: 0 8px 32px rgba(26, 26, 46, 0.08);
+    --op-shadow: 0 8px 32px rgba(9, 9, 121, 0.08);
 }
 
 /* ============================================================
@@ -232,7 +232,7 @@ footer {
 
 .op-btn-ghost {
     background: var(--op-surface);
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(9, 9, 121, 0.12);
     color: var(--op-ink-2);
 }
 
@@ -304,7 +304,7 @@ footer {
         font-weight: 600;
         text-align: left;
         padding: 0 8px 10px 8px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+        border-bottom: 1px solid rgba(9, 9, 121, 0.07);
         letter-spacing: 0.06em;
         text-transform: uppercase;
         white-space: nowrap;
@@ -314,7 +314,7 @@ footer {
         font-size: 11px;
         color: var(--op-ink-1);
         padding: 10px 8px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        border-bottom: 1px solid rgba(9, 9, 121, 0.05);
         vertical-align: middle;
     }
 
@@ -328,7 +328,7 @@ footer {
     }
 
         .op-table tbody tr:hover td {
-            background: rgba(27, 158, 130, 0.04);
+            background: rgba(199, 122, 211, 0.04);
         }
 
 /* Modificadores de celda */
@@ -373,8 +373,8 @@ footer {
     border-radius: 20px;
     white-space: nowrap;
     display: inline-block;
-    background: rgba(0, 0, 0, 0.06);
-    color: #6b7280;
+    background: rgba(9, 9, 121, 0.06);
+    color: #5a5a9a;
 }
 
 .op-pill--green {
@@ -398,8 +398,8 @@ footer {
 }
 
 .op-pill--gray {
-    background: rgba(0, 0, 0, 0.06);
-    color: #6b7280;
+    background: rgba(9, 9, 121, 0.06);
+    color: #5a5a9a;
 }
 
 /* ============================================================
@@ -411,7 +411,7 @@ footer {
     justify-content: flex-end;
     gap: 6px;
     padding-top: 12px;
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    border-top: 1px solid rgba(9, 9, 121, 0.06);
     margin-top: 4px;
 }
 
@@ -426,7 +426,7 @@ footer {
     width: 28px;
     height: 28px;
     border-radius: var(--op-radius-xs);
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(9, 9, 121, 0.10);
     background: var(--op-surface);
     color: var(--op-ink-2);
     font-size: 13px;
@@ -503,7 +503,7 @@ footer {
 .op-progress-track {
     height: 6px;
     border-radius: 10px;
-    background: rgba(0, 0, 0, 0.07);
+    background: rgba(9, 9, 121, 0.07);
     overflow: hidden;
 }
 
@@ -521,7 +521,7 @@ footer {
     align-items: center;
     gap: 10px;
     padding: 8px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(9, 9, 121, 0.05);
 }
 
     .op-agenda-row:last-child {
@@ -572,7 +572,7 @@ footer {
 .op-banner {
     border-radius: var(--op-radius-md);
     padding: 16px 18px;
-    background: linear-gradient(135deg, #0f6e56 0%, #1682c4 100%);
+    background: linear-gradient(135deg, #8a1fa0 0%, #090979 100%);
     border: 1px solid rgba(255, 255, 255, 0.15);
     display: flex;
     align-items: center;
@@ -709,7 +709,7 @@ footer {
     width: 100%;
     padding: 9px 12px;
     background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(166, 196, 255, 0.50);
     border-radius: var(--op-radius-sm);
     font-family: var(--op-font);
     font-size: 12px;
