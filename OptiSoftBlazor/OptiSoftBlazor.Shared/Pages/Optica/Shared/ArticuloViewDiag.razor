@@ -5,14 +5,14 @@
 
 <LoadingSpinner @bind-Visible="IsLoading" />
 
-<div class="container-view-articulo">
-    <FluentDialog Modal="true" @bind-Hidden="HiddenArtView">
-        <FluentHeader>
-            <h3>@(Articulo == null ? "Nueva Artículo" : "Editar Artículo")</h3>
-        </FluentHeader>
+ <div class="avd-overlay" @onclick="CerrarSiFondo">
+        <div class="avd-dialog" @onclick:stopPropagation="true">
 
-        <FluentDialogBody Style="overflow-y:auto; max-height: calc(80vh - 120px);">
-            <div style="padding: 1em;">
+            <div class="avd-header">
+                <h3 class="avd-title">@(Articulo == null ? "Nueva Artículo" : "Editar Artículo")</h3>
+            </div>
+
+            <div class="avd-body">
                 <div class="nueva-fila">
                     <div class="columna-flex">
                         <FluentTextField Label="Código" @bind-Value="@codigo" Placeholder="Ingrese el código del artículo" />
@@ -32,36 +32,37 @@
                     </div>
                 </div>
             </div>
-        </FluentDialogBody>
 
-        <FluentFooter Style="gap:1em">
-            <FluentButton Appearance="Appearance.Stealth"
-                          OnClick="Cancelar"
-                          IconStart="@(new Icons.Filled.Size20.DismissCircle())">
-                Cancelar
-            </FluentButton>
-
-            @if ((Articulo != null && Articulo?.IdArticulo > 0) && Permisos.CanDelete("/articulos"))
-            {
-                <FluentButton Class="btn-danger"
-                              Appearance="Appearance.Neutral"
-                              OnClick="Eliminar">
-                    <FluentIcon Value="@(new Icons.Filled.Size20.Delete())" Color="Color.Neutral" Slot="start" />
-                    Eliminar
+            <div class="avd-footer">
+                <FluentButton Appearance="Appearance.Stealth"
+                              OnClick="Cancelar"
+                              IconStart="@(new Icons.Filled.Size20.DismissCircle())">
+                    Cancelar
                 </FluentButton>
-            }
 
-            @if (Permisos.CanEdit("/articulos"))
-            {
-                <FluentButton Appearance="Appearance.Accent"
-                              OnClick="Guardar"
-                              IconStart="@(new Icons.Filled.Size20.Save())">
-                    Guardar
-                </FluentButton>
-            }
-        </FluentFooter>
-    </FluentDialog>
-</div>
+                @if ((Articulo != null && Articulo?.IdArticulo > 0) && Permisos.CanDelete("/articulos"))
+                {
+                    <FluentButton Class="btn-danger"
+                                  Appearance="Appearance.Neutral"
+                                  OnClick="Eliminar">
+                        <FluentIcon Value="@(new Icons.Filled.Size20.Delete())" Color="Color.Neutral" Slot="start" />
+                        Eliminar
+                    </FluentButton>
+                }
+
+                @if (Permisos.CanEdit("/articulos"))
+                {
+                    <FluentButton Class="btn-accent"
+                                  Appearance="Appearance.Neutral"
+                                  OnClick="Guardar"
+                                  IconStart="@(new Icons.Filled.Size20.Save())">
+                        Guardar
+                    </FluentButton>
+                }
+            </div>
+
+        </div>
+    </div>
 
 
 @code {
@@ -94,6 +95,11 @@
             precio = 0;
             iva = 0;
         }
+    }
+
+    private async Task CerrarSiFondo()
+    {
+        await Cancelar();
     }
 
     private async Task Cancelar()

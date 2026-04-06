@@ -1,4 +1,4 @@
-﻿@page "/consulta"
+@page "/consulta"
 @attribute [Authorize(Policy = "RequirePasswordChanged")]
 @rendermode InteractiveServer
 
@@ -25,45 +25,125 @@
 
 <LoadingSpinner @bind-Visible="IsLoading" />
 
-@if (!IsFirstRender)
-{
-    <div class="nueva-fila">
-        @if (Permisos.CanCreate("/consulta"))
-        {
-            <FluentButton Appearance="Appearance.Accent" OnClick="AddConsulta" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-right: 3em">Nuevo</FluentButton>
-        }
+<div class="op-page">
 
-        <FluentTextField Placeholder="Buscar por cliente, profesional o pedido..."
-                         Style="width: 300px; margin-right: 1em;"
-                         AutoComplete="off"
-                         @bind-Value="TextoBusqueda"
-                         @bind-Value:after="FiltrarConsultas" />
+    @if (!IsFirstRender)
+    {
+        <div class="op-topbar">
+            <div class="op-topbar-left">
+                <div class="op-title">Consultas</div>
+            </div>
+            <div class="op-topbar-right">
 
-        <FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.FilterDismiss())" Disabled="@(string.IsNullOrEmpty(TextoBusqueda))" />
-    </div>
-}
+                @if (ListConsultas != null)
+                {
+                    <div class="op-stat-chip">
+                        Total: <strong>@ListConsultas.Count()</strong>
+                    </div>
+                }
 
-@if (!(ListConsultas == null))
-{
-    <FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 80vh; padding: 0.5em;">
-        <FluentDataGrid Items="ListConsultas"
-                        TGridItem="Consulta"
-                        Pagination="@pagination"
-                        AutoFit=true
-                        ShowHover=true
-                        DisplayMode="DataGridDisplayMode.Table"
-                        OnRowClick="@(args => OnRowClicked(args.Item ?? new()))">
-            <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" Align="Align.Center" IsDefaultSortColumn InitialSortDirection="SortDirection.Descending" />
-            <PropertyColumn Property="tbl => tbl.Cliente!.Nombre" Title="Cliente" Sortable="true" Align="Align.Center" />
-            <PropertyColumn Property="tbl => tbl.PedidoNumero" Title="N° Pedido" Sortable="true" Align="Align.Center" />
-            <PropertyColumn Property="tbl => tbl.Profesional!.Nombre" Title="Profesional" Sortable="true" Align="Align.Center" />
-        </FluentDataGrid>
-        @if (ListConsultas.Count() > pagination.ItemsPerPage)
-        {
-            <FluentPaginator State="pagination" Style="padding: 0.5em 2em;" />
-        }
-    </FluentCard>
-}
+                <div class="op-search">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8a8fbf" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+                    </svg>
+                    <input placeholder="Buscar por cliente, profesional o pedido..."
+                           autocomplete="off"
+                           value="@TextoBusqueda"
+                           @oninput="OnSearchInput" />
+                </div>
+
+                <button class="op-btn op-btn-ghost"
+                        @onclick="LimpiarFiltro"
+                        disabled="@(string.IsNullOrEmpty(TextoBusqueda))"
+                        title="Limpiar filtro">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+
+                @if (Permisos.CanCreate("/consulta"))
+                {
+                    <button class="op-btn" @onclick="AddConsulta">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" />
+                        </svg>
+                        Nueva consulta
+                    </button>
+                }
+            </div>
+        </div>
+    }
+
+    @if (ListConsultas != null)
+    {
+        <div class="op-card">
+            <div class="op-card-header">
+                <span class="op-card-title">Listado de consultas</span>
+                @if (!string.IsNullOrWhiteSpace(TextoBusqueda))
+                {
+                    <span class="op-card-count">@ListConsultas.Count() resultado(s) para "@TextoBusqueda"</span>
+                }
+            </div>
+
+            @{
+                var paginados    = ListConsultas.Skip(PaginaActual * ItemsPorPagina).Take(ItemsPorPagina).ToList();
+                var totalPaginas = (int)Math.Ceiling(ListConsultas.Count() / (double)ItemsPorPagina);
+            }
+
+            @if (!paginados.Any())
+            {
+                <div class="op-empty">
+                    <span class="op-empty-icon">🔍</span>
+                    No se encontraron consultas con ese criterio.
+                </div>
+            }
+            else
+            {
+                <table class="op-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>N° Pedido</th>
+                            <th>Profesional</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var tbl in paginados)
+                        {
+                            <tr @onclick="@(() => OnRowClicked(tbl))">
+                                <td class="td-date">@(tbl.Fecha?.ToString("dd/MM/yyyy") ?? string.Empty)</td>
+                                <td class="td-name">@tbl.Cliente?.Nombre</td>
+                                <td class="td-code">@tbl.PedidoNumero</td>
+                                <td class="td-muted">@tbl.Profesional?.Nombre</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                @if (totalPaginas > 1)
+                {
+                    <div class="op-pagination">
+                        <span class="op-page-info">
+                            Página @(PaginaActual + 1) de @totalPaginas
+                        </span>
+                        <button class="op-page-btn"
+                                disabled="@(PaginaActual == 0)"
+                                @onclick="() => CambiarPagina(PaginaActual - 1)">
+                            ‹
+                        </button>
+                        <button class="op-page-btn"
+                                disabled="@(PaginaActual >= totalPaginas - 1)"
+                                @onclick="() => CambiarPagina(PaginaActual + 1)">
+                            ›
+                        </button>
+                    </div>
+                }
+            }
+        </div>
+    }
+
+</div>
 
 @if (!HiddenConsulta)
 {
@@ -92,6 +172,10 @@
 
     private bool IsLoading { get; set; } = false;
 
+    // Paginación propia
+    private int PaginaActual   = 0;
+    private int ItemsPorPagina = 10;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender)
@@ -108,7 +192,7 @@
             StateHasChanged();
             consultas = await ConsultaService.ObtenerConsultasAsync();
             consultasFiltradas = new List<Consulta>(consultas);
-            Clientes = await ClienteService.ObtenerClienteAsync(); //Cambiar clientes para que no cargue al inicio, mejor al querer abrir la consulta
+            Clientes = await ClienteService.ObtenerClienteAsync();
             ListConsultas = consultasFiltradas.AsQueryable();
         }
         catch (Exception ex)
@@ -128,7 +212,7 @@
     {
         await CargarDatos();
 
-        ConsultaSeleccionada = null; // Nueva consulta
+        ConsultaSeleccionada = null;
         HiddenConsulta = false;
         StateHasChanged();
     }
@@ -164,6 +248,14 @@
     private void LimpiarFiltro()
     {
         TextoBusqueda = null;
+        PaginaActual  = 0;
+        FiltrarConsultas();
+    }
+
+    private void OnSearchInput(ChangeEventArgs e)
+    {
+        TextoBusqueda = e.Value?.ToString();
+        PaginaActual  = 0;
         FiltrarConsultas();
     }
 
@@ -182,14 +274,20 @@
 
             consultasFiltradas = consultas
                 .Where(p =>
-                    (!string.IsNullOrEmpty(p.Cliente?.Nombre) && p.Cliente.Nombre.ToLower().Contains(texto)) ||
-                    (!string.IsNullOrEmpty(p.Profesional?.Nombre) && p.Profesional.Nombre.ToLower().Contains(texto)) ||
-                    (!string.IsNullOrEmpty(p.PedidoNumero) && p.PedidoNumero.ToLower().Contains(texto))
+                    (!string.IsNullOrEmpty(p.Cliente?.Nombre)      && p.Cliente.Nombre.ToLower().Contains(texto)) ||
+                    (!string.IsNullOrEmpty(p.Profesional?.Nombre)  && p.Profesional.Nombre.ToLower().Contains(texto)) ||
+                    (!string.IsNullOrEmpty(p.PedidoNumero)         && p.PedidoNumero.ToLower().Contains(texto))
                 )
                 .ToList();
         }
 
         ListConsultas = consultasFiltradas.AsQueryable();
+        StateHasChanged();
+    }
+
+    private void CambiarPagina(int nuevaPagina)
+    {
+        PaginaActual = nuevaPagina;
         StateHasChanged();
     }
 
