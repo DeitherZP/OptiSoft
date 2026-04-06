@@ -1,4 +1,4 @@
-﻿@page "/usuarios"
+@page "/usuarios"
 @attribute [Authorize(Policy = "RequirePasswordChanged")]
 @rendermode InteractiveServer
 
@@ -17,195 +17,299 @@
 
 <LoadingSpinner @bind-Visible="IsLoading" />
 
-@if (!IsFirstRender)
-{
-	<div class="nueva-fila">
-		@if (Permisos.CanCreate("/usuarios"))
-		{
-			<FluentButton Appearance="Appearance.Accent" OnClick="@AddUser" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-right: 3em">Nuevo</FluentButton>
-		}
+<div class="op-page">
 
-		<FluentTextField Placeholder="Buscar por usuario, personal o sucursal..."
-						 Style="width: 300px; margin-right: 1em;"
-						 @bind-Value="TextoBusqueda"
-						 @bind-Value:after="FiltrarUsuario" />
+    @if (!IsFirstRender)
+    {
+        <div class="op-topbar">
+            <div class="op-topbar-left">
+                <div class="op-greet">👤 Administración</div>
+                <div class="op-title">Usuarios</div>
+            </div>
+            <div class="op-topbar-right">
 
-		<FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.FilterDismiss())" Disabled="@(string.IsNullOrEmpty(TextoBusqueda))" />
-	</div>
-}
+                @if (ListUser != null)
+                {
+                    <div class="op-stat-chip">
+                        Total: <strong>@ListUser.Count()</strong>
+                    </div>
+                }
 
-@if (ListUser != null)
-{
-	<FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 80vh; padding: 0.5em;">
-		<FluentDataGrid Items="ListUser"
-						TGridItem="ApplicationUser"
-						Pagination="@pagination"
-						AutoFit="true"
-						ShowHover="true"
-						DisplayMode="DataGridDisplayMode.Table"
-						OnRowClick="@(args => OnRowClicked(args?.Item ?? new ApplicationUser()))">
-			<PropertyColumn Property="a => a.UserName" Title="Usuario" Sortable="true" Align="Align.Center" IsDefaultSortColumn />
-			<PropertyColumn Property="a => a.NombrePersonal" Title="Personal" Sortable="true" Align="Align.Center" />
-			<PropertyColumn Property="a => a.NombreSucursal" Title="Sucursal" Sortable="true" Align="Align.Center" />
-			<TemplateColumn Title="Cambiar Contraseña" Sortable="true" Align="Align.Center">
-				<ChildContent Context="tbl">
-					<FluentCheckbox Value="@tbl.ForcePasswordChange" ReadOnly="true" />
-				</ChildContent>
-			</TemplateColumn>
-		</FluentDataGrid>
-		@if (ListUser.Count() > pagination.ItemsPerPage)
-		{
-			<FluentPaginator State="pagination" Style="padding: 0.5em 2em;" />
-		}
-	</FluentCard>
-}
+                <div class="op-search">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8a8fbf" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+                    </svg>
+                    <input placeholder="Buscar por usuario, personal o sucursal..."
+                           value="@TextoBusqueda"
+                           @oninput="OnSearchInput" />
+                </div>
+
+                <button class="op-btn op-btn-ghost"
+                        @onclick="LimpiarFiltro"
+                        disabled="@(string.IsNullOrEmpty(TextoBusqueda))"
+                        title="Limpiar filtro">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+
+                @if (Permisos.CanCreate("/usuarios"))
+                {
+                    <button class="op-btn" @onclick="AddUser">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" />
+                        </svg>
+                        Nuevo
+                    </button>
+                }
+            </div>
+        </div>
+    }
+
+    @if (ListUser != null)
+    {
+        <div class="op-card">
+            <div class="op-card-header">
+                <span class="op-card-title">Listado de usuarios</span>
+                @if (!string.IsNullOrWhiteSpace(TextoBusqueda))
+                {
+                    <span class="op-card-count">@ListUser.Count() resultado(s) para "@TextoBusqueda"</span>
+                }
+            </div>
+
+            @{
+                var paginados    = ListUser.Skip(PaginaActual * ItemsPorPagina).Take(ItemsPorPagina).ToList();
+                var totalPaginas = (int)Math.Ceiling(ListUser.Count() / (double)ItemsPorPagina);
+            }
+
+            @if (!paginados.Any())
+            {
+                <div class="op-empty">
+                    <span class="op-empty-icon">🔍</span>
+                    No se encontraron usuarios con ese criterio.
+                </div>
+            }
+            else
+            {
+                <table class="op-table">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Personal</th>
+                            <th>Sucursal</th>
+                            <th style="text-align:center;">Cambiar Contraseña</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var a in paginados)
+                        {
+                            <tr @onclick="@(() => OnRowClicked(a))">
+                                <td class="td-name">@a.UserName</td>
+                                <td class="td-muted">@a.NombrePersonal</td>
+                                <td class="td-muted">@a.NombreSucursal</td>
+                                <td style="text-align:center;">
+                                    @if (a.ForcePasswordChange)
+                                    {
+                                        <span class="op-pill op-pill--yellow">Sí</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="op-pill op-pill--green">No</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                @if (totalPaginas > 1)
+                {
+                    <div class="op-pagination">
+                        <span class="op-page-info">
+                            Página @(PaginaActual + 1) de @totalPaginas
+                        </span>
+                        <button class="op-page-btn"
+                                disabled="@(PaginaActual == 0)"
+                                @onclick="() => CambiarPagina(PaginaActual - 1)">
+                            ‹
+                        </button>
+                        <button class="op-page-btn"
+                                disabled="@(PaginaActual >= totalPaginas - 1)"
+                                @onclick="() => CambiarPagina(PaginaActual + 1)">
+                            ›
+                        </button>
+                    </div>
+                }
+            }
+        </div>
+    }
+
+</div>
 
 @if (!HiddenUser)
 {
-	<UserDiag Hidden="@HiddenUser"
-			  HiddenChanged="@(v => HiddenUser = v)"
-			  User="UserSeleccionado"
-			  Personals="Personals"
-			  OnGuardar="GuardarUsuario"
-			  OnEliminar="EliminarUsuario"
-			  Roles="Roles" />
+    <UserDiag Hidden="@HiddenUser"
+              HiddenChanged="@(v => HiddenUser = v)"
+              User="UserSeleccionado"
+              Personals="Personals"
+              OnGuardar="GuardarUsuario"
+              OnEliminar="EliminarUsuario"
+              Roles="Roles" />
 }
 
 @code {
-	private bool IsLoading = false;
-	private bool IsFirstRender = true;
-	private bool HiddenUser = true;
+    private bool IsLoading = false;
+    private bool IsFirstRender = true;
+    private bool HiddenUser = true;
 
-	PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
 
-	private IQueryable<ApplicationUser>? ListUser;
-	private List<ApplicationUser>? AuxUser = new();
-	private List<ApplicationUser>? UsersFiltrados = new();
-	private ApplicationUser? UserSeleccionado;
-	private List<Personal>? Personals = new();
+    private IQueryable<ApplicationUser>? ListUser;
+    private List<ApplicationUser>? AuxUser = new();
+    private List<ApplicationUser>? UsersFiltrados = new();
+    private ApplicationUser? UserSeleccionado;
+    private List<Personal>? Personals = new();
     private List<RoleView>? Roles = new();
-	private string? TextoBusqueda;
+    private string? TextoBusqueda;
 
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		if (!firstRender)
-			return;
+    // Paginación propia
+    private int PaginaActual   = 0;
+    private int ItemsPorPagina = 10;
 
-		if (!Permisos.CanView("/usuarios"))
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        if (!Permisos.CanView("/usuarios"))
             NavManager.NavigateTo("/noaccess");
 
-		await JS.InvokeVoidAsync("translateFluentLabels");
+        await JS.InvokeVoidAsync("translateFluentLabels");
 
-		try
-		{
-			IsLoading = true;
-			StateHasChanged();
-			AuxUser = await UsuariosService.ObtenerUsuariosAsync();
-			UsersFiltrados = new List<ApplicationUser>(AuxUser);
-			ListUser = UsersFiltrados.AsQueryable();
-			ListUser = AuxUser.AsQueryable();
-		}
-		catch (Exception ex)
-		{
-			ToastService.ShowError($"Error al cargar los datos. {ex.Message}", 5000);
-		}
-		finally
-		{
-			IsLoading = false;
-			IsFirstRender = false;
-			StateHasChanged();
-		}
+        try
+        {
+            IsLoading = true;
+            StateHasChanged();
+            AuxUser = await UsuariosService.ObtenerUsuariosAsync();
+            UsersFiltrados = new List<ApplicationUser>(AuxUser);
+            ListUser = UsersFiltrados.AsQueryable();
+            ListUser = AuxUser.AsQueryable();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al cargar los datos. {ex.Message}", 5000);
+        }
+        finally
+        {
+            IsLoading = false;
+            IsFirstRender = false;
+            StateHasChanged();
+        }
 
-		IsFirstRender = false;
-	}
+        IsFirstRender = false;
+    }
 
-	private async Task AddUser()
-	{
-		await CargarPersonal();
-		UserSeleccionado = null;
-		HiddenUser = false;
-		StateHasChanged();
-	}
+    private async Task AddUser()
+    {
+        await CargarPersonal();
+        UserSeleccionado = null;
+        HiddenUser = false;
+        StateHasChanged();
+    }
 
-	private async Task CargarPersonal()
-	{
-		try
-		{
-			IsLoading = true;
-			StateHasChanged();
+    private async Task CargarPersonal()
+    {
+        try
+        {
+            IsLoading = true;
+            StateHasChanged();
 
-			Personals = await PersonalService.ObtenerPersonalAsync();
-		}
-		catch (Exception ex)
-		{
-			ToastService.ShowError($"Error al cargar datos del personal: {ex}", 5000);
-		}
-		finally
-		{
-			IsLoading = false;
-			StateHasChanged();
-		}
-	}
+            Personals = await PersonalService.ObtenerPersonalAsync();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al cargar datos del personal: {ex}", 5000);
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
 
-	private async Task OnRowClicked(ApplicationUser user)
-	{
-		if (string.IsNullOrEmpty(user.UserName))
-			return;
+    private async Task OnRowClicked(ApplicationUser user)
+    {
+        if (string.IsNullOrEmpty(user.UserName))
+            return;
 
-		await CargarPersonal();
-		Roles = await UsuariosService.ObtenerRolesUsuarioAsync(user.Id);
-		UserSeleccionado = user;
-		HiddenUser = false;
-		StateHasChanged();
-	}
+        await CargarPersonal();
+        Roles = await UsuariosService.ObtenerRolesUsuarioAsync(user.Id);
+        UserSeleccionado = user;
+        HiddenUser = false;
+        StateHasChanged();
+    }
 
-	private async Task GuardarUsuario()
-	{
-		AuxUser = await UsuariosService.ObtenerUsuariosAsync();
-		UsersFiltrados = new List<ApplicationUser>(AuxUser);
-		ListUser = UsersFiltrados.AsQueryable();
-		UserSeleccionado = null;
-		ToastService.ShowSuccess("Usuario guardado correctamente.");
-	}
+    private async Task GuardarUsuario()
+    {
+        AuxUser = await UsuariosService.ObtenerUsuariosAsync();
+        UsersFiltrados = new List<ApplicationUser>(AuxUser);
+        ListUser = UsersFiltrados.AsQueryable();
+        UserSeleccionado = null;
+        ToastService.ShowSuccess("Usuario guardado correctamente.");
+    }
 
-	private async Task EliminarUsuario()
-	{
-		AuxUser = await UsuariosService.ObtenerUsuariosAsync();
-		UsersFiltrados = new List<ApplicationUser>(AuxUser);
-		ListUser = UsersFiltrados.AsQueryable();
-		UserSeleccionado = null;
-		ToastService.ShowSuccess("Usuario eliminado correctamente");
-	}
+    private async Task EliminarUsuario()
+    {
+        AuxUser = await UsuariosService.ObtenerUsuariosAsync();
+        UsersFiltrados = new List<ApplicationUser>(AuxUser);
+        ListUser = UsersFiltrados.AsQueryable();
+        UserSeleccionado = null;
+        ToastService.ShowSuccess("Usuario eliminado correctamente");
+    }
 
-	private void LimpiarFiltro()
-	{
-		TextoBusqueda = null;
-		FiltrarUsuario();
-	}
+    private void LimpiarFiltro()
+    {
+        TextoBusqueda = null;
+        PaginaActual  = 0;
+        FiltrarUsuario();
+    }
 
-	private void FiltrarUsuario()
-	{
-		if (AuxUser == null)
-			return;
+    private void OnSearchInput(ChangeEventArgs e)
+    {
+        TextoBusqueda = e.Value?.ToString();
+        PaginaActual  = 0;
+        FiltrarUsuario();
+    }
 
-		if (string.IsNullOrWhiteSpace(TextoBusqueda))
-		{
-			UsersFiltrados = new List<ApplicationUser>(AuxUser);
-		}
-		else
-		{
-			var texto = TextoBusqueda.Trim().ToLower();
+    private void FiltrarUsuario()
+    {
+        if (AuxUser == null)
+            return;
 
-			UsersFiltrados = AuxUser
-				.Where(p =>
-					(!string.IsNullOrEmpty(p.UserName) && p.UserName.ToLower().Contains(texto)) ||
-					(!string.IsNullOrEmpty(p.NombrePersonal) && p.NombrePersonal.ToLower().Contains(texto)) ||
-					(!string.IsNullOrEmpty(p.NombreSucursal) && p.NombreSucursal.ToLower().Contains(texto))
-				)
-				.ToList();
-		}
+        if (string.IsNullOrWhiteSpace(TextoBusqueda))
+        {
+            UsersFiltrados = new List<ApplicationUser>(AuxUser);
+        }
+        else
+        {
+            var texto = TextoBusqueda.Trim().ToLower();
 
-		ListUser = UsersFiltrados.AsQueryable();
-		StateHasChanged();
-	}
+            UsersFiltrados = AuxUser
+                .Where(p =>
+                    (!string.IsNullOrEmpty(p.UserName)       && p.UserName.ToLower().Contains(texto)) ||
+                    (!string.IsNullOrEmpty(p.NombrePersonal) && p.NombrePersonal.ToLower().Contains(texto)) ||
+                    (!string.IsNullOrEmpty(p.NombreSucursal) && p.NombreSucursal.ToLower().Contains(texto))
+                )
+                .ToList();
+        }
+
+        ListUser = UsersFiltrados.AsQueryable();
+        StateHasChanged();
+    }
+
+    private void CambiarPagina(int nuevaPagina)
+    {
+        PaginaActual = nuevaPagina;
+        StateHasChanged();
+    }
 }

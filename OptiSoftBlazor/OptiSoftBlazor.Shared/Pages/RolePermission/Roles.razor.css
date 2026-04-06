@@ -1,0 +1,298 @@
+/* ══════════════════════════════════════
+   Roles.razor.css
+   Paleta ÓpticaPro — púrpura / azul marino
+   Layout: cuadrícula de tarjetas con íconos
+══════════════════════════════════════ */
+
+.op-page {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* ── Topbar ── */
+.op-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 16px;
+    margin: 0;
+    padding: 14px 20px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 32px rgba(9, 9, 121, 0.08);
+}
+
+.op-topbar-left .op-greet {
+    font-size: 10px;
+    color: #c77ad3;
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.op-topbar-left .op-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #090979;
+    letter-spacing: -0.03em;
+}
+
+.op-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ── Stat chip ── */
+.op-stat-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-size: 11px;
+    color: #5a5a9a;
+    white-space: nowrap;
+}
+
+.op-stat-chip strong {
+    color: #090979;
+    font-weight: 700;
+}
+
+/* ── Buscador ── */
+.op-search {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 7px 12px;
+    font-size: 11px;
+    color: #8a8fbf;
+    min-width: 260px;
+    transition: border-color 0.15s;
+}
+
+.op-search:focus-within {
+    border-color: #c77ad3;
+}
+
+.op-search input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    color: #090979;
+    width: 100%;
+}
+
+.op-search input::placeholder {
+    color: #b0b8d8;
+}
+
+/* ── Botones ── */
+.op-btn {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #c77ad3, #090979);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+}
+
+.op-btn:hover:not(:disabled) { opacity: 0.88; }
+.op-btn:disabled             { opacity: 0.4; cursor: not-allowed; }
+
+.op-btn-ghost {
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(9, 9, 121, 0.12);
+    color: #5a5a9a;
+}
+
+.op-btn-ghost:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ── Card contenedor ── */
+.op-card {
+    background: rgba(255, 255, 255, 0.62);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 14px;
+    padding: 15px 17px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 32px rgba(9, 9, 121, 0.08);
+}
+
+.op-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.op-card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #090979;
+}
+
+.op-card-count {
+    font-size: 11px;
+    color: #8a8fbf;
+    font-weight: 500;
+}
+
+/* ══════════════════════════════════════
+   CUADRÍCULA DE ROLES
+══════════════════════════════════════ */
+.op-roles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+/* ── Tarjeta individual de rol ── */
+.op-role-card {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 14px;
+    padding: 20px 16px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.18s;
+    text-align: center;
+}
+
+.op-role-card:hover {
+    background: rgba(255, 255, 255, 0.92);
+    border-color: rgba(199, 122, 211, 0.4);
+    box-shadow: 0 6px 24px rgba(9, 9, 121, 0.10);
+    transform: translateY(-2px);
+}
+
+/* ── Círculo con ícono ── */
+.op-role-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.op-role-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* Colores por rol */
+.icon-administrator {
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    color: #5b21b6;
+}
+
+.icon-adminuser {
+    background: linear-gradient(135deg, #e8d6f5, #d4b8f0);
+    color: #7e22ce;
+}
+
+.icon-segadmin {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: #1e40af;
+}
+
+.icon-seguser {
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    color: #3730a3;
+}
+
+.icon-trabajador {
+    background: linear-gradient(135deg, #d4d8f8, #c8d9ff);
+    color: #090979;
+}
+
+.icon-user {
+    background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+    color: #6b21a8;
+}
+
+/* ── Nombre del rol ── */
+.op-role-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #090979;
+    letter-spacing: -0.01em;
+}
+
+/* ── Estado vacío ── */
+.op-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #b0b8d8;
+    font-size: 12px;
+}
+
+.op-empty-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* ── Paginación ── */
+.op-pagination {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(9, 9, 121, 0.06);
+    margin-top: 8px;
+}
+
+.op-page-info {
+    font-size: 10px;
+    color: #8a8fbf;
+    font-weight: 500;
+    margin-right: auto;
+}
+
+.op-page-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 1px solid rgba(9, 9, 121, 0.10);
+    background: rgba(255, 255, 255, 0.55);
+    color: #5a5a9a;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: all 0.12s;
+}
+
+.op-page-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #c77ad3, #090979);
+    color: #fff;
+    border-color: transparent;
+}
+
+.op-page-btn:disabled { opacity: 0.35; cursor: not-allowed; }

@@ -1,4 +1,4 @@
-﻿@page "/pedido"
+@page "/pedido"
 @attribute [Authorize(Policy = "RequirePasswordChanged")]
 @rendermode InteractiveServer
 
@@ -18,50 +18,136 @@
 
 <LoadingSpinner @bind-Visible="IsLoading" />
 
-@if (!IsFirstRender)
-{
-    <div class="nueva-fila">
-        @if (Permisos.CanCreate("/pedido"))
-        {
-            <FluentButton Appearance="Appearance.Accent" OnClick="@AddPedido" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-right: 3em">Nuevo</FluentButton>
-        }
+<div class="op-page">
 
-        <FluentTextField Placeholder="Buscar por cliente o número..."
-                         Style="width: 300px; margin-right: 1em;"
-                         AutoComplete="off"
-                         @bind-Value="TextoBusqueda"
-                         @bind-Value:after="FiltrarPedidos" />
+    @if (!IsFirstRender)
+    {
+        <div class="op-topbar">
+            <div class="op-topbar-left">
+                <div class="op-title">Pedidos</div>
+            </div>
+            <div class="op-topbar-right">
 
-        <FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.FilterDismiss())" Disabled="@(string.IsNullOrEmpty(TextoBusqueda))" />
-    </div>
-}
+                @if (ListPedidos != null)
+                {
+                    <div class="op-stat-chip">
+                        Total: <strong>@ListPedidos.Count()</strong>
+                    </div>
+                }
 
-@if (!(ListPedidos == null))
-{
-    <FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 80vh; padding: 0.5em;">
-        <FluentDataGrid Items="ListPedidos"
-                        TGridItem="Compra"
-                        Pagination="@pagination"
-                        AutoFit=true
-                        ShowHover=true
-                        DisplayMode="DataGridDisplayMode.Table"
-                        OnRowClick="@(args => OnRowClicked(args?.Item ?? new Compra()))">
-            <PropertyColumn Property="tbl => tbl.Fecha" Title="Fecha" Sortable="true" Format="dd/MM/yyyy" Align="Align.Center" IsDefaultSortColumn InitialSortDirection="SortDirection.Descending" />
-            <PropertyColumn Property="tbl => tbl.Numero" Title="Número" Sortable="true" Align="Align.Center" />
-            <PropertyColumn Property="tbl => tbl.Cliente!.Nombre" Title="Cliente" Sortable="true" Align="Align.Center" />
-            <PropertyColumn Property="tbl => tbl.Laboratorio" Title="Laboratorio" Sortable="false" Align="Align.Center" />
-            <TemplateColumn Title="Estado" Sortable="true">
-                <ChildContent Context="tbl">
-                    @(tbl.Finalizado ? "Finalizado" : "Pendiente")
-                </ChildContent>
-            </TemplateColumn>
-        </FluentDataGrid>
-        @if (ListPedidos.Count() > pagination.ItemsPerPage)
-        {
-            <FluentPaginator State="pagination" Style="padding: 0.5em 2em;" />
-        }
-    </FluentCard>
-}
+                <div class="op-search">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8a8fbf" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+                    </svg>
+                    <input placeholder="Buscar por cliente o número..."
+                           autocomplete="off"
+                           value="@TextoBusqueda"
+                           @oninput="OnSearchInput" />
+                </div>
+
+                <button class="op-btn op-btn-ghost"
+                        @onclick="LimpiarFiltro"
+                        disabled="@(string.IsNullOrEmpty(TextoBusqueda))"
+                        title="Limpiar filtro">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+
+                @if (Permisos.CanCreate("/pedido"))
+                {
+                    <button class="op-btn" @onclick="AddPedido">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" />
+                        </svg>
+                        Nuevo pedido
+                    </button>
+                }
+            </div>
+        </div>
+    }
+
+    @if (ListPedidos != null)
+    {
+        <div class="op-card">
+            <div class="op-card-header">
+                <span class="op-card-title">Listado de pedidos</span>
+                @if (!string.IsNullOrWhiteSpace(TextoBusqueda))
+                {
+                    <span class="op-card-count">@ListPedidos.Count() resultado(s) para "@TextoBusqueda"</span>
+                }
+            </div>
+
+            @{
+                var paginados    = ListPedidos.Skip(PaginaActual * ItemsPorPagina).Take(ItemsPorPagina).ToList();
+                var totalPaginas = (int)Math.Ceiling(ListPedidos.Count() / (double)ItemsPorPagina);
+            }
+
+            @if (!paginados.Any())
+            {
+                <div class="op-empty">
+                    <span class="op-empty-icon">🔍</span>
+                    No se encontraron pedidos con ese criterio.
+                </div>
+            }
+            else
+            {
+                <table class="op-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Número</th>
+                            <th>Cliente</th>
+                            <th>Laboratorio</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var tbl in paginados)
+                        {
+                            <tr @onclick="@(() => OnRowClicked(tbl))">
+                                <td class="td-date">@(tbl.Fecha?.ToString("dd/MM/yyyy") ?? string.Empty)</td>
+                                <td class="td-code">@tbl.Numero</td>
+                                <td class="td-name">@tbl.Cliente?.Nombre</td>
+                                <td class="td-muted">@tbl.Laboratorio</td>
+                                <td>
+                                    @if (tbl.Finalizado)
+                                    {
+                                        <span class="op-pill op-pill--green">Finalizado</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="op-pill op-pill--yellow">Pendiente</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                @if (totalPaginas > 1)
+                {
+                    <div class="op-pagination">
+                        <span class="op-page-info">
+                            Página @(PaginaActual + 1) de @totalPaginas
+                        </span>
+                        <button class="op-page-btn"
+                                disabled="@(PaginaActual == 0)"
+                                @onclick="() => CambiarPagina(PaginaActual - 1)">
+                            ‹
+                        </button>
+                        <button class="op-page-btn"
+                                disabled="@(PaginaActual >= totalPaginas - 1)"
+                                @onclick="() => CambiarPagina(PaginaActual + 1)">
+                            ›
+                        </button>
+                    </div>
+                }
+            }
+        </div>
+    }
+
+</div>
 
 @if (!HiddenPedido)
 {
@@ -87,6 +173,10 @@
     private string? TextoBusqueda;
 
     private bool IsLoading { get; set; } = false;
+
+    // Paginación propia
+    private int PaginaActual   = 0;
+    private int ItemsPorPagina = 10;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -168,6 +258,14 @@
     private void LimpiarFiltro()
     {
         TextoBusqueda = null;
+        PaginaActual  = 0;
+        FiltrarPedidos();
+    }
+
+    private void OnSearchInput(ChangeEventArgs e)
+    {
+        TextoBusqueda = e.Value?.ToString();
+        PaginaActual  = 0;
         FiltrarPedidos();
     }
 
@@ -186,13 +284,19 @@
 
             pedidosFiltrados = pedidos
                 .Where(p =>
-                    (!string.IsNullOrEmpty(p.Numero) && p.Numero.ToLower().Contains(texto)) ||
+                    (!string.IsNullOrEmpty(p.Numero)          && p.Numero.ToLower().Contains(texto)) ||
                     (!string.IsNullOrEmpty(p.Cliente?.Nombre) && p.Cliente.Nombre.ToLower().Contains(texto))
                 )
                 .ToList();
         }
 
         ListPedidos = pedidosFiltrados.AsQueryable();
+        StateHasChanged();
+    }
+
+    private void CambiarPagina(int nuevaPagina)
+    {
+        PaginaActual = nuevaPagina;
         StateHasChanged();
     }
 }

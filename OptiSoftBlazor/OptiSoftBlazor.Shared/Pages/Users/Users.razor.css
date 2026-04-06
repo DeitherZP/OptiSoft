@@ -1,0 +1,258 @@
+/* ══════════════════════════════════════
+   Users.razor.css
+   Paleta ÓpticaPro — púrpura / azul marino
+══════════════════════════════════════ */
+
+.op-page {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* ── Topbar ── */
+.op-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 16px;
+    padding: 14px 20px;
+    margin: 0;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 32px rgba(9, 9, 121, 0.08);
+}
+
+.op-topbar-left .op-greet {
+    font-size: 10px;
+    color: #c77ad3;
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.op-topbar-left .op-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #090979;
+    letter-spacing: -0.03em;
+}
+
+.op-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ── Stat chip ── */
+.op-stat-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-size: 11px;
+    color: #5a5a9a;
+    white-space: nowrap;
+}
+
+.op-stat-chip strong {
+    color: #090979;
+    font-weight: 700;
+}
+
+/* ── Buscador ── */
+.op-search {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 7px 12px;
+    font-size: 11px;
+    color: #8a8fbf;
+    min-width: 300px;
+    transition: border-color 0.15s;
+}
+
+.op-search:focus-within {
+    border-color: #c77ad3;
+}
+
+.op-search input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    color: #090979;
+    width: 100%;
+}
+
+.op-search input::placeholder {
+    color: #b0b8d8;
+}
+
+/* ── Botones ── */
+.op-btn {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #c77ad3, #090979);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+}
+
+.op-btn:hover:not(:disabled) { opacity: 0.88; }
+.op-btn:disabled             { opacity: 0.4; cursor: not-allowed; }
+
+.op-btn-ghost {
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(9, 9, 121, 0.12);
+    color: #5a5a9a;
+}
+
+.op-btn-ghost:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ── Card ── */
+.op-card {
+    background: rgba(255, 255, 255, 0.62);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 14px;
+    padding: 15px 17px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 32px rgba(9, 9, 121, 0.08);
+}
+
+.op-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.op-card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #090979;
+}
+
+.op-card-count {
+    font-size: 11px;
+    color: #8a8fbf;
+    font-weight: 500;
+}
+
+/* ── Tabla ── */
+.op-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.op-table th {
+    font-size: 9px;
+    color: #b0b8d8;
+    font-weight: 600;
+    text-align: left;
+    padding: 0 8px 10px 8px;
+    border-bottom: 1px solid rgba(9, 9, 121, 0.07);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.op-table td {
+    font-size: 11px;
+    color: #090979;
+    padding: 11px 8px;
+    border-bottom: 1px solid rgba(9, 9, 121, 0.05);
+    vertical-align: middle;
+}
+
+.op-table tbody tr:last-child td { border-bottom: none; }
+
+.op-table tbody tr {
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.op-table tbody tr:hover td {
+    background: rgba(199, 122, 211, 0.04);
+}
+
+/* ── Modificadores de celda ── */
+.td-name {
+    font-weight: 600;
+    color: #090979;
+}
+
+.td-muted {
+    font-size: 11px;
+    color: #8a8fbf;
+}
+
+/* ── Estado vacío ── */
+.op-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #b0b8d8;
+    font-size: 12px;
+}
+
+.op-empty-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* ── Paginación ── */
+.op-pagination {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(9, 9, 121, 0.06);
+    margin-top: 4px;
+}
+
+.op-page-info {
+    font-size: 10px;
+    color: #8a8fbf;
+    font-weight: 500;
+    margin-right: auto;
+}
+
+.op-page-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 1px solid rgba(9, 9, 121, 0.10);
+    background: rgba(255, 255, 255, 0.55);
+    color: #5a5a9a;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: all 0.12s;
+}
+
+.op-page-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #c77ad3, #090979);
+    color: #fff;
+    border-color: transparent;
+}
+
+.op-page-btn:disabled { opacity: 0.35; cursor: not-allowed; }

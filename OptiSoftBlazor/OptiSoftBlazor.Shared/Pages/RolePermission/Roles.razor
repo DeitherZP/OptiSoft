@@ -1,4 +1,4 @@
-﻿@page "/permisos"
+@page "/permisos"
 @rendermode InteractiveServer
 
 @using Microsoft.AspNetCore.Identity
@@ -16,173 +16,298 @@
 
 <LoadingSpinner @bind-Visible="IsLoading" />
 
-@if (!IsFirstRender)
-{
-	<div class="nueva-fila">
-		@if (Permisos.CanCreate("/permisos"))
-		{
-			<FluentButton Appearance="Appearance.Accent" OnClick="@AddRole" IconStart="@(new Icons.Filled.Size20.AddCircle())" Style="margin-right: 3em">Nuevo</FluentButton>
-		}
+<div class="op-page">
 
-		<FluentTextField Placeholder="Buscar por rol..."
-						 Style="width: 300px; margin-right: 1em;"
-						 AutoComplete="off"
-						 @bind-Value="TextoBusqueda"
-						 @bind-Value:after="FiltrarRole" />
+    @if (!IsFirstRender)
+    {
+        <div class="op-topbar">
+            <div class="op-topbar-left">
+                <div class="op-greet">🔐 Administración</div>
+                <div class="op-title">Roles y Permisos</div>
+            </div>
+            <div class="op-topbar-right">
 
-		<FluentButton Appearance="Appearance.Accent" OnClick="LimpiarFiltro" IconStart="@(new Icons.Filled.Size20.FilterDismiss())" Disabled="@(string.IsNullOrEmpty(TextoBusqueda))" />
-	</div>
-}
+                @if (ListRoles != null)
+                {
+                    <div class="op-stat-chip">
+                        Total: <strong>@ListRoles.Count()</strong>
+                    </div>
+                }
 
-@if (ListRoles != null)
-{
-	<FluentCard AreaRestricted="false" Class="data-grid-table" Style="max-height: 80vh; padding: 0.5em;">
-		<FluentDataGrid Items="ListRoles"
-						TGridItem="RoleView"
-						Pagination="@pagination"
-						AutoFit="true"
-						ShowHover="true"
-						DisplayMode="DataGridDisplayMode.Table"
-						OnRowClick="@(args => OnRowClicked(args?.Item ?? new RoleView()))">
-			<PropertyColumn Property="r => r.RoleName" Title="Rol" Sortable="true" IsDefaultSortColumn />
-		</FluentDataGrid>
-		@if (ListRoles.Count() > pagination.ItemsPerPage)
-		{
-			<FluentPaginator State="pagination" Style="padding: 0.5em 2em;" />
-		}
-	</FluentCard>
-}
+                <div class="op-search">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8a8fbf" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+                    </svg>
+                    <input placeholder="Buscar por rol..."
+                           autocomplete="off"
+                           value="@TextoBusqueda"
+                           @oninput="OnSearchInput" />
+                </div>
+
+                <button class="op-btn op-btn-ghost"
+                        @onclick="LimpiarFiltro"
+                        disabled="@(string.IsNullOrEmpty(TextoBusqueda))"
+                        title="Limpiar filtro">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+
+                @if (Permisos.CanCreate("/permisos"))
+                {
+                    <button class="op-btn" @onclick="AddRole">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" />
+                        </svg>
+                        Nuevo
+                    </button>
+                }
+            </div>
+        </div>
+    }
+
+    @if (ListRoles != null)
+    {
+        <div class="op-card">
+            <div class="op-card-header">
+                <span class="op-card-title">Listado de roles</span>
+                @if (!string.IsNullOrWhiteSpace(TextoBusqueda))
+                {
+                    <span class="op-card-count">@ListRoles.Count() resultado(s) para "@TextoBusqueda"</span>
+                }
+            </div>
+
+            @{
+                var paginados    = ListRoles.Skip(PaginaActual * ItemsPorPagina).Take(ItemsPorPagina).ToList();
+                var totalPaginas = (int)Math.Ceiling(ListRoles.Count() / (double)ItemsPorPagina);
+            }
+
+            @if (!paginados.Any())
+            {
+                <div class="op-empty">
+                    <span class="op-empty-icon">🔍</span>
+                    No se encontraron roles con ese criterio.
+                </div>
+            }
+            else
+            {
+                <div class="op-roles-grid">
+                    @foreach (var r in paginados)
+                    {
+                        <div class="op-role-card" @onclick="@(() => OnRowClicked(r))">
+                            <div class="op-role-icon @GetRoleIconClass(r.RoleName)">
+                                @((MarkupString)GetRoleIcon(r.RoleName))
+                            </div>
+                            <div class="op-role-name">@r.RoleName</div>
+                        </div>
+                    }
+                </div>
+
+                @if (totalPaginas > 1)
+                {
+                    <div class="op-pagination">
+                        <span class="op-page-info">
+                            Página @(PaginaActual + 1) de @totalPaginas
+                        </span>
+                        <button class="op-page-btn"
+                                disabled="@(PaginaActual == 0)"
+                                @onclick="() => CambiarPagina(PaginaActual - 1)">
+                            ‹
+                        </button>
+                        <button class="op-page-btn"
+                                disabled="@(PaginaActual >= totalPaginas - 1)"
+                                @onclick="() => CambiarPagina(PaginaActual + 1)">
+                            ›
+                        </button>
+                    </div>
+                }
+            }
+        </div>
+    }
+
+</div>
 
 @if (!HiddenRole)
 {
-	<RolDiag HiddenRole="@HiddenRole"
-			 Role="@RolSeleccionado"
-			 ListPermisos="@ListPermisos"
-			 HiddenRoleChanged="@(v => HiddenRole = v)"
-			 Screens="Screens"
-			 OnGuardar="GuardarRol"
-			 OnEliminar="EliminarRol" />
+    <RolDiag HiddenRole="@HiddenRole"
+             Role="@RolSeleccionado"
+             ListPermisos="@ListPermisos"
+             HiddenRoleChanged="@(v => HiddenRole = v)"
+             Screens="Screens"
+             OnGuardar="GuardarRol"
+             OnEliminar="EliminarRol" />
 }
 
 @code {
-	private bool IsLoading = true;
-	private bool IsFirstRender = true;
+    private bool IsLoading = true;
+    private bool IsFirstRender = true;
 
-	PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
 
-	private IQueryable<RoleView>? ListRoles;
-	private List<RoleView>? roles = new();
-	private List<RoleView>? rolesFiltrados = new();
-	private List<AppScreen>? Screens = new();
-	private List<ScreenPermissionView>? ListPermisos = new();
-	private string? TextoBusqueda;
+    private IQueryable<RoleView>? ListRoles;
+    private List<RoleView>? roles = new();
+    private List<RoleView>? rolesFiltrados = new();
+    private List<AppScreen>? Screens = new();
+    private List<ScreenPermissionView>? ListPermisos = new();
+    private string? TextoBusqueda;
 
-	private bool HiddenRole = true;
-	private RoleView? RolSeleccionado;
+    private bool HiddenRole = true;
+    private RoleView? RolSeleccionado;
 
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		if (!firstRender)
-			return;
+    // Paginación propia
+    private int PaginaActual   = 0;
+    private int ItemsPorPagina = 12;
 
-		if (!Permisos.CanView("/permisos"))
-			NavManager.NavigateTo("/noaccess");
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
 
-		await JS.InvokeVoidAsync("translateFluentLabels");
+        if (!Permisos.CanView("/permisos"))
+            NavManager.NavigateTo("/noaccess");
 
-		try
-		{
-			IsLoading = true;
-			StateHasChanged();
-			roles = await RolesService.ObtenerRolesAsync();
-			rolesFiltrados = new List<RoleView>(roles);
-			ListRoles = rolesFiltrados.AsQueryable();
-		}
-		catch (Exception ex)
-		{
-			ToastService.ShowError($"Error al cargar los datos: {ex.Message}", 5000);
-		}
-		finally
-		{
-			IsLoading = false;
-			IsFirstRender = false;
-			StateHasChanged();
-		}
-	}
+        await JS.InvokeVoidAsync("translateFluentLabels");
 
-	private async Task AddRole()
-	{
-		IsLoading = true;
-		StateHasChanged();
+        try
+        {
+            IsLoading = true;
+            StateHasChanged();
+            roles = await RolesService.ObtenerRolesAsync();
+            rolesFiltrados = new List<RoleView>(roles);
+            ListRoles = rolesFiltrados.AsQueryable();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError($"Error al cargar los datos: {ex.Message}", 5000);
+        }
+        finally
+        {
+            IsLoading = false;
+            IsFirstRender = false;
+            StateHasChanged();
+        }
+    }
 
-		Screens = await ScreenService.ObtenerScreensAsync();
-		RolSeleccionado = null;
-		HiddenRole = false;
+    private async Task AddRole()
+    {
+        IsLoading = true;
+        StateHasChanged();
 
-		IsLoading = false;
-		StateHasChanged();
-	}
+        Screens = await ScreenService.ObtenerScreensAsync();
+        RolSeleccionado = null;
+        HiddenRole = false;
 
-	private void FiltrarRole()
-	{
-		if (roles == null)
-			return;
+        IsLoading = false;
+        StateHasChanged();
+    }
 
-		if (string.IsNullOrWhiteSpace(TextoBusqueda))
-		{
-			rolesFiltrados = new List<RoleView>(roles);
-		}
-		else
-		{
-			var texto = TextoBusqueda.Trim().ToLower();
+    private void FiltrarRole()
+    {
+        if (roles == null)
+            return;
 
-			rolesFiltrados = roles
-				.Where(p =>
-					(!string.IsNullOrEmpty(p?.RoleName) && p.RoleName.ToLower().Contains(texto))
-				)
-				.ToList();
-		}
+        if (string.IsNullOrWhiteSpace(TextoBusqueda))
+        {
+            rolesFiltrados = new List<RoleView>(roles);
+        }
+        else
+        {
+            var texto = TextoBusqueda.Trim().ToLower();
 
-		ListRoles = rolesFiltrados.AsQueryable();
-		StateHasChanged();
-	}
+            rolesFiltrados = roles
+                .Where(p =>
+                    (!string.IsNullOrEmpty(p?.RoleName) && p.RoleName.ToLower().Contains(texto))
+                )
+                .ToList();
+        }
 
-	private void LimpiarFiltro()
-	{
-		TextoBusqueda = null;
-		FiltrarRole();
-	}
+        ListRoles = rolesFiltrados.AsQueryable();
+        StateHasChanged();
+    }
 
-	private async Task GuardarRol()
-	{
-		roles = await RolesService.ObtenerRolesAsync();
-		rolesFiltrados = new List<RoleView>(roles);
-		ListRoles = rolesFiltrados.AsQueryable();
-		ToastService.ShowSuccess("Rol guardado correctamente.");
-	}
+    private void LimpiarFiltro()
+    {
+        TextoBusqueda = null;
+        PaginaActual  = 0;
+        FiltrarRole();
+    }
 
-	private async Task EliminarRol()
-	{
-		roles = await RolesService.ObtenerRolesAsync();
-		rolesFiltrados = new List<RoleView>(roles);
-		ListRoles = rolesFiltrados.AsQueryable();
-		ToastService.ShowSuccess("Rol eliminado correctamente.");
-	}
+    private void OnSearchInput(ChangeEventArgs e)
+    {
+        TextoBusqueda = e.Value?.ToString();
+        PaginaActual  = 0;
+        FiltrarRole();
+    }
 
-	private async Task OnRowClicked(RoleView role)
-	{
-		if (string.IsNullOrEmpty(role.RoleId))
-			return;
+    private async Task GuardarRol()
+    {
+        roles = await RolesService.ObtenerRolesAsync();
+        rolesFiltrados = new List<RoleView>(roles);
+        ListRoles = rolesFiltrados.AsQueryable();
+        ToastService.ShowSuccess("Rol guardado correctamente.");
+    }
 
-		IsLoading = true;
-		StateHasChanged();
+    private async Task EliminarRol()
+    {
+        roles = await RolesService.ObtenerRolesAsync();
+        rolesFiltrados = new List<RoleView>(roles);
+        ListRoles = rolesFiltrados.AsQueryable();
+        ToastService.ShowSuccess("Rol eliminado correctamente.");
+    }
 
-		Screens = await ScreenService.ObtenerScreensAsync();
-		ListPermisos = await RolesService.ObtenerPermisosRolAsync(role.RoleId);
-		RolSeleccionado = role;
+    private async Task OnRowClicked(RoleView role)
+    {
+        if (string.IsNullOrEmpty(role.RoleId))
+            return;
+
+        IsLoading = true;
+        StateHasChanged();
+
+        Screens = await ScreenService.ObtenerScreensAsync();
+        ListPermisos = await RolesService.ObtenerPermisosRolAsync(role.RoleId);
+        RolSeleccionado = role;
 
         HiddenRole = false;
-		IsLoading = false;
-		StateHasChanged();
-	}
+        IsLoading = false;
+        StateHasChanged();
+    }
+
+    private void CambiarPagina(int nuevaPagina)
+    {
+        PaginaActual = nuevaPagina;
+        StateHasChanged();
+    }
+
+    private string GetRoleIcon(string? roleName) => roleName switch
+    {
+        "Administrator" => """<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>""",
+        "AdminUser"     => """<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M18 3l2 2-6 6-2-2 6-6z"/></svg>""",
+        "SegAdmin"      => """<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>""",
+        "SegUser"       => """<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>""",
+        "trabajador"    => """<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>""",
+        "User"          => """<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>""",
+        _               => """<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>"""
+    };
+
+    private string GetRoleIconClass(string? roleName) => roleName switch
+    {
+        "Administrator" => "icon-administrator",
+        "AdminUser"     => "icon-adminuser",
+        "SegAdmin"      => "icon-segadmin",
+        "SegUser"       => "icon-seguser",
+        "trabajador"    => "icon-trabajador",
+        "User"          => "icon-user",
+        _               => "icon-user"
+    };
+
+    private string GetRoleDesc(string? roleName) => roleName switch
+    {
+        "Administrator" => "Acceso total al sistema",
+        "AdminUser"     => "Administración de usuarios",
+        "SegAdmin"      => "Seguridad avanzada",
+        "SegUser"       => "Seguridad estándar",
+        "trabajador"    => "Operaciones del día a día",
+        "User"          => "Acceso básico",
+        _               => "Rol del sistema"
+    };
 }
