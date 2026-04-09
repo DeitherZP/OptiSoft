@@ -22,8 +22,8 @@
     {
         <div class="op-topbar">
             <div class="op-topbar-left">
-                <div class="op-greet">🔐 Administración</div>
-                <div class="op-title">Roles y Permisos</div>
+                @* <div class="op-greet">🔐 Administración</div> *@
+                <div class="op-title">🔐 Roles y Permisos</div>
             </div>
             <div class="op-topbar-right">
 
@@ -76,52 +76,53 @@
                     <span class="op-card-count">@ListRoles.Count() resultado(s) para "@TextoBusqueda"</span>
                 }
             </div>
+            <div class="op-card-scroll">
+                @{
+                    var paginados    = ListRoles.Skip(PaginaActual * ItemsPorPagina).Take(ItemsPorPagina).ToList();
+                    var totalPaginas = (int)Math.Ceiling(ListRoles.Count() / (double)ItemsPorPagina);
+                }
 
-            @{
-                var paginados    = ListRoles.Skip(PaginaActual * ItemsPorPagina).Take(ItemsPorPagina).ToList();
-                var totalPaginas = (int)Math.Ceiling(ListRoles.Count() / (double)ItemsPorPagina);
-            }
-
-            @if (!paginados.Any())
-            {
-                <div class="op-empty">
-                    <span class="op-empty-icon">🔍</span>
-                    No se encontraron roles con ese criterio.
-                </div>
-            }
-            else
-            {
-                <div class="op-roles-grid">
-                    @foreach (var r in paginados)
-                    {
-                        <div class="op-role-card" @onclick="@(() => OnRowClicked(r))">
-                            <div class="op-role-icon @GetRoleIconClass(r.RoleName)">
-                                @((MarkupString)GetRoleIcon(r.RoleName))
-                            </div>
-                            <div class="op-role-name">@r.RoleName</div>
-                        </div>
-                    }
-                </div>
-
-                @if (totalPaginas > 1)
+                @if (!paginados.Any())
                 {
-                    <div class="op-pagination">
-                        <span class="op-page-info">
-                            Página @(PaginaActual + 1) de @totalPaginas
-                        </span>
-                        <button class="op-page-btn"
-                                disabled="@(PaginaActual == 0)"
-                                @onclick="() => CambiarPagina(PaginaActual - 1)">
-                            ‹
-                        </button>
-                        <button class="op-page-btn"
-                                disabled="@(PaginaActual >= totalPaginas - 1)"
-                                @onclick="() => CambiarPagina(PaginaActual + 1)">
-                            ›
-                        </button>
+                    <div class="op-empty">
+                        <span class="op-empty-icon">🔍</span>
+                        No se encontraron roles con ese criterio.
                     </div>
                 }
-            }
+                else
+                {
+                    <div class="op-roles-grid">
+                        @foreach (var r in paginados)
+                        {
+                            <div class="op-role-card" @onclick="@(() => OnRowClicked(r))">
+                                <div class="op-role-icon @GetRoleIconClass(r.RoleName)">
+                                    @((MarkupString)GetRoleIcon(r.RoleName))
+                                </div>
+                                <div class="op-role-name">@r.RoleName</div>
+                            </div>
+                        }
+                    </div>
+
+                    @if (totalPaginas > 1)
+                    {
+                        <div class="op-pagination">
+                            <span class="op-page-info">
+                                Página @(PaginaActual + 1) de @totalPaginas
+                            </span>
+                            <button class="op-page-btn"
+                                    disabled="@(PaginaActual == 0)"
+                                    @onclick="() => CambiarPagina(PaginaActual - 1)">
+                                ‹
+                            </button>
+                            <button class="op-page-btn"
+                                    disabled="@(PaginaActual >= totalPaginas - 1)"
+                                    @onclick="() => CambiarPagina(PaginaActual + 1)">
+                                ›
+                            </button>
+                        </div>
+                    }
+                }
+            </div>
         </div>
     }
 
@@ -278,27 +279,93 @@
         StateHasChanged();
     }
 
-    private string GetRoleIcon(string? roleName) => roleName switch
+    private string Normalize(string? roleName)
     {
-        "Administrator" => """<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>""",
-        "AdminUser"     => """<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M18 3l2 2-6 6-2-2 6-6z"/></svg>""",
-        "SegAdmin"      => """<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>""",
-        "SegUser"       => """<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>""",
-        "trabajador"    => """<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>""",
-        "User"          => """<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>""",
-        _               => """<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>"""
-    };
+        return roleName?.ToLowerInvariant() ?? string.Empty;
+    }
 
-    private string GetRoleIconClass(string? roleName) => roleName switch
+    private string GetRoleIcon(string? roleName)
     {
-        "Administrator" => "icon-administrator",
-        "AdminUser"     => "icon-adminuser",
-        "SegAdmin"      => "icon-segadmin",
-        "SegUser"       => "icon-seguser",
-        "trabajador"    => "icon-trabajador",
-        "User"          => "icon-user",
-        _               => "icon-user"
-    };
+        var role = Normalize(roleName);
+
+        if (role.Contains("admin") && (role.Contains("user") || role.Contains("usu")))
+        {
+            return @"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8'>
+                        <circle cx='12' cy='8' r='4'/>
+                        <path d='M4 20c0-4 3.6-7 8-7s8 3 8 7'/>
+                        <path d='M18 3l2 2-6 6-2-2 6-6z'/>
+                     </svg>";
+        }
+
+        if (role.Contains("admin"))
+        {
+            return @"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8'>
+                        <path d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/>
+                     </svg>";
+        }
+
+        if (role.Contains("seg") || role.Contains("security"))
+        {
+            return @"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8'>
+                        <path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/>
+                        <path d='M9 12l2 2 4-4'/>
+                     </svg>";
+        }
+
+        if (role.Contains("trab") || role.Contains("work") || role.Contains("emple"))
+        {
+            return @"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8'>
+                        <rect x='2' y='7' width='20' height='14' rx='2'/>
+                        <path d='M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2'/>
+                     </svg>";
+        }
+
+        if (role.Contains("user") || role.Contains("usu"))
+        {
+            return @"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8'>
+                        <circle cx='12' cy='8' r='4'/>
+                        <path d='M4 20c0-4 3.6-7 8-7s8 3 8 7'/>
+                     </svg>";
+        }
+
+        // DEFAULT (rol general)
+        return @"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8'>
+                    <circle cx='12' cy='12' r='9'/>
+                    <path d='M9 12h6'/>
+                 </svg>";
+    }
+
+    private string GetRoleIconClass(string? roleName)
+    {
+        var role = roleName?.ToLowerInvariant() ?? string.Empty;
+
+        // ADMIN + USER
+        if (role.Contains("admin") && (role.Contains("user") || role.Contains("usu")))
+            return "icon-adminuser";
+
+        // ADMIN
+        if (role.Contains("admin"))
+            return "icon-administrator";
+
+        // SEGURIDAD + ADMIN
+        if ((role.Contains("seg") || role.Contains("security")) && role.Contains("admin"))
+            return "icon-segadmin";
+
+        // SEGURIDAD + USER
+        if (role.Contains("seg") || role.Contains("security"))
+            return "icon-seguser";
+
+        // TRABAJADOR
+        if (role.Contains("trab") || role.Contains("work") || role.Contains("emple"))
+            return "icon-trabajador";
+
+        // USUARIO
+        if (role.Contains("user") || role.Contains("usu"))
+            return "icon-user";
+
+        // DEFAULT → usa uno existente para no romper diseño
+        return "icon-user";
+    }
 
     private string GetRoleDesc(string? roleName) => roleName switch
     {
